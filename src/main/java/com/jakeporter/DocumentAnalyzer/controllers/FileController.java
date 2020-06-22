@@ -1,5 +1,6 @@
 package com.jakeporter.DocumentAnalyzer.controllers;
 
+import com.jakeporter.DocumentAnalyzer.exceptions.FileStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.jakeporter.DocumentAnalyzer.service.FileService;
 
+import java.io.IOException;
+
 @Controller
 public class FileController {
 
@@ -18,16 +21,22 @@ public class FileController {
     @Autowired
     FileService fileService;
 
-    // File will be removed from memory after request has been processed
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        String text;
 
         try{
             fileService.uploadFile(file);
-        } catch (Exception e) {
+        } catch (FileStorageException e) {
             return new ResponseEntity<>("Error " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         logger.info("File uploaded");
-        return new ResponseEntity<>("Success!", HttpStatus.OK);
+        try{
+            text = fileService.summarize(file);
+            logger.info(text);
+        } catch (IOException e) {
+            return new ResponseEntity<>("Error " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(text, HttpStatus.OK);
     }
 }
