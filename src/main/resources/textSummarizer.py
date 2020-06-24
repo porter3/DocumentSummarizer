@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.stem import PorterStemmer
