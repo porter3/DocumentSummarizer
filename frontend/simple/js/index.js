@@ -13,10 +13,11 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: response => {
-                alert('Successful upload');
+                alert(response)
             },
             error: xhr => {
-                alert(xhr.responseText);
+                alert("something went wrong")
+                console.log(xhr)
             }
         })
     })
