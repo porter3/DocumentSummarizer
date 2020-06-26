@@ -25,9 +25,7 @@ public class PythonSummarizer extends DocumentSummarizer {
 
     @Override
     protected String computeSummary(String text) throws IOException {
-        logger.debug("computeSummary running");
-        String summary = runPythonScript(text);
-        return summary;
+        return runPythonScript(text);
     }
 
     private String runPythonScript(String text) throws IOException {
@@ -41,7 +39,7 @@ public class PythonSummarizer extends DocumentSummarizer {
         // InputStreamReader reads bytes and decodes them into characters
         BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String result = in.readLine();
-        logger.info("Result: " + result);
+        logger.info("Output result: " + result);
         return result;
     }
 }
