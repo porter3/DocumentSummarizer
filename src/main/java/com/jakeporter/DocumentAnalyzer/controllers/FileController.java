@@ -33,7 +33,7 @@ public class FileController {
         logger.info("File uploaded");
         try{
             text = fileService.summarize(file);
-            logger.info(text);
+            logger.info("Summary: " + text);
         } catch (IOException e) {
             return new ResponseEntity<>("Error " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
