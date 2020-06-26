@@ -13,11 +13,10 @@ public abstract class DocumentSummarizer {
         return extractor.getText();
     }
 
-    protected abstract String computeSummary(String text);
+    protected abstract String computeSummary(String text) throws IOException;
 
     public String summarizeDocument(MultipartFile file) throws IOException {
         String text = extractText(file);
-        return text; // just return the document's text for now
-//        return computeSummary(text);
+        return computeSummary(text);
     }
 }
