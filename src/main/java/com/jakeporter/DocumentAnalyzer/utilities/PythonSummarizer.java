@@ -34,7 +34,7 @@ public class PythonSummarizer extends DocumentSummarizer {
         // filePath starts with "/C:/..." - the first forward slash needs to go for it to work
         String filePath = this.getClass().getClassLoader().getResource(script).getPath().substring(1);
         logger.info(filePath);
-        ProcessBuilder processBuilder = new ProcessBuilder("python", filePath);
+        ProcessBuilder processBuilder = new ProcessBuilder("python", filePath, text);
         processBuilder.redirectErrorStream(true);
         Process process = processBuilder.start();
 
