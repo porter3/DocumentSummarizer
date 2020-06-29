@@ -3,9 +3,8 @@ import React from 'react';
 import { Row } from 'react-bootstrap';
 import { FormControl, FormControlLabel, RadioGroup, Radio } from '@material-ui/core'
 
-// TODO: download/import react-radio-group
 
-export default function TextUploadForm() {
+export default function TextUploadForm({ handleChange }) {
     return (
         <Row>
             <FormControl component="fieldset">
@@ -13,8 +12,10 @@ export default function TextUploadForm() {
                     <FormControlLabel value="uploadFile" control={<Radio />} label="Upload File" />
                     <FormControlLabel value="enterText" control={<Radio />} label="Enter Text" />
                 </RadioGroup>
-                <label for="file">Upload file:</label>
-                <input type="file" name="file" id="file" />
+                <div id="fileInput">
+                    <label for="file">Upload file:</label><br />
+                    <input type="file" name="file" id="file" onChange={handleChange} />
+                </div>
                 <textarea rows="18" cols="50" id="textEntry" />
             </FormControl>
         </Row>
