@@ -9,12 +9,12 @@ function App() {
 
   const [ isLoading, setIsLoading ] = useState(false)
   const [ text, setText ] = useState('')
-  const [ fileIsSelected, setFileIsSelected ] = useState(false)
+  const [ fileIsLoaded, setFileIsLoaded ] = useState(false)
 
   return (
     <Container className='app'>
       <UploadSection />
-      <TextUploadForm />
+      <TextUploadForm handleChange={() => setFileIsLoaded(!fileIsLoaded)} />
     </Container>
   )
 }
