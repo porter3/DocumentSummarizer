@@ -4,7 +4,7 @@ import { Row } from 'react-bootstrap';
 import { FormControl, FormControlLabel, RadioGroup, Radio } from '@material-ui/core'
 
 
-export default function TextUploadForm({ handleChange }) {
+export default function TextUploadForm({ handleFileChange, handleTextChange }) {
     return (
         <Row>
             <FormControl component="fieldset">
@@ -13,10 +13,10 @@ export default function TextUploadForm({ handleChange }) {
                     <FormControlLabel value="enterText" control={<Radio />} label="Enter Text" />
                 </RadioGroup>
                 <div id="fileInput">
-                    <label for="file">Upload file:</label><br />
-                    <input type="file" name="file" id="file" onChange={handleChange} />
+                    <label htmlFor="file">Upload file:</label><br />
+                    <input type="file" name="file" id="file" onChange={handleFileChange} />
                 </div>
-                <textarea rows="18" cols="50" id="textEntry" />
+                <textarea rows="18" cols="50" id="textEntry" onChange={handleTextChange} />
             </FormControl>
         </Row>
     )
