@@ -1,27 +1,22 @@
-import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Row, Form } from 'react-bootstrap'
+import React from 'react';
+import { Row } from 'react-bootstrap';
+import { FormControl, FormControlLabel, RadioGroup, Radio } from '@material-ui/core'
 
 // TODO: download/import react-radio-group
 
 export default function TextUploadForm() {
     return (
         <Row>
-            <Form>
-                <Form.Group>
-                    <Form.Check type='radio' name='inputType' label='Upload File (.docx)' checked />
-                </Form.Group>
-                <Form.Group>
-                    <Form.File id='fileInput' name='file'></Form.File>
-                </Form.Group>
-                <Form.Group>
-                    <Form.Check type='radio' name='inputType' label='Copy and paste text' />
-                </Form.Group>
-                <Form.Group hidden>
-                    <Form.Label>Enter Document Text</Form.Label>
-                    <Form.Control as="textarea" rows='18' />
-                </Form.Group>
-            </Form>
+            <FormControl component="fieldset">
+                <RadioGroup aria-label="Upload Choices" name="uploadChoices" >
+                    <FormControlLabel value="uploadFile" control={<Radio />} label="Upload File" />
+                    <FormControlLabel value="enterText" control={<Radio />} label="Enter Text" />
+                </RadioGroup>
+                <label for="file">Upload file:</label>
+                <input type="file" name="file" id="file" />
+                <textarea rows="18" cols="50" id="textEntry" />
+            </FormControl>
         </Row>
     )
 }
