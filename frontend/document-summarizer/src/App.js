@@ -11,10 +11,14 @@ function App() {
   const [ text, setText ] = useState('')
   const [ fileIsLoaded, setFileIsLoaded ] = useState(false)
 
+  const handleTextChange = e => {
+    setText(e.target.value)
+  }
+
   return (
     <Container className='app'>
       <UploadSection />
-      <TextUploadForm handleChange={() => setFileIsLoaded(!fileIsLoaded)} />
+      <TextUploadForm handleTextChange={e => handleTextChange(e)} handleFileChange={() => setFileIsLoaded(!fileIsLoaded)} />
     </Container>
   )
 }
