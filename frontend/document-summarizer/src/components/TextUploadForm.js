@@ -4,7 +4,7 @@ import { Row, Col, Button } from 'react-bootstrap';
 import { FormControl, FormControlLabel, RadioGroup, Radio } from '@material-ui/core'
 
 
-export default function TextUploadForm({ uploadChoice, handleRadioChange, handleFileChange, handleTextChange, text }) {
+export default function TextUploadForm({ uploadChoice, handleRadioChange, handleFileChange, handleTextChange, text, handleClick, isLoading }) {
 
 
     return (
@@ -27,7 +27,13 @@ export default function TextUploadForm({ uploadChoice, handleRadioChange, handle
                 </FormControl>
             </Col>
             <Col>
-                <Button>Summarize</Button>
+                <Button
+                    variant='primary'
+                    // disabled={isLoading}
+                    size='lg'
+                    onClick={handleClick}>
+                    {isLoading ? 'Generating summary...' : 'Generate Summary'}
+                </Button>
             </Col>
         </Row>
     )
