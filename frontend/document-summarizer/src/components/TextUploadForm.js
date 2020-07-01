@@ -29,7 +29,7 @@ export default function TextUploadForm({ uploadChoice, handleRadioChange, handle
             <Col>
                 <Button
                     variant='primary'
-                    // disabled={isLoading}
+                    disabled={isLoading}
                     size='lg'
                     onClick={handleClick}>
                     {isLoading ? 'Generating summary...' : 'Generate Summary'}
