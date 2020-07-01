@@ -1,0 +1,19 @@
+.app {
+    margin-top: 40px;
+}
+
+.directions {
+    margin-top: 80px;
+}
+
+.uploadHeader {
+    margin: 75px 0px 25px;
+}
+
+.summary, .errorMsg {
+    margin-top: 80px;
+}
+
+p {
+    font-size: x-large;
+}
