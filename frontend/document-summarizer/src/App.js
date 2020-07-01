@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import UploadHeader from './components/UploadHeader'
 import TextUploadForm from './components/TextUploadForm'
+import SummarySection from './components/SummarySection'
 import { serverUrl } from './serverUrl'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './css/app.css'
@@ -14,6 +15,7 @@ function App() {
   const [ text, setText ] = useState('')
   const [ fileIsLoaded, setFileIsLoaded ] = useState(false)
   const [ summary, setSummary ] = useState('')
+  const [ error, setError ] = useState('')
   
   const handleUploadChoice = e => {
     setUploadChoice(e.target.value)
@@ -28,10 +30,8 @@ function App() {
       method: 'POST',
       body: body
     })
-      .then(response => response.text())
-      .catch(error => {
-        console.log(error)
-      })
+      .then(response => response.json())
+      .catch(errorResponse => errorResponse.json())
   }
 
   const getSummary = async () => {
@@ -41,7 +41,16 @@ function App() {
     form.append('file', document.getElementById('file').files[0])
     const fetchedSummary = await fetchSummary(url, form)
     setIsLoading(false)
-    setSummary(fetchedSummary)
+    if (fetchedSummary.summary) {
+      setError('')
+      setSummary(fetchedSummary.summary)
+    } else if (fetchedSummary.message) {
+      setSummary('')
+      setError(fetchedSummary.message)
+    } else {
+      setSummary('')
+      setError('Something went wrong.')
+    }
   }
 
   return (
@@ -58,6 +67,9 @@ function App() {
             handleClick={() => getSummary()}
             isLoading={isLoading}
           />
+        </Col>
+        <Col sm={6}>
+          <SummarySection summary={summary} error={error} />
         </Col>
       </Row>
     </Container>
