@@ -10,30 +10,40 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.jakeporter.DocumentAnalyzer.service.FileService;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class FileController {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    // JSON keys for responses
+    private final String SUCCESS_KEY = "summary";
+    private final String ERROR_KEY = "error";
+
     @Autowired
     FileService fileService;
 
     @PostMapping("/uploadFile")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
         String summary;
+        Map<String, String> response = new HashMap();
 
         try{
             fileService.uploadFile(file);
         } catch (FileStorageException e) {
-            return new ResponseEntity<>("error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            response.put(ERROR_KEY, e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         try{
             summary = fileService.summarize(file);
             logger.info("Summary: " + summary);
         } catch (IOException e) {
-            return new ResponseEntity<>("error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            response.put(ERROR_KEY, e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(summary, HttpStatus.OK);
+        response.put(SUCCESS_KEY, summary);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
