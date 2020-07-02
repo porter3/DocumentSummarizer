@@ -14,6 +14,8 @@ import java.io.InputStreamReader;
 
 public abstract class DocumentSummarizer {
 
+
+
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     // template method for files
