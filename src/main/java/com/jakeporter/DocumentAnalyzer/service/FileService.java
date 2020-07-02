@@ -45,6 +45,11 @@ public class FileService {
         return summary;
     }
 
+    public String summarize(String text) throws IOException {
+        DocumentSummarizer summarizer = new PythonSummarizer();
+        return summarizer.summarizeDocument(text);
+    }
+
     // create absolute path of the file and normalize it for different OSs
     private Path getFileLocation(MultipartFile file) {
         return Paths.get(uploadDirectory + File.separator + StringUtils.cleanPath(file.getOriginalFilename()));
