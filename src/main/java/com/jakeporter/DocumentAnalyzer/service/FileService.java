@@ -2,8 +2,10 @@ package com.jakeporter.DocumentAnalyzer.service;
 
 import com.jakeporter.DocumentAnalyzer.exceptions.FileDeletionException;
 import com.jakeporter.DocumentAnalyzer.exceptions.FileStorageException;
-import com.jakeporter.DocumentAnalyzer.utilities.DocumentSummarizer;
-import com.jakeporter.DocumentAnalyzer.utilities.PythonSummarizer;
+import com.jakeporter.DocumentAnalyzer.utilities.summarizers.DocumentSummarizer;
+import com.jakeporter.DocumentAnalyzer.utilities.summarizers.PythonSummarizer;
+import com.jakeporter.DocumentAnalyzer.utilities.textExtractors.DOCXTextExtractor;
+import com.jakeporter.DocumentAnalyzer.utilities.textExtractors.FileTextExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +41,9 @@ public class FileService {
     }
 
     public String summarize(MultipartFile file) throws IOException {
-        DocumentSummarizer summarizer = new PythonSummarizer();
+        // will need to not be a specific implementation once other implementations are ready
+        FileTextExtractor extractor = new DOCXTextExtractor();
+        DocumentSummarizer summarizer = new PythonSummarizer(extractor);
         String summary = summarizer.summarizeDocument(file);
         deleteFile(getFileLocation(file));
         return summary;
