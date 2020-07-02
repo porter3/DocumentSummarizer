@@ -2,10 +2,13 @@ package com.jakeporter.DocumentAnalyzer.service;
 
 import com.jakeporter.DocumentAnalyzer.exceptions.FileDeletionException;
 import com.jakeporter.DocumentAnalyzer.exceptions.FileStorageException;
+import com.jakeporter.DocumentAnalyzer.exceptions.UnsupportedFileFormatException;
 import com.jakeporter.DocumentAnalyzer.utilities.summarizers.DocumentSummarizer;
 import com.jakeporter.DocumentAnalyzer.utilities.summarizers.PythonSummarizer;
-import com.jakeporter.DocumentAnalyzer.utilities.textExtractors.DOCXTextExtractor;
-import com.jakeporter.DocumentAnalyzer.utilities.textExtractors.FileTextExtractor;
+import com.jakeporter.DocumentAnalyzer.utilities.textExtractors.*;
+import org.apache.commons.compress.compressors.FileNameUtil;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,8 +44,9 @@ public class FileService {
     }
 
     public String summarize(MultipartFile file) throws IOException {
-        // will need to not be a specific implementation once other implementations are ready
-        FileTextExtractor extractor = new DOCXTextExtractor();
+        FileType fileType = getFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
+        logger.info("File type: " + fileType);
+        FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
         DocumentSummarizer summarizer = new PythonSummarizer(extractor);
         String summary = summarizer.summarizeDocument(file);
         deleteFile(getFileLocation(file));
@@ -57,6 +61,17 @@ public class FileService {
     // create absolute path of the file and normalize it for different OSs
     private Path getFileLocation(MultipartFile file) {
         return Paths.get(uploadDirectory + File.separator + StringUtils.cleanPath(file.getOriginalFilename()));
+    }
+
+    private FileType getFileType(String fileExtension) {
+        switch (fileExtension) {
+            case "doc":
+                return FileType.DOC;
+            case "docx":
+                return FileType.DOCX;
+            default:
+                throw new UnsupportedFileFormatException("File format not supported.");
+        }
     }
 
     private void deleteFile(Path filePath) throws FileDeletionException {
