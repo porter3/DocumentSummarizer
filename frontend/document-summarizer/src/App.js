@@ -75,7 +75,7 @@ function App() {
           />
         </Col>
         <Col sm={6}>
-          <SummarySection summary={summary} error={error} />
+          <SummarySection summary={summary} error={error} isLoading={isLoading} />
         </Col>
       </Row>
     </Container>
