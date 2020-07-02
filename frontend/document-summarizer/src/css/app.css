@@ -10,8 +10,14 @@
     margin: 75px 0px 25px;
 }
 
-.summary, .errorMsg {
+#summarySection {
+    text-align: center;
+}
+
+#summary, #error {
     margin-top: 80px;
+    padding-top: 40px;
+    display: inline-block;
 }
 
 p {
