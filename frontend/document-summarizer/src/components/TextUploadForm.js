@@ -9,12 +9,27 @@ export default function TextUploadForm({ uploadChoice, handleRadioChange, handle
 
     return (
         <Row>
-            <Col sm={6}>
-                <FormControl component="fieldset">
-                    <RadioGroup aria-label="Upload Choices" name="uploadChoices" onChange={e => handleRadioChange(e)}>
-                        <FormControlLabel value="fileUpload" control={<Radio />} label="Upload File" />
-                        <FormControlLabel value="text" control={<Radio />} label="Enter Text" />
-                    </RadioGroup>
+            <Row>
+                <Col sm={6}>
+                    <FormControl component="fieldset">
+                        <RadioGroup aria-label="Upload Choices" name="uploadChoices" onChange={e => handleRadioChange(e)}>
+                            <FormControlLabel value="fileUpload" control={<Radio />} label="Upload File (.docx)" />
+                            <FormControlLabel value="text" control={<Radio />} label="Enter Text" />
+                        </RadioGroup>
+                    </FormControl>
+                </Col>
+                <Col sm={6}>
+                    <Button
+                        variant='primary'
+                        disabled={isLoading}
+                        size='lg'
+                        onClick={handleClick}>
+                        {isLoading ? 'Generating summary...' : 'Generate Summary'}
+                    </Button>
+                </Col>
+            </Row>
+            <Row>
+                <Col sm={12}>
                     {uploadChoice === 'fileUpload' &&
                         <div>
                             <label htmlFor ="file">Upload file:</label><br />
@@ -24,17 +39,8 @@ export default function TextUploadForm({ uploadChoice, handleRadioChange, handle
                     {uploadChoice === 'text' &&
                         <textarea rows="18" cols="50" id="textEntry" onChange={handleTextChange} value={text} />
                     }
-                </FormControl>
-            </Col>
-            <Col>
-                <Button
-                    variant='primary'
-                    disabled={isLoading}
-                    size='lg'
-                    onClick={handleClick}>
-                    {isLoading ? 'Generating summary...' : 'Generate Summary'}
-                </Button>
-            </Col>
+                </Col>
+            </Row>
         </Row>
     )
 }
