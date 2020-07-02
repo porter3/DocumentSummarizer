@@ -36,10 +36,16 @@ function App() {
 
   const getSummary = async () => {
     setIsLoading(true)
-    const url = serverUrl + '/uploadFile'
-    const form = new FormData()
-    form.append('file', document.getElementById('file').files[0])
-    const fetchedSummary = await fetchSummary(url, form)
+    let url, body
+    if (uploadChoice === 'fileUpload') {
+      url = serverUrl + '/file'
+      body = new FormData()
+      body.append('file', document.getElementById('file').files[0])
+    } else {
+      url = serverUrl + '/text'
+      body = text
+    }
+    const fetchedSummary = await fetchSummary(url, body)
     setIsLoading(false)
     if (fetchedSummary.summary) {
       setError('')
