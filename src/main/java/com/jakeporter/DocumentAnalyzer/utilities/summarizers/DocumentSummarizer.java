@@ -1,9 +1,8 @@
-package com.jakeporter.DocumentAnalyzer.utilities;
+package com.jakeporter.DocumentAnalyzer.utilities.summarizers;
 
 import com.jakeporter.DocumentAnalyzer.exceptions.ProblematicTextException;
 import com.jakeporter.DocumentAnalyzer.exceptions.TextTooShortException;
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import com.jakeporter.DocumentAnalyzer.utilities.textExtractors.FileTextExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +13,13 @@ import java.io.InputStreamReader;
 
 public abstract class DocumentSummarizer {
 
+    private FileTextExtractor extractor;
 
+    public DocumentSummarizer() {}
+
+    public DocumentSummarizer(FileTextExtractor extractor) {
+        this.extractor = extractor;
+    }
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -32,8 +37,7 @@ public abstract class DocumentSummarizer {
     protected abstract String computeSummary(String text) throws IOException;
 
     private String extractText(MultipartFile file) throws IOException {
-        XWPFWordExtractor extractor = new XWPFWordExtractor(new XWPFDocument(file.getInputStream()));
-        return extractor.getText();
+        return extractor.extractText(file);
     }
 
     protected String readResult(Process process) throws IOException {
