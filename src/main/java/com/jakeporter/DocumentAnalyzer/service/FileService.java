@@ -6,9 +6,7 @@ import com.jakeporter.DocumentAnalyzer.exceptions.UnsupportedFileFormatException
 import com.jakeporter.DocumentAnalyzer.utilities.summarizers.DocumentSummarizer;
 import com.jakeporter.DocumentAnalyzer.utilities.summarizers.PythonSummarizer;
 import com.jakeporter.DocumentAnalyzer.utilities.textExtractors.*;
-import org.apache.commons.compress.compressors.FileNameUtil;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,8 +29,11 @@ public class FileService {
     @Value("${upload.dir:${user.home}}")
     public String uploadDirectory;
 
-    public void uploadFile(MultipartFile file) throws FileStorageException {
+    public FileType uploadFile(MultipartFile file) throws FileStorageException {
+        FileType fileType;
         try {
+            fileType = getFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
+            logger.info("File type: " + fileType);
             Path copyLocation = getFileLocation(file);
             logger.info("Upload directory: " + uploadDirectory);
             // copy the file's input stream to the path and replace any file with the same name
@@ -40,19 +41,19 @@ public class FileService {
         } catch (IOException e) {
             e.printStackTrace();
             throw new FileStorageException("Error storing " + file.getOriginalFilename() + ".");
+        } catch (UnsupportedFileFormatException e) {
+            throw new UnsupportedFileFormatException("File format not supported.");
         }
+        return fileType;
     }
 
-    public String summarize(MultipartFile file) throws IOException {
+    public String summarize(MultipartFile file, FileType fileType) throws IOException {
         String summary = "";
         try {
-            FileType fileType = getFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
-            logger.info("File type: " + fileType);
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
             DocumentSummarizer summarizer = new PythonSummarizer(extractor);
             summary = summarizer.summarizeDocument(file);
-        } catch (UnsupportedFileFormatException e) {
-            throw new UnsupportedFileFormatException("File format not supported.");
+        } catch (Throwable e) {
         } finally {
             deleteFile(getFileLocation(file));
         }
