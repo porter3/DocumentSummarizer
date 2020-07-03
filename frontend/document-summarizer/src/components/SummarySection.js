@@ -1,32 +1,31 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-typist/dist/Typist.css'
+import Typist from 'react-typist'
 import Loader from './Loader'
-import { motion } from 'framer-motion'
-import { Alert } from 'react-bootstrap'
 
-export default function SummarySection({ summary, error, isLoading }) {
-
-    const summaryAnimation = { opacity: summary ? 1 : 0 }
-    const errorAnimation = { opacity: error ? 1 : 0 }
+/*
+    previousSummary/previousError are necessary to render the Typist component if one summary or error has already been generated.
+    summary/error renders fine inside other elements w/o the extra conditional, so it's likely a bug in the Typist component.
+*/
+export default function SummarySection({ summary, previousSummary, error, previousError, isLoading }) {
 
     return (
-        <div id='summarySection'>
-            <motion.div
-                id='summary'
-                animate={summaryAnimation}>
-                {summary &&
-                    `${summary}`
-                }
-            </motion.div>
-            <motion.div
-                id='error'
-                animate={errorAnimation}>
-                <Alert variant='danger'>
-                    {error &&
-                        `${error}`
-                    }
-                </Alert>
-            </motion.div>
+        <div>
+            {summary && summary !== previousSummary &&
+                <Typist
+                    avgTypingDelay={0}
+                    stdTypingDelay={0}>
+                        {summary}
+                </Typist>
+            }
+            {error && error !== previousError &&
+                <Typist
+                    avgTypingDelay={0}
+                    stdTypingDelay={0}>
+                        {error}
+                </Typist>
+            }
             {isLoading &&
                 <Loader />
             }
