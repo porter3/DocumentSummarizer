@@ -11,15 +11,6 @@
 }
 
 #summarySection {
-    text-align: center;
-}
-
-#summary, #error {
-    margin-top: 80px;
-    padding-top: 40px;
+    margin: 80px 0;
     display: inline-block;
-}
-
-p {
-    font-size: x-large;
 }
