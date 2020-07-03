@@ -15,7 +15,13 @@ function App() {
   const [ text, setText ] = useState('')
   const [ fileIsLoaded, setFileIsLoaded ] = useState(false)
   const [ summary, setSummary ] = useState('')
+  /*
+    previousSummary/previousError are workarounds for rendering the Typist component (in SummarySection) properly if one summary has already been generated.
+    Don't know why it's necessary, likely a bug with the Typist component.
+  */
+  const [ previousSummary, setPreviousSummary] = useState('')
   const [ error, setError ] = useState('')
+  const [ previousError, setPreviousError ] = useState('')
   
   const handleUploadChoice = e => {
     setUploadChoice(e.target.value)
@@ -36,6 +42,12 @@ function App() {
 
   const getSummary = async () => {
     setIsLoading(true)
+    if (summary) {
+      setPreviousSummary(summary)
+    }
+    if (error) {
+      setPreviousError(error)
+    }
     let url, body
     if (uploadChoice === 'fileUpload') {
       url = serverUrl + '/file'
@@ -49,9 +61,15 @@ function App() {
     setIsLoading(false)
     if (fetchedSummary.summary) {
       setError('')
+      setPreviousError('') // see comment below as to why this line is here
       setSummary(fetchedSummary.summary)
     } else if (fetchedSummary.message) {
       setSummary('')
+      /* 
+        setPreviousSummary needs to be done in case a user tries to summarize a text,
+        gets an error on the next summarization attempt, and then tries to summarize the first text
+      */
+      setPreviousSummary('')
       setError(fetchedSummary.message)
     } else {
       setSummary('')
@@ -62,7 +80,7 @@ function App() {
   return (
     <Container className='app'>
       <Row>
-        <Col sm={6}>
+        <Col md={6} xs={12}>
           <UploadHeader />
           <TextUploadForm
             uploadChoice={uploadChoice}
@@ -74,8 +92,8 @@ function App() {
             isLoading={isLoading}
           />
         </Col>
-        <Col sm={6}>
-          <SummarySection summary={summary} error={error} isLoading={isLoading} />
+        <Col md={6} xs={12}>
+          <SummarySection summary={summary} previousSummary={previousSummary} error={error} previousError={previousError} isLoading={isLoading} />
         </Col>
       </Row>
     </Container>
