@@ -1,6 +1,7 @@
 package com.jakeporter.DocumentAnalyzer.controllers;
 
 import com.jakeporter.DocumentAnalyzer.exceptions.FileStorageException;
+import com.jakeporter.DocumentAnalyzer.utilities.textExtractors.FileType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +31,16 @@ public class FileController {
     public ResponseEntity<Map<String, String>> summarizeFile(@RequestParam("file") MultipartFile file) {
         String summary;
         Map<String, String> response = new HashMap();
+        FileType fileType;
 
         try {
-            fileService.uploadFile(file);
+            fileType = fileService.uploadFile(file);
         } catch (FileStorageException e) {
             response.put(ERROR_KEY, e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         try {
-            summary = fileService.summarize(file);
+            summary = fileService.summarize(file, fileType);
             logger.info("Summary: " + summary);
         } catch (IOException e) {
             response.put(ERROR_KEY, e.getMessage());

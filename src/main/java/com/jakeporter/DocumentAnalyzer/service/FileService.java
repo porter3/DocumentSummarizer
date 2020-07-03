@@ -44,12 +44,18 @@ public class FileService {
     }
 
     public String summarize(MultipartFile file) throws IOException {
-        FileType fileType = getFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
-        logger.info("File type: " + fileType);
-        FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
-        DocumentSummarizer summarizer = new PythonSummarizer(extractor);
-        String summary = summarizer.summarizeDocument(file);
-        deleteFile(getFileLocation(file));
+        String summary = "";
+        try {
+            FileType fileType = getFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
+            logger.info("File type: " + fileType);
+            FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
+            DocumentSummarizer summarizer = new PythonSummarizer(extractor);
+            summary = summarizer.summarizeDocument(file);
+        } catch (UnsupportedFileFormatException e) {
+            throw new UnsupportedFileFormatException("File format not supported.");
+        } finally {
+            deleteFile(getFileLocation(file));
+        }
         return summary;
     }
 
@@ -70,7 +76,7 @@ public class FileService {
             case "docx":
                 return FileType.DOCX;
             default:
-                throw new UnsupportedFileFormatException("File format not supported.");
+                throw new UnsupportedFileFormatException();
         }
     }
 
