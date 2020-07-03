@@ -11,7 +11,7 @@ import Loader from './Loader'
 export default function SummarySection({ summary, previousSummary, error, previousError, isLoading }) {
 
     return (
-        <div>
+        <div id='summarySection'>
             {summary && summary !== previousSummary &&
                 <Typist
                     avgTypingDelay={0}
