@@ -51,7 +51,7 @@ public abstract class DocumentSummarizer {
     }
 
     private void handleResultIssues(String result) {
-        String pythonErrorLine = "Traceback (most recent call last):";
+        final String pythonErrorLine = "Traceback (most recent call last):";
         if (result.isBlank()) {
             throw new TextTooShortException("The text you tried to summarize is either too short or too repetitive to do so.");
         }
