@@ -93,7 +93,13 @@ function App() {
           />
         </Col>
         <Col md={6} xs={12}>
-          <SummarySection summary={summary} previousSummary={previousSummary} error={error} previousError={previousError} isLoading={isLoading} />
+          <SummarySection
+            summary={summary}
+            previousSummary={previousSummary}
+            error={error}
+            previousError={previousError}
+            isLoading={isLoading}
+          />
         </Col>
       </Row>
     </Container>
