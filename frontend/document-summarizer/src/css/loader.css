@@ -3,6 +3,8 @@
 */
 
 .reverse-spinner {
+    display: block;
+    margin-left: 100%;
     position: relative;
     height: 100px;
     width: 100px;
