@@ -13,8 +13,11 @@ import java.io.InputStreamReader;
 
 public abstract class DocumentSummarizer {
 
-    // system variable that dictates the max character count for a command line argument
-    private final int ARG_MAX = 32000;
+    /*
+        System variable that dictates the max character count for the command line on Unix/Linux systems.
+        Don't need to pay attention to this until deployment time.
+     */
+    private final int MAX_ARG_STRLEN = 32000;
     private FileTextExtractor extractor;
 
     public DocumentSummarizer() {}
@@ -39,28 +42,29 @@ public abstract class DocumentSummarizer {
 
     protected abstract String computeSummary(String[] textChunks) throws IOException;
 
-    // breaks text into chunks according to the maximum ARG_MAX OS value
+    // breaks text into chunks according to the maximum MAX_ARG_STRLEN OS value
     private String[] breakText(String text) {
         // ensure array size is always rounded up
-        String[] textChunks = new String[(text.length() + ARG_MAX - 1) / ARG_MAX];
+        String[] textChunks = new String[(text.length() + MAX_ARG_STRLEN - 1) / MAX_ARG_STRLEN];
         int textIndex = 0;
-        int charRemainder = text.length() % ARG_MAX;
+        int charRemainder = text.length() % MAX_ARG_STRLEN;
         for (int i = 0; i < textChunks.length; i++) {
             // if on the last chunk of text:
             if (textIndex + charRemainder == text.length()) {
                 textChunks[i] = text.substring(textIndex, textIndex + charRemainder);
             } else {
-                textChunks[i] = text.substring(textIndex, textIndex + ARG_MAX);
+                textChunks[i] = text.substring(textIndex, textIndex + MAX_ARG_STRLEN);
             }
-            textIndex += ARG_MAX;
+            textIndex += MAX_ARG_STRLEN;
         }
         return textChunks;
     }
 
     protected String readResult(Process process) throws IOException {
         // InputStreamReader reads bytes and decodes them into characters
-        BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String result = in.readLine();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String result = reader.readLine();
+        reader.close();
         logger.info("Output result: " + result);
         // throw exceptions for any weird output
         handleResultIssues(result);
