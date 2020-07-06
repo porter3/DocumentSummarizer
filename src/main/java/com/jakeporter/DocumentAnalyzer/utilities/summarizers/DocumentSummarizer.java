@@ -13,6 +13,8 @@ import java.io.InputStreamReader;
 
 public abstract class DocumentSummarizer {
 
+    // system variable that dictates the max character count for a command line argument
+    private final int ARG_MAX = 32000;
     private FileTextExtractor extractor;
 
     public DocumentSummarizer() {}
@@ -25,19 +27,34 @@ public abstract class DocumentSummarizer {
 
     // template method for files
     public String summarizeDocument(MultipartFile file) throws IOException {
-        String text = extractText(file);
-        return computeSummary(text);
+        String[] textChunks = breakText(extractor.extractText(file));
+        return computeSummary(textChunks);
     }
 
     // template method for pure text
     public String summarizeDocument(String text) throws IOException {
-        return computeSummary(text);
+        String[] textChunks = breakText(text);
+        return computeSummary(textChunks);
     }
 
-    protected abstract String computeSummary(String text) throws IOException;
+    protected abstract String computeSummary(String[] textChunks) throws IOException;
 
-    private String extractText(MultipartFile file) throws IOException {
-        return extractor.extractText(file);
+    // breaks text into chunks according to the maximum ARG_MAX OS value
+    private String[] breakText(String text) {
+        // ensure array size is always rounded up
+        String[] textChunks = new String[(text.length() + ARG_MAX - 1) / ARG_MAX];
+        int textIndex = 0;
+        int charRemainder = text.length() % ARG_MAX;
+        for (int i = 0; i < textChunks.length; i++) {
+            // if on the last chunk of text:
+            if (textIndex + charRemainder == text.length()) {
+                textChunks[i] = text.substring(textIndex, textIndex + charRemainder);
+            } else {
+                textChunks[i] = text.substring(textIndex, textIndex + ARG_MAX);
+            }
+            textIndex += ARG_MAX;
+        }
+        return textChunks;
     }
 
     protected String readResult(Process process) throws IOException {
