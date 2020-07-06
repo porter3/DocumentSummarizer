@@ -1,5 +1,6 @@
 package com.jakeporter.DocumentAnalyzer;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -9,12 +10,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication
 public class App {
 
+    // default value is http://localhost:3000 in application.properties
+    @Value("${frontend.url}")
+    String frontendUrl;
+
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedMethods("*").allowedOrigins("*");
+                registry.addMapping("/**").allowedMethods("*").allowedOrigins(frontendUrl);
             }
         };
     }
