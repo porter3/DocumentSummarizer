@@ -41,7 +41,6 @@ public class FileController {
         }
         try {
             summary = fileService.summarize(file, fileType);
-            logger.info("Summary: " + summary);
         } catch (IOException e) {
             response.put(ERROR_KEY, e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
