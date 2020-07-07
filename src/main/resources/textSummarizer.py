@@ -84,13 +84,16 @@ def generate_summary(sentences, sentence_scores, threshold) -> str:
 
 
 def main():
-    text = get_text_from_args()
-    frequency_table = create_frequency_table(text)
-    sentences = sent_tokenize(text)
-    sentence_scores = score_sentences(sentences, frequency_table)
-    threshold = find_average_score(sentence_scores)
-    summary = generate_summary(sentences, sentence_scores, threshold * threshold_multiplier)
-    print(summary)
+    try:
+        text = get_text_from_args()
+        frequency_table = create_frequency_table(text)
+        sentences = sent_tokenize(text)
+        sentence_scores = score_sentences(sentences, frequency_table)
+        threshold = find_average_score(sentence_scores)
+        summary = generate_summary(sentences, sentence_scores, threshold * threshold_multiplier)
+        print(summary)
+    except:
+        print("Something went wrong with executing the Python script.")
 
 
 if __name__ == '__main__':
