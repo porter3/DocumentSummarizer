@@ -1,6 +1,8 @@
 package com.jakeporter.DocumentAnalyzer.utilities.summarizers;
 
 import com.jakeporter.DocumentAnalyzer.exceptions.ProblematicTextException;
+import com.jakeporter.DocumentAnalyzer.exceptions.PythonScriptException;
+import com.jakeporter.DocumentAnalyzer.exceptions.TextTooLongException;
 import com.jakeporter.DocumentAnalyzer.exceptions.TextTooShortException;
 import com.jakeporter.DocumentAnalyzer.utilities.textExtractors.FileTextExtractor;
 import org.slf4j.Logger;
@@ -14,10 +16,15 @@ import java.io.InputStreamReader;
 public abstract class DocumentSummarizer {
 
     /*
-        System variable that dictates the max character count for the command line on Unix/Linux systems.
+        System variable that dictates the max character count for a command line arg on Unix/Linux systems.
         Don't need to pay attention to this until deployment time.
      */
-    private final int MAX_ARG_STRLEN = 32000;
+    private final int MAX_ARG_STRLEN = 131072;
+    /*
+        System variable for max character count of entire command line.
+        Is 32000 on my machine, working on a workaround that still allows me to extract the text in Java.
+    */
+    private final int ARG_MAX = 32000;
     private FileTextExtractor extractor;
 
     public DocumentSummarizer() {}
@@ -30,7 +37,12 @@ public abstract class DocumentSummarizer {
 
     // template method for files
     public String summarizeDocument(MultipartFile file) throws IOException {
-        String[] textChunks = breakText(extractor.extractText(file));
+        String text = extractor.extractText(file);
+        int textLength = text.length();
+        if (textLength > ARG_MAX) {
+            throw new TextTooLongException("The current character count limit for texts to be summarized is " + ARG_MAX + ". We're working on making it longer.\n(Your character count: " + textLength);
+        }
+        String[] textChunks = breakText(text);
         return computeSummary(textChunks);
     }
 
@@ -65,19 +77,22 @@ public abstract class DocumentSummarizer {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String result = reader.readLine();
         reader.close();
-        logger.info("Output result: " + result);
         // throw exceptions for any weird output
         handleResultIssues(result);
         return result;
     }
 
     private void handleResultIssues(String result) {
-        final String pythonErrorLine = "Traceback (most recent call last):";
+        final String pyCompilerErrorLine = "Traceback (most recent call last):";
+        final String genericErrorLine = "Something went wrong with executing the Python script.";
         if (result.isBlank()) {
             throw new TextTooShortException("The text you tried to summarize is either too short or too repetitive to do so.");
         }
-        if (result.equals(pythonErrorLine)) {
+        if (result.equals(pyCompilerErrorLine)) {
             throw new ProblematicTextException("The text you tried to summarize doesn't summarize well.");
+        }
+        if (result.equals(genericErrorLine)) {
+            throw new PythonScriptException("Something went wrong on our end.");
         }
     }
 }
