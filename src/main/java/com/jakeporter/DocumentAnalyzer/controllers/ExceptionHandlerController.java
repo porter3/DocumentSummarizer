@@ -1,9 +1,8 @@
 package com.jakeporter.DocumentAnalyzer.controllers;
 
 import com.jakeporter.DocumentAnalyzer.error.Error;
-import com.jakeporter.DocumentAnalyzer.exceptions.ProblematicTextException;
-import com.jakeporter.DocumentAnalyzer.exceptions.TextTooShortException;
-import com.jakeporter.DocumentAnalyzer.exceptions.UnsupportedFileFormatException;
+import com.jakeporter.DocumentAnalyzer.exceptions.*;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -41,6 +40,11 @@ public class ExceptionHandlerController {
         return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
+    @ExceptionHandler(TextTooLongException.class)
+    public ResponseEntity<Error> handleTextTooLong(TextTooLongException e) {
+        return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
     // for more generic text-based errors that cause issues in the Python script
     @ExceptionHandler(ProblematicTextException.class)
     public ResponseEntity<Error> handleProblematicText(ProblematicTextException e) {
@@ -50,6 +54,11 @@ public class ExceptionHandlerController {
     @ExceptionHandler(UnsupportedFileFormatException.class)
     public ResponseEntity<Error> handleUnsupportedFileFormat(UnsupportedFileFormatException e) {
         return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(PythonScriptException.class)
+    public ResponseEntity<Error> handlePythonScriptIssue(PythonScriptException e) {
+        return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
