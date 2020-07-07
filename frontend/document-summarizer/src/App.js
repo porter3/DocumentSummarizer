@@ -15,13 +15,7 @@ function App() {
   const [ text, setText ] = useState('')
   const [ fileIsLoaded, setFileIsLoaded ] = useState(false)
   const [ summary, setSummary ] = useState('')
-  /*
-    previousSummary/previousError are workarounds for rendering the Typist component (in SummarySection) properly if one summary has already been generated.
-    Don't know why it's necessary, likely a bug with the Typist component.
-  */
-  const [ previousSummary, setPreviousSummary] = useState('')
-  const [ error, setError ] = useState('')
-  const [ previousError, setPreviousError ] = useState('')
+  const [ errorMessage, setErrorMessage ] = useState('')
   
   const handleUploadChoice = e => {
     setUploadChoice(e.target.value)
@@ -37,17 +31,23 @@ function App() {
       body: body
     })
       .then(response => response.json())
-      .catch(errorResponse => errorResponse.json())
+      .catch(errorResponse => {
+        let error = {}
+        try {
+          error = errorResponse.json()
+        } catch (e) {
+          if (e instanceof TypeError) {
+            error.message = 'There was a TypeError. Please tell Jake so he can fix it.'
+          } else {
+            error.message = 'There was an error. Please tell Jake so he can fix it.'
+          }
+        }
+        return error
+      })
   }
 
   const getSummary = async () => {
     setIsLoading(true)
-    if (summary) {
-      setPreviousSummary(summary)
-    }
-    if (error) {
-      setPreviousError(error)
-    }
     let url, body
     if (uploadChoice === 'fileUpload') {
       url = serverUrl + '/file'
@@ -60,20 +60,15 @@ function App() {
     const fetchedSummary = await fetchSummary(url, body)
     setIsLoading(false)
     if (fetchedSummary.summary) {
-      setError('')
-      setPreviousError('') // see comment below as to why this line is here
+      setErrorMessage('')
       setSummary(fetchedSummary.summary)
     } else if (fetchedSummary.message) {
       setSummary('')
-      /* 
-        setPreviousSummary needs to be done in case a user tries to summarize a text,
-        gets an error on the next summarization attempt, and then tries to summarize the first text
-      */
-      setPreviousSummary('')
-      setError(fetchedSummary.message)
+      setErrorMessage(fetchedSummary.message)
     } else {
+      console.log(fetchedSummary)
       setSummary('')
-      setError('Something went wrong.')
+      setErrorMessage('Something went wrong.')
     }
   }
 
@@ -95,9 +90,7 @@ function App() {
         <Col md={6} xs={12}>
           <SummarySection
             summary={summary}
-            previousSummary={previousSummary}
-            error={error}
-            previousError={previousError}
+            errorMessage={errorMessage}
             isLoading={isLoading}
           />
         </Col>
