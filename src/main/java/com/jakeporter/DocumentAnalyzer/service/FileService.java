@@ -53,6 +53,7 @@ public class FileService {
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
             DocumentSummarizer summarizer = new PythonSummarizer(extractor);
             summary = summarizer.summarizeDocument(file);
+            logger.info("Summary: " + summary);
         } catch (Throwable e) {
         } finally {
             deleteFile(getFileLocation(file));
