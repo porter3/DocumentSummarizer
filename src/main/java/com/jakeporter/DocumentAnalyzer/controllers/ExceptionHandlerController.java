@@ -56,6 +56,11 @@ public class ExceptionHandlerController {
         return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
+    @ExceptionHandler(PDFIssueException.class)
+    public ResponseEntity<Error> handlePDFIssues(PDFIssueException e) {
+        return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
     @ExceptionHandler(PythonScriptException.class)
     public ResponseEntity<Error> handlePythonScriptIssue(PythonScriptException e) {
         return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
