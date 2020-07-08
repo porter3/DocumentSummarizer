@@ -1,5 +1,6 @@
 package com.jakeporter.DocumentAnalyzer.utilities.textExtractors;
 
+
 public enum FileType {
 
     DOC {
@@ -12,6 +13,10 @@ public enum FileType {
         public FileTextExtractor getExtractor() {
             return new DOCXTextExtractor();
         }
+    },
+
+    PDF {
+        public FileTextExtractor getExtractor() { return new PDFTextExtractor(); }
     };
 
     abstract FileTextExtractor getExtractor();
