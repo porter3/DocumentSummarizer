@@ -40,15 +40,13 @@ public class PythonSummarizer extends DocumentSummarizer {
         String[] processArgs = new String[argStrings.length + textChunks.length];
         // argument strings that aren't in an array will be first
         int argsIndex = 0;
-        while (argsIndex < processArgs.length) {
-            for (int i = 0; i < argStrings.length; i++) {
-                processArgs[argsIndex] = argStrings[i];
-                argsIndex++;
-            }
-            for (int i = 0; i < textChunks.length; i++) {
-                processArgs[argsIndex] = textChunks[i];
-                argsIndex++;
-            }
+        for (int i = 0; i < argStrings.length; i++) {
+            processArgs[argsIndex] = argStrings[i];
+            argsIndex++;
+        }
+        for (int i = 0; i < textChunks.length; i++) {
+            processArgs[argsIndex] = textChunks[i];
+            argsIndex++;
         }
         return processArgs;
     }
