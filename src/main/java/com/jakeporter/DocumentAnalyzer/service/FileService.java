@@ -39,7 +39,6 @@ public class FileService {
             // copy the file's input stream to the path and replace any file with the same name
             Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new FileStorageException("Error storing " + file.getOriginalFilename() + ".");
         } catch (UnsupportedFileFormatException e) {
             throw new UnsupportedFileFormatException("File format not supported.");
@@ -77,6 +76,8 @@ public class FileService {
                 return FileType.DOC;
             case "docx":
                 return FileType.DOCX;
+            case "pdf":
+                return FileType.PDF;
             default:
                 throw new UnsupportedFileFormatException();
         }
