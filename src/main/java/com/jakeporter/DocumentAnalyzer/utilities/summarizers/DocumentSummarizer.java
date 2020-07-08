@@ -38,10 +38,7 @@ public abstract class DocumentSummarizer {
     // template method for files
     public String summarizeDocument(MultipartFile file) throws IOException {
         String text = extractor.extractText(file);
-        int textLength = text.length();
-        if (textLength > ARG_MAX) {
-            throw new TextTooLongException("The current character count limit for texts to be summarized is " + ARG_MAX + ". We're working on making it longer.\n(Your character count: " + textLength);
-        }
+        handleTooLongText(text);
         String[] textChunks = breakText(text);
         return computeSummary(textChunks);
     }
@@ -80,6 +77,14 @@ public abstract class DocumentSummarizer {
         // throw exceptions for any weird output
         handleResultIssues(result);
         return result;
+    }
+
+    private void handleTooLongText(String text) {
+        int textLength = text.length();
+        logger.info("textLength: " + textLength);
+        if (textLength > ARG_MAX) {
+            throw new TextTooLongException("The current character count limit for texts to be summarized is " + ARG_MAX + ". We're working on making it longer.\\n(Your character count: " + textLength);
+        }
     }
 
     private void handleResultIssues(String result) {
