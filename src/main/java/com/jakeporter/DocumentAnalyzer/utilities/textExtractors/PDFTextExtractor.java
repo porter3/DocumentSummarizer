@@ -17,7 +17,6 @@ public class PDFTextExtractor implements FileTextExtractor {
 
     @Override
     public String extractText(MultipartFile file) {
-        InputStream stream;
         // this class name isn't long enough
         RandomAccessBufferedFileInputStream randomAccessBufferedFileInputStream = null;
         PDFParser parser;
@@ -25,10 +24,9 @@ public class PDFTextExtractor implements FileTextExtractor {
         PDDocument pdDocument = null;
         String extractedText;
         try {
-            stream = file.getInputStream();
-            randomAccessBufferedFileInputStream = new RandomAccessBufferedFileInputStream(stream);
+            randomAccessBufferedFileInputStream = new RandomAccessBufferedFileInputStream(file.getInputStream());
             parser = new PDFParser(randomAccessBufferedFileInputStream);
-            // parse the stream and populates a nested COSDocument ref, close stream when done
+            // parse the stream and populate a nested COSDocument ref, close stream when done
             parser.parse();
             cosDocument = parser.getDocument();
             pdDocument = new PDDocument(cosDocument);
