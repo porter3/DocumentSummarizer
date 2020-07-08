@@ -9,35 +9,46 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class PDFTextExtractor implements FileTextExtractor {
 
+    static final String PDF_EXCEPTION_MESSAGE = "Something went wrong processing the PDF file.";
+
     @Override
-    public String extractText(MultipartFile file) throws IOException {
+    public String extractText(MultipartFile file) {
+        InputStream stream;
+        // this class name isn't long enough
+        RandomAccessBufferedFileInputStream randomAccessBufferedFileInputStream = null;
         PDFParser parser;
-        COSDocument cosDocument = null;
+        COSDocument cosDocument;
         PDDocument pdDocument = null;
-        String extractedText = null;
+        String extractedText;
         try {
-            parser = new PDFParser(new RandomAccessBufferedFileInputStream(file.getInputStream()));
-            // parses the stream and populates the nested COSDocument instance, closes stream when done
+            stream = file.getInputStream();
+            randomAccessBufferedFileInputStream = new RandomAccessBufferedFileInputStream(stream);
+            parser = new PDFParser(randomAccessBufferedFileInputStream);
+            // parse the stream and populates a nested COSDocument ref, close stream when done
             parser.parse();
             cosDocument = parser.getDocument();
             pdDocument = new PDDocument(cosDocument);
             extractedText = new PDFTextStripper().getText(pdDocument);
-            cosDocument.close();
+            // close the nested COSDocument
             pdDocument.close();
+            // close the nested InputStream
+            randomAccessBufferedFileInputStream.close();
         } catch (IOException e) {
             try {
-                if (cosDocument != null) {
-                    cosDocument.close();
-                }
                 if (pdDocument != null) {
                     pdDocument.close();
                 }
+                if (randomAccessBufferedFileInputStream != null) {
+                    randomAccessBufferedFileInputStream.close();
+                }
             } catch (IOException f) {
-                throw new PDFIssueException("Something went wrong processing the PDF file.");
+                throw new PDFIssueException(PDF_EXCEPTION_MESSAGE);
             }
+            throw new PDFIssueException(PDF_EXCEPTION_MESSAGE);
         }
         return extractedText;
     }
