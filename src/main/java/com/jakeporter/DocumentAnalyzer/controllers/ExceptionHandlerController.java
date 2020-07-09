@@ -2,7 +2,6 @@ package com.jakeporter.DocumentAnalyzer.controllers;
 
 import com.jakeporter.DocumentAnalyzer.error.Error;
 import com.jakeporter.DocumentAnalyzer.exceptions.*;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -73,6 +72,16 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(PythonScriptException.class)
     public ResponseEntity<Error> handlePythonScriptIssue(PythonScriptException e) {
+        return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(WriterException.class)
+    public ResponseEntity<Error> handleWritingToStdOutIssue(WriterException e) {
+        return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ResultReadingException.class)
+    public ResponseEntity<Error> handleResultReadingIssue(ResultReadingException e) {
         return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
