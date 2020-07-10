@@ -2,7 +2,7 @@
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.stem import PorterStemmer
-from sys import argv
+from sys import argv, stdin, stdout
 import sysconfig
 
 # random generated paragraph from randomwordgenerator.com
@@ -13,9 +13,12 @@ import sysconfig
 # threshold is the score a sentence has to pass to make it into the summary
 threshold_multiplier = 1
 
-def get_text_from_args() -> str:
-    textChunks = argv[1:]
-    return "".join(textChunks)
+
+def get_text_from_stdin() -> str:
+    text = ''
+    for line in stdin:
+        text += line
+    return text
 
 
 def create_frequency_table(text) -> dict:
@@ -85,7 +88,7 @@ def generate_summary(sentences, sentence_scores, threshold) -> str:
 
 def main():
     try:
-        text = get_text_from_args()
+        text = get_text_from_stdin()
         frequency_table = create_frequency_table(text)
         sentences = sent_tokenize(text)
         sentence_scores = score_sentences(sentences, frequency_table)
