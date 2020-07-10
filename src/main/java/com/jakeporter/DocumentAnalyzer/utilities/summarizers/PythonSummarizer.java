@@ -70,7 +70,7 @@ public class PythonSummarizer extends DocumentSummarizer {
             }
             reader.close();
         } catch (IOException e) {
-            throw new ResultReadingException("Something went wrong reading the file.");
+            throw new ResultReadingException("Something went wrong in getting the summary.");
         }
         return builder.toString();
     }
