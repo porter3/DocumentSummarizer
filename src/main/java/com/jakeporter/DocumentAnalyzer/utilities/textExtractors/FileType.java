@@ -17,6 +17,10 @@ public enum FileType {
 
     PDF {
         public FileTextExtractor getExtractor() { return new PDFTextExtractor(); }
+    },
+
+    TXT {
+        public FileTextExtractor getExtractor() { return new TXTTextExtractor(); }
     };
 
     abstract FileTextExtractor getExtractor();
