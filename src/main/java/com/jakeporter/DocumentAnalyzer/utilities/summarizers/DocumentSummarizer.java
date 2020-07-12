@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public abstract class DocumentSummarizer {
 
-    private static final int CHAR_MAX = 500_000; // arbitrary value, likely to change in the future
+    private static final int CHAR_MAX = Integer.MAX_VALUE; // prevent unpredictable behavior
     private FileTextExtractor extractor;
 
     public DocumentSummarizer() {}
@@ -38,7 +38,7 @@ public abstract class DocumentSummarizer {
 
     private void checkTextLength(String text) {
         int textLength = text.length();
-        logger.info("textLength: " + textLength);
+        logger.info("Text length: " + textLength);
         if (textLength > CHAR_MAX) {
             throw new TextTooLongException("The current character count limit for texts to be summarized is " + CHAR_MAX + ". We're working on making it longer.\\n(Your character count: " + textLength);
         }
