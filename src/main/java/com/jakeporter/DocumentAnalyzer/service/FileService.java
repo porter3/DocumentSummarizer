@@ -46,7 +46,7 @@ public class FileService {
         return fileType;
     }
 
-    public String summarize(MultipartFile file, FileType fileType) throws IOException {
+    public String summarize(MultipartFile file, FileType fileType) {
         String summary = "";
         try {
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
@@ -78,6 +78,8 @@ public class FileService {
                 return FileType.DOCX;
             case "pdf":
                 return FileType.PDF;
+            case "txt":
+                return FileType.TXT;
             default:
                 throw new UnsupportedFileFormatException();
         }
