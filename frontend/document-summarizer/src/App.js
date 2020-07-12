@@ -48,6 +48,8 @@ function App() {
 
   const getSummary = async () => {
     setIsLoading(true)
+    setSummary('')
+    setErrorMessage('')
     let url, body
     if (uploadChoice === 'fileUpload') {
       url = serverUrl + '/file'
