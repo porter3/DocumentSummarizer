@@ -32,19 +32,13 @@ public class FileController {
         String summary;
         Map<String, String> response = new HashMap();
         FileType fileType;
-
         try {
             fileType = fileService.uploadFile(file);
         } catch (FileStorageException e) {
             response.put(ERROR_KEY, e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        try {
-            summary = fileService.summarize(file, fileType);
-        } catch (IOException e) {
-            response.put(ERROR_KEY, e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        summary = fileService.summarize(file, fileType);
         response.put(SUCCESS_KEY, summary);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
