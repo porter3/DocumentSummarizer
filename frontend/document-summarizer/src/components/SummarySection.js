@@ -4,17 +4,14 @@ import 'react-typist/dist/Typist.css'
 import Typist from 'react-typist'
 import Loader from './Loader'
 
-/*
-    previousSummary/previousError are necessary to render the Typist component if one summary or error has already been generated.
-    summary/error renders fine inside other elements w/o the extra conditional, so it's likely a bug in the Typist component.
-*/
-export default function SummarySection({ summary, errorMessage, isLoading }) {
 
+export default function SummarySection({ summaries, errorMessage, isLoading }) {
+    // only display first element of summaries for now
     return (
         <div id='summarySection'>
-            {summary &&
+            {summaries &&
                 <div>
-                    {summary}
+                    {summaries[0]}
                 </div>
             }
             {errorMessage &&
