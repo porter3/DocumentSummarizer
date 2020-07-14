@@ -1,6 +1,7 @@
 package com.jakeporter.DocumentSummarizer.controllers;
 
 import com.jakeporter.DocumentSummarizer.exceptions.FileStorageException;
+import com.jakeporter.DocumentSummarizer.exceptions.ProblematicTextException;
 import com.jakeporter.DocumentSummarizer.utilities.textExtractors.FileType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.jakeporter.DocumentSummarizer.service.FileService;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,40 +22,26 @@ public class FileController {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // JSON keys for responses
-    private final String SUCCESS_KEY = "summary";
-    private final String ERROR_KEY = "error";
+    // JSON key for responses
+    private static final String RESPONSE_KEY = "summaries";
 
     @Autowired
     FileService fileService;
 
     @PostMapping("/file")
-    public ResponseEntity<Map<String, String>> summarizeFile(@RequestParam("file") MultipartFile file) {
-        String summary;
-        Map<String, String> response = new HashMap();
-        FileType fileType;
-        try {
-            fileType = fileService.uploadFile(file);
-        } catch (FileStorageException e) {
-            response.put(ERROR_KEY, e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        summary = fileService.summarize(file, fileType);
-        response.put(SUCCESS_KEY, summary);
+    public ResponseEntity<Map<String, List<String>>> summarizeFile(@RequestParam("file") MultipartFile file) {
+        Map<String, List<String>> response = new HashMap();
+        FileType fileType = fileService.uploadFile(file);
+        List<String> summaries = fileService.summarize(file, fileType);
+        response.put(RESPONSE_KEY, summaries);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/text")
-    public ResponseEntity<Map<String, String>> summarizeText(@RequestBody String text) {
-        String summary;
-        Map<String, String> response = new HashMap();
-        try {
-            summary = fileService.summarize(text);
-        } catch (IOException e) {
-            response.put(ERROR_KEY, e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        response.put(SUCCESS_KEY, summary);
+    public ResponseEntity<Map<String, List<String>>> summarizeText(@RequestBody String text) {
+        Map<String, List<String>> response = new HashMap();
+        List<String> summaries = fileService.summarize(text);
+        response.put(RESPONSE_KEY, summaries);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
