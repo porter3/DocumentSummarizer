@@ -19,6 +19,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FileService {
@@ -46,21 +48,21 @@ public class FileService {
         return fileType;
     }
 
-    public String summarize(MultipartFile file, FileType fileType) {
-        String summary = "";
+    public List<String> summarize(MultipartFile file, FileType fileType) {
+        List<String> summaries = new ArrayList<>();
         try {
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
             DocumentSummarizer summarizer = new PythonSummarizer(extractor);
-            summary = summarizer.summarizeDocument(file);
-            logger.info("Summary: " + summary);
+            summaries = summarizer.summarizeDocument(file);
+            logger.info("Summary: " + summaries);
         } catch (Throwable e) {
         } finally {
             deleteFile(getFileLocation(file));
         }
-        return summary;
+        return summaries;
     }
 
-    public String summarize(String text) throws IOException {
+    public List<String> summarize(String text) {
         DocumentSummarizer summarizer = new PythonSummarizer();
         return summarizer.summarizeDocument(text);
     }
@@ -71,7 +73,7 @@ public class FileService {
     }
 
     private FileType getFileType(String fileExtension) {
-        switch (fileExtension) {
+        switch (fileExtension.toLowerCase()) {
             case "doc":
                 return FileType.DOC;
             case "docx":
