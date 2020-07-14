@@ -13,7 +13,7 @@ export default function TextUploadForm({ uploadChoice, handleRadioChange, handle
                 <Col sm={8}>
                     <FormControl component="fieldset">
                         <RadioGroup aria-label="Upload Choices" name="uploadChoices" onChange={e => handleRadioChange(e)}>
-                            <FormControlLabel value="fileUpload" control={<Radio />} label="Upload File (.docx, .doc)" />
+                            <FormControlLabel value="fileUpload" control={<Radio />} label="Upload File (.docx, .doc, .pdf, .txt)" />
                             <FormControlLabel value="text" control={<Radio />} label="Enter Text" />
                         </RadioGroup>
                     </FormControl>

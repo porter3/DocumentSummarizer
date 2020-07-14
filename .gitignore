@@ -6,6 +6,7 @@ target/
 .idea/
 *.iml
 *.iws
+.name
 
 # Misc.
 application.properties
