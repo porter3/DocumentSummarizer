@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class PythonSummarizer extends DocumentSummarizer {
@@ -22,20 +25,23 @@ public class PythonSummarizer extends DocumentSummarizer {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    protected String computeSummary(String text) throws IOException {
-        return runPythonScript(text);
+    protected List<String> computeSummaries(String text) {
+        String summariesString = runPythonScript(text);
+        List<String> summaryList = new ArrayList(Arrays.asList(summariesString.split(SUMMARY_DELIMITER)));
+        return summaryList;
     }
 
-    private String runPythonScript(String text) throws IOException {
+    private String runPythonScript(String text)  {
         Process process;
         String result = "";
         // filePath starts with "/C:/..." - the first forward slash needs to go for it to work
         String filePath = this.getClass().getClassLoader().getResource(SCRIPT).getPath().substring(1);
         logger.info("Script path: " + filePath);
-        ProcessBuilder processBuilder = new ProcessBuilder("python", filePath);
+        ProcessBuilder processBuilder = new ProcessBuilder("python", filePath, SUMMARY_DELIMITER);
         processBuilder.redirectErrorStream(true);
         try {
             process = processBuilder.start();
+            logger.info("process starting");
         } catch (Exception e) {
             e.printStackTrace();
             throw new PythonScriptException("Something went wrong processing the file.");
@@ -58,11 +64,13 @@ public class PythonSummarizer extends DocumentSummarizer {
         }
     }
 
-    private String getResultFromStdOut(Process process) throws IOException {
+    private String getResultFromStdOut(Process process) {
+        final String READING_EXCEPTION_MESSAGE = "Something went wrong in getting the summary.";
         StringBuilder builder = new StringBuilder();
         InputStream stdOut = process.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stdOut));
+        BufferedReader reader = null;
         try {
+            reader = new BufferedReader(new InputStreamReader(stdOut));
             String line = reader.readLine();
             while (line != null) {
                 builder.append(line);
@@ -70,8 +78,12 @@ public class PythonSummarizer extends DocumentSummarizer {
             }
             reader.close();
         } catch (IOException e) {
-            reader.close();
-            throw new ResultReadingException("Something went wrong in getting the summary.");
+            try {
+                reader.close();
+            } catch (IOException f) {
+                throw new ResultReadingException(READING_EXCEPTION_MESSAGE);
+            }
+            throw new ResultReadingException(READING_EXCEPTION_MESSAGE);
         }
         return builder.toString();
     }
