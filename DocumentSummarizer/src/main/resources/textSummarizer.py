@@ -2,20 +2,16 @@
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.stem import PorterStemmer
-from sys import argv, stdin, stdout
-import sysconfig
+from sys import argv, stdin
 
-# random generated paragraph from randomwordgenerator.com
-# text = """One of the greatest aspects of NLP is that is stretches across multiple areas of computational studies from artificial intelligence to computational linguistics all studying the interactions between computers and the language of humans. It is primarily concerned with programming computers to accurately and quickly process large amounts of natural language corpora. What are natural language corpora? It is the study of language as expressed by real-world languages. It is a comprehensive approach to understanding a set of abstract rules from a text and the relationship that language has with another.
-# While NLP has become even more present with the computer industrial revolution in the modern era it was actually the brain child of the amazing Alan Turing who along with helping to crack the German Enigma Coding machine also wrote an article titled “Computing Machinery and Intelligence” which proposed the first serious use of relating humans language to computers. With the ever present nature of technology in our daily lives we have seen the emergence of just how influential NLP can be to our daily lives through revolutionary tools like Google Translate, IBM Watson, Speech Recognition and generation and sentiment analysis.
-# However, like all things there are a few areas of concern and disadvantages of NLP. It struggles to generate language that would naturally flow as a person talks similar to when you read a bad movie script and it sounds like a computer talking. While there are methods to attempt to understand changes in tone NLP continues to struggle with understanding things like sarcasm and detecting things like humor. However, this is an area of much study that I look forward to the day that the "sarcasm breakthrough" occurs. If for nothing else, then to better understand the occasional text or instant message from a friend."""
+
+DELIMITER = argv[1]
 
 
 def get_text_from_stdin() -> str:
-    text = input('Enter text: ')
-    # text = ''
-    # for line in stdin:
-    #     text += line
+    text = ''
+    for line in stdin:
+        text += line
     return text
 
 
@@ -84,17 +80,14 @@ def generate_summary(sentences, sentence_scores, threshold) -> str:
     return summary
 
 
-def get_multipliers(sentences):
+def get_multipliers(sentences) -> list:
     multipliers = []
     multiplier = 0.8
-    print(len(sentences) // 5)
-    for i in range(len(sentences) // 5):
+    step = 5
+    for i in range(0, len(sentences), step):
         multipliers.append(multiplier)
         multiplier += 0.2
     return multipliers
-
-
-delimiter = ':::'
 
 
 def main():
@@ -104,13 +97,9 @@ def main():
         sentences = sent_tokenize(text)
         sentence_scores = score_sentences(sentences, frequency_table)
         threshold = find_average_score(sentence_scores)
-        print('threshold: ' + str(threshold))
         threshold_multipliers = get_multipliers(sentences)
-        print('threshold multipliers:' + str(threshold_multipliers))
-        index = 0
         for multiplier in threshold_multipliers:
-            print(generate_summary(sentences, sentence_scores, threshold * multiplier) + delimiter)
-            index += 1
+            print(generate_summary(sentences, sentence_scores, threshold * multiplier) + DELIMITER)
     except:
         print("Something went wrong with executing the Python script.")
 
