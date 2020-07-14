@@ -14,7 +14,7 @@ function App() {
   const [ uploadChoice, setUploadChoice ] = useState('')
   const [ text, setText ] = useState('')
   const [ fileIsLoaded, setFileIsLoaded ] = useState(false)
-  const [ summary, setSummary ] = useState('')
+  const [ summaries, setSummaries ] = useState({})
   const [ errorMessage, setErrorMessage ] = useState('')
   
   const handleUploadChoice = e => {
@@ -25,7 +25,7 @@ function App() {
     setText(e.target.value)
   }
 
-  const fetchSummary = (url, body) => {
+  const fetchSummaries = (url, body) => {
     return fetch(url, {
       method: 'POST',
       body: body
@@ -48,7 +48,7 @@ function App() {
 
   const getSummary = async () => {
     setIsLoading(true)
-    setSummary('')
+    setSummaries({})
     setErrorMessage('')
     let url, body
     if (uploadChoice === 'fileUpload') {
@@ -59,17 +59,17 @@ function App() {
       url = serverUrl + '/text'
       body = text
     }
-    const fetchedSummary = await fetchSummary(url, body)
+    const fetchedSummaries = await fetchSummaries(url, body)
+    console.log(fetchedSummaries)
     setIsLoading(false)
-    if (fetchedSummary.summary) {
+    if (fetchedSummaries.summaries) {
       setErrorMessage('')
-      setSummary(fetchedSummary.summary)
-    } else if (fetchedSummary.message) {
-      setSummary('')
-      setErrorMessage(fetchedSummary.message)
+      setSummaries(fetchedSummaries.summaries)
+    } else if (fetchedSummaries.message) {
+      setSummaries({})
+      setErrorMessage(fetchedSummaries.summaries)
     } else {
-      console.log(fetchedSummary)
-      setSummary('')
+      setSummaries({})
       setErrorMessage('Something went wrong.')
     }
   }
@@ -91,7 +91,7 @@ function App() {
         </Col>
         <Col md={6} xs={12}>
           <SummarySection
-            summary={summary}
+            summaries={summaries}
             errorMessage={errorMessage}
             isLoading={isLoading}
           />
