@@ -6,9 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public class PythonSummarizer extends DocumentSummarizer {
@@ -25,10 +23,10 @@ public class PythonSummarizer extends DocumentSummarizer {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    protected List<String> computeSummaries(String text) {
+    protected Set<String> computeSummaries(String text) {
         String summariesString = runPythonScript(text);
-        List<String> summaryList = new ArrayList(Arrays.asList(summariesString.split(SUMMARY_DELIMITER)));
-        return summaryList;
+        Set<String> summarySet = new LinkedHashSet<>(Arrays.asList(summariesString.split(SUMMARY_DELIMITER)));
+        return summarySet;
     }
 
     private String runPythonScript(String text)  {
@@ -41,7 +39,6 @@ public class PythonSummarizer extends DocumentSummarizer {
         processBuilder.redirectErrorStream(true);
         try {
             process = processBuilder.start();
-            logger.info("process starting");
         } catch (Exception e) {
             e.printStackTrace();
             throw new PythonScriptException("Something went wrong processing the file.");

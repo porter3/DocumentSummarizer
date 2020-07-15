@@ -2,6 +2,7 @@ package com.jakeporter.DocumentSummarizer.service;
 
 import com.jakeporter.DocumentSummarizer.exceptions.FileDeletionException;
 import com.jakeporter.DocumentSummarizer.exceptions.FileStorageException;
+import com.jakeporter.DocumentSummarizer.exceptions.GenericFileException;
 import com.jakeporter.DocumentSummarizer.exceptions.UnsupportedFileFormatException;
 import com.jakeporter.DocumentSummarizer.utilities.summarizers.DocumentSummarizer;
 import com.jakeporter.DocumentSummarizer.utilities.summarizers.PythonSummarizer;
@@ -19,15 +20,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Service
 public class FileService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // value can be set by upload.dir in application.properties - defaults to user.home if not defined
     @Value("${upload.dir:${user.home}}")
     public String uploadDirectory;
 
@@ -48,21 +47,22 @@ public class FileService {
         return fileType;
     }
 
-    public List<String> summarize(MultipartFile file, FileType fileType) {
-        List<String> summaries = new ArrayList<>();
+    public Set<String> summarize(MultipartFile file, FileType fileType) {
+        Set<String> summaries = null;
         try {
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
             DocumentSummarizer summarizer = new PythonSummarizer(extractor);
             summaries = summarizer.summarizeDocument(file);
             logger.info("Summary: " + summaries);
-        } catch (Throwable e) {
+        } catch (Exception e) { // Don't know what uncaught exceptions could throw this at the moment, but I want to ensure the deletion of any uploaded files
+            throw new GenericFileException("Something went wrong.");
         } finally {
             deleteFile(getFileLocation(file));
         }
         return summaries;
     }
 
-    public List<String> summarize(String text) {
+    public Set<String> summarize(String text) {
         DocumentSummarizer summarizer = new PythonSummarizer();
         return summarizer.summarizeDocument(text);
     }
