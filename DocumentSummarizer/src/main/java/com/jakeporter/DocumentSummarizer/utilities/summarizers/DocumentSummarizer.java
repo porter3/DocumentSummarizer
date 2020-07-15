@@ -25,15 +25,13 @@ public abstract class DocumentSummarizer {
     public Set<String> summarizeDocument(MultipartFile file) {
         String text = extractor.extractText(file);
         checkTextLength(text);
-        Set<String> summaries = computeSummaries(text);
-        return summaries;
+        return computeSummaries(text);
     }
 
     // template method for pure text
     public Set<String> summarizeDocument(String text) {
         checkTextLength(text);
-        Set<String> summaries = computeSummaries(text);
-        return summaries;
+        return computeSummaries(text);
     }
 
     protected abstract Set<String> computeSummaries(String text);
