@@ -90,4 +90,9 @@ public class ExceptionHandlerController {
         return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(GenericFileException.class)
+    public ResponseEntity<Error> handleGenericFileException(GenericFileException e) {
+        return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
