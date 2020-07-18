@@ -12,6 +12,8 @@ import java.util.*;
 public class PythonSummarizer extends DocumentSummarizer {
 
     private static final String SCRIPT = "textSummarizer.py";
+    // filePath starts with "/C:/..." - the first forward slash needs to go (.substring(1)) for it to work on Windows (unsure about other OSs)
+    private static final String FILE_PATH = PythonSummarizer.class.getClassLoader().getResource(SCRIPT).getPath().substring(1);
     private static final String SUMMARY_DELIMITER = ":::";
 
     public PythonSummarizer(){ super(); }
@@ -25,17 +27,14 @@ public class PythonSummarizer extends DocumentSummarizer {
     @Override
     protected Set<String> computeSummaries(String text) {
         String summariesString = runPythonScript(text);
-        Set<String> summarySet = new LinkedHashSet<>(Arrays.asList(summariesString.split(SUMMARY_DELIMITER)));
-        return summarySet;
+        return new LinkedHashSet<>(Arrays.asList(summariesString.split(SUMMARY_DELIMITER)));
     }
 
     private String runPythonScript(String text)  {
         Process process;
         String result = "";
-        // filePath starts with "/C:/..." - the first forward slash needs to go for it to work
-        String filePath = this.getClass().getClassLoader().getResource(SCRIPT).getPath().substring(1);
-        logger.info("Script path: " + filePath);
-        ProcessBuilder processBuilder = new ProcessBuilder("python", filePath, SUMMARY_DELIMITER);
+        logger.info("Script path: " + FILE_PATH);
+        ProcessBuilder processBuilder = new ProcessBuilder("python", FILE_PATH, SUMMARY_DELIMITER);
         processBuilder.redirectErrorStream(true);
         try {
             process = processBuilder.start();
