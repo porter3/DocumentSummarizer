@@ -10,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication
 public class App {
 
-    // default value is http://localhost:3000 in application.properties
     @Value("${frontend.url}")
     String frontendUrl;
 
