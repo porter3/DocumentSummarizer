@@ -1,53 +1,50 @@
 package com.jakeporter.DocumentSummarizer.service;
 
 import com.jakeporter.DocumentSummarizer.exceptions.FileDeletionException;
-import com.jakeporter.DocumentSummarizer.exceptions.FileStorageException;
 import com.jakeporter.DocumentSummarizer.exceptions.GenericFileException;
-import com.jakeporter.DocumentSummarizer.exceptions.UnsupportedFileFormatException;
+import com.jakeporter.DocumentSummarizer.utilities.fileUtils.FileInfoGetter;
+import com.jakeporter.DocumentSummarizer.utilities.fileUtils.uploaders.AWSS3Uploader;
+import com.jakeporter.DocumentSummarizer.utilities.fileUtils.uploaders.FileUploader;
 import com.jakeporter.DocumentSummarizer.utilities.summarizers.DocumentSummarizer;
 import com.jakeporter.DocumentSummarizer.utilities.summarizers.PythonSummarizer;
 import com.jakeporter.DocumentSummarizer.utilities.textExtractors.*;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Set;
 
 @Service
 public class FileService {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    @Qualifier("localUploader")
+    private FileUploader uploader;
 
     @Value("${upload.dir:${user.home}}")
-    public String uploadDirectory;
+    private String UPLOAD_DIRECTORY;
 
-    public FileType uploadFile(MultipartFile file) throws FileStorageException {
-        FileType fileType;
-        try {
-            fileType = getFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
-            logger.info("File type: " + fileType);
-            Path copyLocation = getFileLocation(file);
-            logger.info("Upload directory: " + uploadDirectory);
-            // copy the file's input stream to the path and replace any file with the same name
-            Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new FileStorageException("Error storing " + file.getOriginalFilename() + ".");
-        } catch (UnsupportedFileFormatException e) {
-            throw new UnsupportedFileFormatException("File format not supported.");
-        }
-        return fileType;
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public void uploadFile(MultipartFile file) {
+        uploader.uploadFile(file);
     }
 
-    public Set<String> summarize(MultipartFile file, FileType fileType) {
+    public Set<String> summarize(MultipartFile file) {
+        FileInfoGetter infoGetter = new FileInfoGetter();
+        if (uploader instanceof AWSS3Uploader) {
+            file = getFileFromS3(file);
+        }
+        FileType fileType = infoGetter.getFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
         Set<String> summaries = null;
         try {
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
@@ -57,7 +54,7 @@ public class FileService {
         } catch (Exception e) { // Don't know what uncaught exceptions could throw this at the moment, but I want to ensure the deletion of any uploaded files
             throw new GenericFileException("Something went wrong.");
         } finally {
-            deleteFile(getFileLocation(file));
+            deleteFile(infoGetter.getFileLocation(file, UPLOAD_DIRECTORY));
         }
         return summaries;
     }
@@ -67,27 +64,12 @@ public class FileService {
         return summarizer.summarizeDocument(text);
     }
 
-    // create absolute path of the file and normalize it for different OSs
-    private Path getFileLocation(MultipartFile file) {
-        return Paths.get(uploadDirectory + File.separator + StringUtils.cleanPath(file.getOriginalFilename()));
+    private MultipartFile getFileFromS3(MultipartFile file) {
+        // TODO
+        return null;
     }
 
-    private FileType getFileType(String fileExtension) {
-        switch (fileExtension.toLowerCase()) {
-            case "doc":
-                return FileType.DOC;
-            case "docx":
-                return FileType.DOCX;
-            case "pdf":
-                return FileType.PDF;
-            case "txt":
-                return FileType.TXT;
-            default:
-                throw new UnsupportedFileFormatException();
-        }
-    }
-
-    private void deleteFile(Path filePath) throws FileDeletionException {
+    private void deleteFile(Path filePath) {
         try{
             Files.delete(filePath);
         } catch (IOException e) {
