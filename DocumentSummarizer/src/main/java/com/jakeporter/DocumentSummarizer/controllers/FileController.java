@@ -1,6 +1,5 @@
 package com.jakeporter.DocumentSummarizer.controllers;
 
-import com.jakeporter.DocumentSummarizer.utilities.textExtractors.FileType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,8 @@ public class FileController {
     @PostMapping("/file")
     public ResponseEntity<Map<String, Set<String>>> summarizeFile(@RequestParam("file") MultipartFile file) {
         Map<String, Set<String>> response = new HashMap();
-        FileType fileType = fileService.uploadFile(file);
-        Set<String> summaries = fileService.summarize(file, fileType);
+        fileService.uploadFile(file);
+        Set<String> summaries = fileService.summarize(file);
         response.put(RESPONSE_KEY, summaries);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
