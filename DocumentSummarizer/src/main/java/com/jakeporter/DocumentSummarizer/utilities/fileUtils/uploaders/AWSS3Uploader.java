@@ -21,7 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
-@Component("AWSUploader")
+@Component("aws")
 public class AWSS3Uploader implements FileUploader {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());

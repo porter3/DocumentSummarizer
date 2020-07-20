@@ -2,9 +2,11 @@ package com.jakeporter.DocumentSummarizer.utilities.fileUtils.removers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 
+@Component("aws")
 public class AWSS3Remover implements FileRemover {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());

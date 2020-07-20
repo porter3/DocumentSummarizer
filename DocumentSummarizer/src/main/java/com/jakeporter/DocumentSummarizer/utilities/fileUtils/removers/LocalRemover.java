@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-@Component("localRemover")
+@Component("local")
 public class LocalRemover implements FileRemover {
 
     @Override
