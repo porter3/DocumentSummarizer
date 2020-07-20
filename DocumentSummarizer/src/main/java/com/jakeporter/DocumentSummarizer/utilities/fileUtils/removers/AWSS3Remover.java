@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 
-@Component("aws")
+@Component("awsRemover")
 public class AWSS3Remover implements FileRemover {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());

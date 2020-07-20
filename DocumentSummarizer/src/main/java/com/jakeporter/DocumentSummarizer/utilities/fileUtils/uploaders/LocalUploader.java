@@ -16,7 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-@Component("local")
+@Component("localUploader")
 public class LocalUploader implements FileUploader {
 
     @Value("${upload.dir:${user.home}}")
