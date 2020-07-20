@@ -16,7 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-@Component("localUploader")
+@Component("local")
 public class LocalUploader implements FileUploader {
 
     @Value("${upload.dir:${user.home}}")
@@ -25,14 +25,15 @@ public class LocalUploader implements FileUploader {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public void uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file) {
         FileType fileType;
+        Path copyLocation;
         FileInfoGetter infoGetter = new FileInfoGetter();
         try {
             fileType = infoGetter.getFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
             logger.info("File type: " + fileType);
             logger.info("Upload directory: " + uploadDirectory);
-            Path copyLocation = infoGetter.getFileLocation(file, uploadDirectory);
+            copyLocation = infoGetter.getFileLocation(file, uploadDirectory);
             // copy the file's input stream to the path and replace any file with the same name
             Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -40,5 +41,6 @@ public class LocalUploader implements FileUploader {
         } catch (UnsupportedFileFormatException e) {
             throw new UnsupportedFileFormatException("File format not supported.");
         }
+        return copyLocation.toString();
     }
 }
