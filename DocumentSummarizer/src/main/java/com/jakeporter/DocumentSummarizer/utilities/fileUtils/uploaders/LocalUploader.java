@@ -17,14 +17,13 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 @Component("localUploader")
-public class LocalUploader implements FileUploader {
+public class LocalUploader {
 
     @Value("${upload.dir:${user.home}}")
     String uploadDirectory;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Override
     public String uploadFile(MultipartFile file) {
         FileType fileType;
         Path copyLocation;
