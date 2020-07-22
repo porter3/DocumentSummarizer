@@ -33,6 +33,7 @@ public class FileInfoGetter {
             case "txt":
                 return FileType.TXT;
             default:
+                logger.error("Unsupported file format: " + fileExtension, UnsupportedFileFormatException.class);
                 throw new UnsupportedFileFormatException();
         }
     }
