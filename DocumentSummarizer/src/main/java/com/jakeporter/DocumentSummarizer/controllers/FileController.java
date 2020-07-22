@@ -27,8 +27,8 @@ public class FileController {
     @PostMapping("/file")
     public ResponseEntity<Map<String, Set<String>>> summarizeFile(@RequestParam("file") MultipartFile file) {
         Map<String, Set<String>> response = new HashMap();
-        fileService.uploadFile(file);
-        Set<String> summaries = fileService.summarize(file);
+        String fileUrl = fileService.uploadFile(file);
+        Set<String> summaries = fileService.summarize(file, fileUrl);
         response.put(RESPONSE_KEY, summaries);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
