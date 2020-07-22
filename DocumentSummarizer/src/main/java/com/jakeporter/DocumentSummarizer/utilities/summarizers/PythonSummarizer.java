@@ -56,6 +56,7 @@ public class PythonSummarizer extends DocumentSummarizer {
             writer.flush();
             writer.close();
         } catch (IOException e) {
+            e.printStackTrace();
             throw new WriterException("Something went wrong in getting the summary.");
         }
     }
@@ -77,8 +78,10 @@ public class PythonSummarizer extends DocumentSummarizer {
             try {
                 reader.close();
             } catch (IOException f) {
+                f.printStackTrace();
                 throw new ResultReadingException(READING_EXCEPTION_MESSAGE);
             }
+            e.printStackTrace();
             throw new ResultReadingException(READING_EXCEPTION_MESSAGE);
         }
         return builder.toString();
