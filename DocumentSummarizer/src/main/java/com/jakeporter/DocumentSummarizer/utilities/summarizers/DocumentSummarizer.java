@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.Set;
 
 public abstract class DocumentSummarizer {
@@ -22,8 +24,8 @@ public abstract class DocumentSummarizer {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     // template method for files
-    public Set<String> summarizeDocument(MultipartFile file) {
-        String text = extractor.extractText(file);
+    public Set<String> summarize(InputStream stream) {
+        String text = extractor.extractTextFromStream(stream);
         checkTextLength(text);
         return computeSummaries(text);
     }
