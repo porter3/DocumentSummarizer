@@ -8,14 +8,17 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class PDFTextExtractor implements FileTextExtractor {
 
     static final String PDF_EXCEPTION_MESSAGE = "Something went wrong processing the PDF file.";
 
     @Override
-    public String extractText(MultipartFile file) {
+    public String extractTextFromStream(InputStream stream) {
         // this class name isn't long enough
         RandomAccessBufferedFileInputStream randomAccessBufferedFileInputStream = null;
         PDFParser parser;
@@ -23,7 +26,7 @@ public class PDFTextExtractor implements FileTextExtractor {
         PDDocument pdDocument = null;
         String extractedText;
         try {
-            randomAccessBufferedFileInputStream = new RandomAccessBufferedFileInputStream(file.getInputStream());
+            randomAccessBufferedFileInputStream = new RandomAccessBufferedFileInputStream(stream);
             parser = new PDFParser(randomAccessBufferedFileInputStream);
             // parse the stream and populate a nested COSDocument ref, close stream when done
             parser.parse();

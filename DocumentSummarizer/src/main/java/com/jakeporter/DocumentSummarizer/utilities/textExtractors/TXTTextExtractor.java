@@ -3,20 +3,18 @@ package com.jakeporter.DocumentSummarizer.utilities.textExtractors;
 import com.jakeporter.DocumentSummarizer.exceptions.TXTIssueException;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class TXTTextExtractor implements FileTextExtractor {
 
     private static final String TXT_EXCEPTION_MESSAGE = "Something went wrong processing the text file.";
 
     @Override
-    public String extractText(MultipartFile file) {
+    public String extractTextFromStream(InputStream stream) {
         StringBuilder builder = new StringBuilder();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(stream));
             String line = reader.readLine();
             while (line != null) {
                 builder.append(line);

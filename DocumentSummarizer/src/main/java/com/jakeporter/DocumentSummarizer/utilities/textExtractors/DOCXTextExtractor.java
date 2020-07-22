@@ -5,6 +5,8 @@ import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -13,13 +15,11 @@ public class DOCXTextExtractor implements FileTextExtractor {
     static final String DOCX_EXCEPTION_MESSAGE = "Something went wrong processing the word document.";
 
     @Override
-    public String extractText(MultipartFile file) {
+    public String extractTextFromStream(InputStream stream) {
         XWPFDocument xwpfDocument;
         XWPFWordExtractor extractor;
-        InputStream stream = null;
         String extractedText;
         try {
-            stream = file.getInputStream();
             xwpfDocument = new XWPFDocument(stream);
             extractor = new XWPFWordExtractor(xwpfDocument);
             extractedText = extractor.getText();
