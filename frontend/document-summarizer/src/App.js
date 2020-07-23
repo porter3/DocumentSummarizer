@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import UploadHeader from './components/UploadHeader'
 import TextUploadForm from './components/TextUploadForm'
+import GenerateButton from './components/GenerateButton'
 import SummarySection from './components/SummarySection'
+import SummaryLengthSlider from './components/SummaryLengthSlider'
 import { serverUrl } from './serverUrl'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './css/app.css'
@@ -14,8 +16,9 @@ function App() {
   const [ uploadChoice, setUploadChoice ] = useState('')
   const [ text, setText ] = useState('')
   const [ fileIsLoaded, setFileIsLoaded ] = useState(false)
-  const [ summaries, setSummaries ] = useState({})
+  const [ summaries, setSummaries ] = useState([])
   const [ errorMessage, setErrorMessage ] = useState('')
+  const [ summaryChoice, setSummaryChoice ] = useState(0)
   
   const handleUploadChoice = e => {
     setUploadChoice(e.target.value)
@@ -23,6 +26,10 @@ function App() {
 
   const handleTextChange = e => {
     setText(e.target.value)
+  }
+
+  const handleSliderChange = (e, value) => {
+    setSummaryChoice(value)
   }
 
   const fetchSummaries = (url, body) => {
@@ -47,9 +54,9 @@ function App() {
   }
 
   const getSummary = async () => {
-    setIsLoading(true)
-    setSummaries({})
+    setSummaries([])
     setErrorMessage('')
+    setIsLoading(true)
     let url, body
     if (uploadChoice === 'fileUpload') {
       url = serverUrl + '/file'
@@ -66,18 +73,18 @@ function App() {
       setErrorMessage('')
       setSummaries(fetchedSummaries.summaries)
     } else if (fetchedSummaries.message) {
-      setSummaries({})
-      setErrorMessage(fetchedSummaries.summaries)
+      setSummaries([])
+      setErrorMessage(fetchedSummaries.message)
     } else {
-      setSummaries({})
+      setSummaries([])
       setErrorMessage('Something went wrong.')
     }
   }
 
   return (
-    <Container className='app'>
+    <Container fluid id='app'>
       <Row>
-        <Col md={6} xs={12}>
+        <Col md={4} xs={12}>
           <UploadHeader />
           <TextUploadForm
             uploadChoice={uploadChoice}
@@ -89,12 +96,25 @@ function App() {
             isLoading={isLoading}
           />
         </Col>
+        <Col md={2}>
+          <GenerateButton
+            isLoading={isLoading}
+            handleClick={() => getSummary()}
+          />
+        </Col>
         <Col md={6} xs={12}>
           <SummarySection
             summaries={summaries}
             errorMessage={errorMessage}
             isLoading={isLoading}
+            summaryChoice={summaryChoice}
           />
+          {summaries.length !== 0 &&
+            <SummaryLengthSlider
+              handleChange={handleSliderChange}
+              max={summaries.length - 1}
+            />
+          }
         </Col>
       </Row>
     </Container>
