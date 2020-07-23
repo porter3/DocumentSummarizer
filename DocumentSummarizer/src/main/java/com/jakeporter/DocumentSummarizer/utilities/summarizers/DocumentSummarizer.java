@@ -4,9 +4,7 @@ import com.jakeporter.DocumentSummarizer.exceptions.*;
 import com.jakeporter.DocumentSummarizer.utilities.textExtractors.FileTextExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Set;
 
