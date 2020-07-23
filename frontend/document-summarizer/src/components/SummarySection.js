@@ -1,18 +1,19 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-typist/dist/Typist.css'
-import Typist from 'react-typist'
+import { Paper } from '@material-ui/core'
 import Loader from './Loader'
 
 
-export default function SummarySection({ summaries, errorMessage, isLoading }) {
+export default function SummarySection({ summaries, errorMessage, isLoading, summaryChoice }) {
     // only display first element of summaries for now
     return (
         <div id='summarySection'>
-            {summaries &&
-                <div>
-                    {summaries[0]}
-                </div>
+            {summaries.length !== 0 &&
+                <Paper style={{minHeight: 400, maxHeight: 400, overflow: 'auto'}}>
+                    <div>
+                        {summaries[summaryChoice]}
+                    </div>
+                </Paper>
             }
             {errorMessage &&
                 <div>
