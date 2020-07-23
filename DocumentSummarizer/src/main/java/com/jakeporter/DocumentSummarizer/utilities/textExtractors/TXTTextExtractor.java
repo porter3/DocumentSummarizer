@@ -1,7 +1,6 @@
 package com.jakeporter.DocumentSummarizer.utilities.textExtractors;
 
 import com.jakeporter.DocumentSummarizer.exceptions.TXTIssueException;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 

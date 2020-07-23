@@ -3,10 +3,7 @@ package com.jakeporter.DocumentSummarizer.utilities.textExtractors;
 import com.jakeporter.DocumentSummarizer.exceptions.DOCIssueException;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
