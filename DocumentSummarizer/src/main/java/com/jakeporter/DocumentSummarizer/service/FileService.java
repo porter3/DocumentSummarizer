@@ -2,9 +2,7 @@ package com.jakeporter.DocumentSummarizer.service;
 
 import com.jakeporter.DocumentSummarizer.exceptions.GenericFileException;
 import com.jakeporter.DocumentSummarizer.utilities.fileUtils.FileInfoGetter;
-import com.jakeporter.DocumentSummarizer.utilities.fileUtils.removers.FileRemover;
 import com.jakeporter.DocumentSummarizer.utilities.fileUtils.uploaders.AWSS3Client;
-import com.jakeporter.DocumentSummarizer.utilities.fileUtils.uploaders.LocalUploader;
 import com.jakeporter.DocumentSummarizer.utilities.summarizers.DocumentSummarizer;
 import com.jakeporter.DocumentSummarizer.utilities.summarizers.PythonSummarizer;
 import com.jakeporter.DocumentSummarizer.utilities.textExtractors.*;
@@ -12,32 +10,18 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
 
 @Service
 public class FileService {
 
-    private final static boolean IS_PERSISTING_LOCALLY = false;
-    private final static String REMOVER = IS_PERSISTING_LOCALLY ? "localRemover" : "awsRemover";
-
-    @Value("${upload.dir:${user.home}}")
-    private String UPLOAD_DIRECTORY;
-
     @Autowired
     private AWSS3Client awsClient;
-    private LocalUploader localUploader;
-
-    @Autowired
-    @Qualifier(REMOVER)
-    private FileRemover remover;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
