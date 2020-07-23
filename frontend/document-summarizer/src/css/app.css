@@ -1,16 +1,16 @@
-.app {
-    margin-top: 40px;
+#app {
+    margin: 50px 100px 80px;
 }
 
-.directions {
-    margin-top: 80px;
-}
-
-.uploadHeader {
+#uploadHeader {
     margin: 75px 0px 25px;
 }
 
 #summarySection {
     margin: 80px 0;
     display: inline-block;
+}
+
+#generateButton {
+    margin-top: 120px;
 }
