@@ -1,5 +1,8 @@
+@import 'https://fonts.googleapis.com/css2?family=Montserrat:wght@300&family=Raleway:wght@300&display=swap';
+
 #app {
-    margin: 50px 100px 80px;
+    padding: 50px 100px 80px;
+    font-family: 'Montserrat', 'Times New Roman', Times, serif;
 }
 
 #uploadHeader {
@@ -7,10 +10,24 @@
 }
 
 #summarySection {
-    margin: 80px 0;
+    margin: 80px 0 15px;
     display: inline-block;
+}
+
+#paper {
+    height: 500px;
+    overflow: auto
+}
+
+#paperText {
+    padding: 20px;
 }
 
 #generateButton {
     margin-top: 120px;
+}
+
+.label {
+    font-family: 'Montserrat', 'Times New Roman', Times, serif;
+    color: red;
 }
