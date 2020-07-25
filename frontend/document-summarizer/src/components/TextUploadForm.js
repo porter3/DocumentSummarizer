@@ -1,10 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
-import { FormControl, FormControlLabel, RadioGroup, Radio } from '@material-ui/core'
+import { FormControl, FormControlLabel, RadioGroup, Radio, Typography, ThemeProvider } from '@material-ui/core'
 
 
-export default function TextUploadForm({ uploadChoice, handleRadioChange, handleFileChange, handleTextChange, text, handleClick, isLoading }) {
+export default function TextUploadForm({ uploadChoice, handleRadioChange, handleFileChange, handleTextChange, text, theme }) {
 
 
     return (
@@ -13,8 +13,19 @@ export default function TextUploadForm({ uploadChoice, handleRadioChange, handle
                 <Col sm={12}>
                     <FormControl component="fieldset">
                         <RadioGroup aria-label="Upload Choices" name="uploadChoices" onChange={e => handleRadioChange(e)}>
-                            <FormControlLabel value="fileUpload" control={<Radio />} label="Upload File (.docx, .doc, .pdf, .txt)" />
-                            <FormControlLabel value="text" control={<Radio />} label="Enter Text" />
+                            <ThemeProvider theme={theme}>
+                                <FormControlLabel value="fileUpload" control={<Radio />}
+                                label={
+                                    <>
+                                        <Typography>Upload File</Typography>
+                                        <Typography><small>(.docx, .doc, .pdf, .txt)</small></Typography>
+                                    </>
+                                }/>
+                                <FormControlLabel value="text" control={<Radio />}
+                                label={
+                                    <Typography>Enter Text</Typography>
+                                }/>
+                            </ThemeProvider>
                         </RadioGroup>
                     </FormControl>
                 </Col>
