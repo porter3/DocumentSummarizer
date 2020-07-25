@@ -9,8 +9,10 @@ export default function SummarySection({ summaries, errorMessage, isLoading, sum
     return (
         <div id='summarySection'>
             {summaries.length !== 0 &&
-                <Paper style={{minHeight: 400, maxHeight: 400, overflow: 'auto'}}>
-                    <div>
+                <Paper
+                id='paper'
+                elevation={3}>
+                    <div id='paperText'>
                         {summaries[summaryChoice]}
                     </div>
                 </Paper>

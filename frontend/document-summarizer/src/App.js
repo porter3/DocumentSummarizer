@@ -23,7 +23,6 @@ function App() {
 
   const theme = createMuiTheme({
     typography: {
-      color: 'green',
       fontFamily: [
         'Montserrat', 'Times New Roman'
       ].join(',')
@@ -94,7 +93,7 @@ function App() {
   return (
     <Container fluid id='app'>
       <Row>
-        <Col md={4}>
+        <Col md={4} xs={10}>
           <UploadHeader />
           <TextUploadForm
             theme={theme}
@@ -107,13 +106,13 @@ function App() {
             isLoading={isLoading}
           />
         </Col>
-        <Col md={2}>
+        <Col xs={2}>
           <GenerateButton
             isLoading={isLoading}
             handleClick={() => getSummary()}
           />
         </Col>
-        <Col md={6}>
+        <Col md={6} xs={12}>
           <SummarySection
             summaries={summaries}
             errorMessage={errorMessage}
