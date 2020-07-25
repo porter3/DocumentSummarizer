@@ -8,6 +8,7 @@ import { serverUrl } from './serverUrl'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './css/app.css'
 import { Container, Row, Col } from 'react-bootstrap'
+import { createMuiTheme } from '@material-ui/core'
 
 
 function App() {
@@ -19,6 +20,15 @@ function App() {
   const [ summaries, setSummaries ] = useState([])
   const [ errorMessage, setErrorMessage ] = useState('')
   const [ summaryChoice, setSummaryChoice ] = useState(0)
+
+  const theme = createMuiTheme({
+    typography: {
+      color: 'green',
+      fontFamily: [
+        'Montserrat', 'Times New Roman'
+      ].join(',')
+    }
+  })
   
   const handleUploadChoice = e => {
     setUploadChoice(e.target.value)
@@ -84,9 +94,10 @@ function App() {
   return (
     <Container fluid id='app'>
       <Row>
-        <Col md={4} xs={12}>
+        <Col md={4}>
           <UploadHeader />
           <TextUploadForm
+            theme={theme}
             uploadChoice={uploadChoice}
             text={text}
             handleRadioChange={e => handleUploadChoice(e)}
@@ -102,14 +113,14 @@ function App() {
             handleClick={() => getSummary()}
           />
         </Col>
-        <Col md={6} xs={12}>
+        <Col md={6}>
           <SummarySection
             summaries={summaries}
             errorMessage={errorMessage}
             isLoading={isLoading}
             summaryChoice={summaryChoice}
           />
-          {summaries.length !== 0 &&
+          {summaries.length > 1 &&
             <SummaryLengthSlider
               handleChange={handleSliderChange}
               max={summaries.length - 1}

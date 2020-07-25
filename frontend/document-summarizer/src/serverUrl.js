@@ -1,3 +1,3 @@
 const localBuild = true
 const path = '/summarize'
-export const serverUrl = localBuild ? 'http://localhost:8080' + path : null
+export const serverUrl = localBuild ? 'http://localhost:5000' + path : null
