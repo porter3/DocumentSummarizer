@@ -13,12 +13,15 @@ public class App {
     @Value("${frontend.url}")
     String frontendUrl;
 
+    @Value("${my.ip}")
+    String myIp;
+
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedMethods("*").allowedOrigins(frontendUrl);
+                registry.addMapping("/**").allowedMethods("*").allowedOrigins(frontendUrl, myIp, "http://localhost:3000");
             }
         };
     }
