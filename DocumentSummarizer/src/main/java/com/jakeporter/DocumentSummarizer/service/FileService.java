@@ -10,7 +10,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +25,8 @@ public class FileService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public String uploadFile(MultipartFile file) {
+        // only here to throw an exception and prevent upload if file type is unsupported
+        new FileInfoGetter().getFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
         return awsClient.uploadFile(file);
     }
 
