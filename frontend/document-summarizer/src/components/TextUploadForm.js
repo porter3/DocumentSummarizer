@@ -4,7 +4,7 @@ import { Row, Col } from 'react-bootstrap';
 import { FormControl, FormControlLabel, RadioGroup, Radio, Typography, ThemeProvider } from '@material-ui/core'
 
 
-export default function TextUploadForm({ uploadChoice, handleRadioChange, handleFileChange, handleTextChange, text, theme }) {
+export default function TextUploadForm({ uploadChoice, handleRadioChange, handleFileChange, handleTextChange, text, theme, fileExtension, isBadExtension }) {
 
 
     return (
@@ -35,6 +35,13 @@ export default function TextUploadForm({ uploadChoice, handleRadioChange, handle
                     <div hidden={uploadChoice !== 'fileUpload'}>
                         <label htmlFor ="file">Upload file:</label><br />
                         <input type="file" name="file" id="file" onChange={handleFileChange} />
+                        {isBadExtension &&
+                        <Row>
+                            <Col sm={12}>
+                                <small>This can't summarize .{fileExtension} files.</small>
+                            </Col>
+                        </Row>
+                        }
                     </div>
                     <div hidden={uploadChoice !== 'text'}>
                         <textarea rows="18" cols="50" id="textEntry" onChange={handleTextChange} value={text} />
