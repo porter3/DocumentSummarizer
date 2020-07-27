@@ -1,0 +1,1 @@
+export default ['docx', 'doc', 'pdf', 'txt']
