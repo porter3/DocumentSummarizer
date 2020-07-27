@@ -1,12 +1,9 @@
-#!/usr/bin/env python
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.stem import PorterStemmer
 from sys import argv, stdin
 
-
 DELIMITER = argv[1]
-
 
 def get_text_from_stdin() -> str:
     text = ''
