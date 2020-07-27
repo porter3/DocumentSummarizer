@@ -4,13 +4,6 @@ import com.jakeporter.DocumentSummarizer.exceptions.UnsupportedFileFormatExcepti
 import com.jakeporter.DocumentSummarizer.utilities.textExtractors.FileType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertyResolver;
-import org.springframework.core.env.PropertySourcesPropertyResolver;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +16,7 @@ public class FileInfoGetter {
     Logger logger = LoggerFactory.getLogger(FileInfoGetter.class);
 
     public FileType getFileType(String fileExtension) {
+        final String exceptionMessage = "Unsupported file format: ." + fileExtension;
         switch (fileExtension.toLowerCase()) {
             case "doc":
                 return FileType.DOC;
@@ -33,8 +27,8 @@ public class FileInfoGetter {
             case "txt":
                 return FileType.TXT;
             default:
-                logger.error("Unsupported file format: " + fileExtension, UnsupportedFileFormatException.class);
-                throw new UnsupportedFileFormatException();
+                logger.error(exceptionMessage, UnsupportedFileFormatException.class);
+                throw new UnsupportedFileFormatException(exceptionMessage);
         }
     }
 
