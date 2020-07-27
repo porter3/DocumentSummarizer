@@ -43,7 +43,7 @@ public class FileService {
             e.printStackTrace();
             throw new GenericFileException("Something went wrong.");
         } finally {
-            // TODO: delete file from s3 bucket
+            awsClient.deleteFileFromS3Bucket(fileUrl);
         }
         return summaries;
     }
