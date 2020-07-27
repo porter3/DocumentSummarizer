@@ -89,8 +89,8 @@ public class AWSS3Client {
     }
 
     public void deleteFileFromS3Bucket(String fileUrl) {
-        String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-        s3Client.deleteObject(new DeleteObjectRequest(bucketName + "/", fileName));
+        String fileKey = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+        s3Client.deleteObject(new DeleteObjectRequest(bucketName, fileKey));
     }
 
     private File convertMultipartFileToFile(MultipartFile mpFile) {
