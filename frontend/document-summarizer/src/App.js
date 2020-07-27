@@ -4,7 +4,8 @@ import TextUploadForm from './components/TextUploadForm'
 import GenerateButton from './components/GenerateButton'
 import SummarySection from './components/SummarySection'
 import SummaryLengthSlider from './components/SummaryLengthSlider'
-import { serverUrl } from './serverUrl'
+import serverUrl from './serverUrl'
+import supportedFileFormats from './supportedFileFormats'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './css/app.css'
 import { Container, Row, Col } from 'react-bootstrap'
@@ -15,11 +16,14 @@ function App() {
 
   const [ isLoading, setIsLoading ] = useState(false)
   const [ uploadChoice, setUploadChoice ] = useState('')
+  const [ fileExtension, setFileExtension ] = useState('')
   const [ text, setText ] = useState('')
   const [ fileIsLoaded, setFileIsLoaded ] = useState(false)
   const [ summaries, setSummaries ] = useState([])
   const [ errorMessage, setErrorMessage ] = useState('')
   const [ summaryChoice, setSummaryChoice ] = useState(0)
+
+  const isBadExtension = !supportedFileFormats.includes(fileExtension) && fileExtension !== ''
 
   const theme = createMuiTheme({
     typography: {
@@ -31,6 +35,18 @@ function App() {
   
   const handleUploadChoice = e => {
     setUploadChoice(e.target.value)
+  }
+
+  const handleFileChange = e => {
+    setFileIsLoaded(!fileIsLoaded)
+    const extension = validateFileType(e.target.value)
+    setFileExtension(extension)
+  }
+
+  const validateFileType = filePath => {
+    console.log(filePath)
+    const extension = filePath.slice((Math.max(0, filePath.lastIndexOf('.')) || Infinity) + 1).toLowerCase()
+    return extension
   }
 
   const handleTextChange = e => {
@@ -99,16 +115,18 @@ function App() {
             theme={theme}
             uploadChoice={uploadChoice}
             text={text}
+            fileExtension={fileExtension}
+            isBadExtension={isBadExtension}
             handleRadioChange={e => handleUploadChoice(e)}
             handleTextChange={e => handleTextChange(e)}
-            handleFileChange={() => setFileIsLoaded(!fileIsLoaded)}
-            handleClick={() => getSummary()}
-            isLoading={isLoading}
+            handleFileChange={e => handleFileChange(e)}
           />
         </Col>
         <Col xs={2}>
           <GenerateButton
             isLoading={isLoading}
+            fileExtension={fileExtension}
+            isBadExtension={isBadExtension}
             handleClick={() => getSummary()}
           />
         </Col>
