@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.jakeporter.DocumentSummarizer.service.FileService;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,7 @@ public class FileController {
     @PostMapping("/file")
     public ResponseEntity<Map<String, Set<String>>> summarizeFile(@RequestParam("file") MultipartFile file) {
         Map<String, Set<String>> response = new HashMap();
+        fileService.validateFileSize(file);
         String fileUrl = fileService.uploadFile(file);
         Set<String> summaries = fileService.summarize(file, fileUrl);
         response.put(RESPONSE_KEY, summaries);
@@ -40,4 +42,5 @@ public class FileController {
         response.put(RESPONSE_KEY, summaries);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 }
