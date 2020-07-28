@@ -1,5 +1,6 @@
 package com.jakeporter.DocumentSummarizer.service;
 
+import com.jakeporter.DocumentSummarizer.exceptions.FileTooLargeException;
 import com.jakeporter.DocumentSummarizer.exceptions.GenericFileException;
 import com.jakeporter.DocumentSummarizer.utilities.fileUtils.FileInfoGetter;
 import com.jakeporter.DocumentSummarizer.utilities.fileUtils.uploaders.AWSS3Client;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Set;
 
 @Service
@@ -23,6 +26,17 @@ public class FileService {
     private AWSS3Client awsClient;
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    // had to override Spring's spring.servlet.multipart.max-file-size/max-request size in application.properties and handle file size limits here (nothing else worked)
+    public void validateFileSize(MultipartFile file) {
+        // maxSize is exactly 3 MB
+        BigDecimal maxSize = new BigDecimal("3145728");
+        BigDecimal mbInBytes = new BigDecimal("1048576");
+        BigDecimal fileSize = new BigDecimal(String.valueOf(file.getSize()));
+        if (fileSize.compareTo(maxSize) == 1) {
+            throw new FileTooLargeException("File size cannot exceed " + maxSize.divide(mbInBytes, RoundingMode.FLOOR) + " MB. Your file is " + fileSize.divide(mbInBytes).setScale(2, RoundingMode.FLOOR) + " MB.");
+        }
+    }
 
     public String uploadFile(MultipartFile file) {
         // only here to throw an exception and prevent upload if file type is unsupported
