@@ -2,24 +2,24 @@ package com.jakeporter.DocumentSummarizer.controllers;
 
 import com.jakeporter.DocumentSummarizer.error.Error;
 import com.jakeporter.DocumentSummarizer.exceptions.*;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
+import java.io.File;
+
 
 @ControllerAdvice
-@RestController
 public class ExceptionHandlerController {
 
-    // thrown by Spring
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<Error> handleFileSizeLimitExceeded(MaxUploadSizeExceededException e) {
-        return new ResponseEntity<>(new Error("File size cannot exceed 1MB."), HttpStatus.PAYLOAD_TOO_LARGE);
+    @ExceptionHandler(FileTooLargeException.class)
+    public ResponseEntity<Error> handleFileTooLarge(FileTooLargeException e) {
+        return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     // thrown by Spring first for /file endpoint and is the only exception thrown for /text endpoint
