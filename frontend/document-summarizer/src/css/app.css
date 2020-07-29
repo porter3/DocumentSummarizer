@@ -12,6 +12,8 @@
 #summarySection {
     margin: 80px 0 15px;
     display: inline-block;
+    /* No idea why this needs to be 101%, but it makes it always be the same width as the slider underneath it */
+    width: 101%;
 }
 
 #paper {
@@ -25,4 +27,14 @@
 
 #generateButton {
     margin-top: 120px;
+    background-color: #B8DBD9;
+    color: black
+}
+
+#generateButton:hover {
+    background-color: #6AB4B0;
+}
+
+#fileError {
+    margin-top: 20px;
 }
