@@ -1,6 +1,6 @@
 package com.jakeporter.DocumentSummarizer.utilities.textExtractors;
 
-import com.jakeporter.DocumentSummarizer.exceptions.PDFIssueException;
+import com.jakeporter.DocumentSummarizer.exceptions.TextExtractorException;
 import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.io.RandomAccessBufferedFileInputStream;
 import org.apache.pdfbox.pdfparser.PDFParser;
@@ -43,9 +43,9 @@ public class PDFTextExtractor implements FileTextExtractor {
                     randomAccessBufferedFileInputStream.close();
                 }
             } catch (IOException f) {
-                throw new PDFIssueException(PDF_EXCEPTION_MESSAGE);
+                throw new TextExtractorException(PDF_EXCEPTION_MESSAGE);
             }
-            throw new PDFIssueException(PDF_EXCEPTION_MESSAGE);
+            throw new TextExtractorException(PDF_EXCEPTION_MESSAGE);
         }
         return extractedText;
     }

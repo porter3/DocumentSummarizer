@@ -1,6 +1,6 @@
 package com.jakeporter.DocumentSummarizer.utilities.textExtractors;
 
-import com.jakeporter.DocumentSummarizer.exceptions.TXTIssueException;
+import com.jakeporter.DocumentSummarizer.exceptions.TextExtractorException;
 
 import java.io.*;
 
@@ -24,9 +24,9 @@ public class TXTTextExtractor implements FileTextExtractor {
             try{
                 reader.close();
             } catch (IOException f) {
-                throw new TXTIssueException(TXT_EXCEPTION_MESSAGE);
+                throw new TextExtractorException(TXT_EXCEPTION_MESSAGE);
             }
-            throw new TXTIssueException(TXT_EXCEPTION_MESSAGE);
+            throw new TextExtractorException(TXT_EXCEPTION_MESSAGE);
         }
         return builder.toString();
     }

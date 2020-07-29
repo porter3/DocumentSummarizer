@@ -1,6 +1,6 @@
 package com.jakeporter.DocumentSummarizer.utilities.textExtractors;
 
-import com.jakeporter.DocumentSummarizer.exceptions.DOCXIssueException;
+import com.jakeporter.DocumentSummarizer.exceptions.TextExtractorException;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
@@ -28,9 +28,9 @@ public class DOCXTextExtractor implements FileTextExtractor {
                     stream.close();
                 }
             } catch (IOException f) {
-                throw new DOCXIssueException(DOCX_EXCEPTION_MESSAGE);
+                throw new TextExtractorException(DOCX_EXCEPTION_MESSAGE);
             }
-            throw new DOCXIssueException(DOCX_EXCEPTION_MESSAGE);
+            throw new TextExtractorException(DOCX_EXCEPTION_MESSAGE);
         }
         return extractedText;
     }
