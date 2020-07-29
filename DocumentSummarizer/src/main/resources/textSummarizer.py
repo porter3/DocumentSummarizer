@@ -2,8 +2,10 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.stem import PorterStemmer
 from sys import argv, stdin
+import enchant
 
 DELIMITER = argv[1]
+NO_VALID_WORDS_MSG = "No valid words were found."
 
 def get_text_from_stdin() -> str:
     text = ''
@@ -12,10 +14,20 @@ def get_text_from_stdin() -> str:
     return text
 
 
+def check_if_valid_word_exists(words) -> bool:
+    dictionary = enchant.Dict("en_US")
+    for word in words:
+        if dictionary.check(word) == True:
+            return True
+    raise NoValidWordsException(NO_VALID_WORDS_MSG)
+
+
 def create_frequency_table(text) -> dict:
     # generally speaking, stop words are filler words (https://en.wikipedia.org/wiki/Stop_words)
     stop_words = set(stopwords.words("english"))
     words = word_tokenize(text)
+    # check if a single word is valid - if it does, can be reasonably certain it's not a non-text file with a .txt extension
+    check_if_valid_word_exists(words)
     # create object to get word stems (e.g. laughing -> laugh)
     stemmer = PorterStemmer()
 
@@ -90,7 +102,11 @@ def get_multipliers(sentences) -> list:
 def main():
     try:
         text = get_text_from_stdin()
-        frequency_table = create_frequency_table(text)
+        try:
+            frequency_table = create_frequency_table(text)
+        except NoValidWordsException as e:
+            print(str(e))
+            return
         sentences = sent_tokenize(text)
         sentence_scores = score_sentences(sentences, frequency_table)
         threshold = find_average_score(sentence_scores)
