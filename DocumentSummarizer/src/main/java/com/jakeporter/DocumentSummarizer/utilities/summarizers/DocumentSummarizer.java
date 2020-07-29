@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.util.Set;
 
+
 public abstract class DocumentSummarizer {
 
     private static final int CHAR_MAX = Integer.MAX_VALUE; // prevent unpredictable behavior
@@ -40,7 +41,7 @@ public abstract class DocumentSummarizer {
         int textLength = text.length();
         logger.info("Text length: " + textLength);
         if (textLength > CHAR_MAX) {
-            throw new TextTooLongException("The current character count limit for texts to be summarized is " + CHAR_MAX + ". We're working on making it longer.\\n(Your character count: " + textLength);
+            throw new SummaryException("The current character count limit for texts to be summarized is " + CHAR_MAX + ". We're working on making it longer.\\n(Your character count: " + textLength);
         }
     }
 
