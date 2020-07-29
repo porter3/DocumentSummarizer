@@ -39,11 +39,11 @@ function App() {
 
   const handleFileChange = e => {
     setFileIsLoaded(!fileIsLoaded)
-    const extension = validateFileType(e.target.value)
+    const extension = getFileExtension(e.target.value)
     setFileExtension(extension)
   }
 
-  const validateFileType = filePath => {
+  const getFileExtension = filePath => {
     console.log(filePath)
     const extension = filePath.slice((Math.max(0, filePath.lastIndexOf('.')) || Infinity) + 1).toLowerCase()
     return extension
