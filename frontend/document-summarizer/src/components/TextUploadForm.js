@@ -2,9 +2,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { FormControl, FormControlLabel, RadioGroup, Radio, Typography, ThemeProvider } from '@material-ui/core'
+import Alert from '@material-ui/lab/Alert'
+import AlertTitle from '@material-ui/lab/AlertTitle'
 
 
-export default function TextUploadForm({ uploadChoice, handleRadioChange, handleFileChange, handleTextChange, text, theme, fileExtension, isBadExtension }) {
+export default function TextUploadForm({ theme, uploadChoice, text, fileExtension, isBadExtension, handleRadioChange, handleTextChange, handleFileChange }) {
 
 
     return (
@@ -38,7 +40,12 @@ export default function TextUploadForm({ uploadChoice, handleRadioChange, handle
                         {isBadExtension &&
                         <Row>
                             <Col sm={12}>
-                                <small>This can't summarize .{fileExtension} files.</small>
+                            <ThemeProvider theme={theme}>
+                                <Alert id='fileError' severity='warning'>
+                                    <AlertTitle>Unsupported File Format</AlertTitle>
+                                    This can't summarize .{fileExtension} files.
+                                </Alert>
+                            </ThemeProvider>
                             </Col>
                         </Row>
                         }
