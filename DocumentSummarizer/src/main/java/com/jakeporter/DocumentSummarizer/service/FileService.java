@@ -1,7 +1,6 @@
 package com.jakeporter.DocumentSummarizer.service;
 
-import com.jakeporter.DocumentSummarizer.exceptions.FileTooLargeException;
-import com.jakeporter.DocumentSummarizer.exceptions.GenericFileException;
+import com.jakeporter.DocumentSummarizer.exceptions.*;
 import com.jakeporter.DocumentSummarizer.utilities.fileUtils.FileInfoGetter;
 import com.jakeporter.DocumentSummarizer.utilities.fileUtils.uploaders.AWSS3Client;
 import com.jakeporter.DocumentSummarizer.utilities.summarizers.DocumentSummarizer;
@@ -27,7 +26,7 @@ public class FileService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // had to override Spring's spring.servlet.multipart.max-file-size/max-request size in application.properties and handle file size limits here (nothing else worked)
+    // had to turn off Spring's spring.servlet.multipart.max-file-size/max-request-size boundaries in application.properties and handle file size limits here (nothing else worked properly)
     public void validateFileSize(MultipartFile file) {
         // maxSize is exactly 3 MB
         BigDecimal maxSize = new BigDecimal("3145728");
@@ -39,23 +38,48 @@ public class FileService {
     }
 
     public String uploadFile(MultipartFile file) {
-        // only here to throw an exception and prevent upload if file type is unsupported
-        new FileInfoGetter().getFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
-        return awsClient.uploadFile(file);
+        String fileUrl;
+        try {
+            // this is just here to throw an exception early on if the file format is unsupported
+            new FileInfoGetter().getFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
+        } catch (UnsupportedFileFormatException e) {
+            e.printStackTrace();
+            throw new UnsupportedFileFormatException(e.getMessage());
+        }
+        try {
+            fileUrl = awsClient.uploadFile(file);
+        } catch (FileUploaderException e) {
+            e.printStackTrace();
+            throw new FileUploaderException(e.getMessage());
+        }
+        return fileUrl;
     }
 
+    /* There's an ugly chain of exception throws in here- they're specific because I want to send different status codes to the client for each specific problem
+       and I have to re-throw them in here for the ExceptionHandlerController to intercept them */
     public Set<String> summarize(MultipartFile mpFile, String fileUrl) {
         FileType fileType = new FileInfoGetter().getFileType(FilenameUtils.getExtension(mpFile.getOriginalFilename()));
-        InputStream s3ObjectStream = awsClient.getS3ObjectInputStream(fileUrl);
+        InputStream s3ObjectStream;
+        try {
+            s3ObjectStream = awsClient.getS3ObjectInputStream(fileUrl);
+        } catch (FileUploaderException e) {
+            throw new FileUploaderException(e.getMessage());
+        }
         Set<String> summaries = null;
         try {
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
             DocumentSummarizer summarizer = new PythonSummarizer(extractor);
             summaries = summarizer.summarize(s3ObjectStream);
             logger.info("Summary: " + summaries);
-        } catch (Exception e) { // Don't know what uncaught exceptions could throw this at the moment, but I want to ensure the deletion of any uploaded files
+        } catch (TextExtractorException e) {
             e.printStackTrace();
-            throw new GenericFileException("Something went wrong.");
+            throw new TextExtractorException(e.getMessage());
+        } catch (SummaryException e) { // Don't know what uncaught exceptions could throw this at the moment, but I want to ensure the deletion of any uploaded files
+            e.printStackTrace();
+            throw new SummaryException(e.getMessage());
+        } catch (PythonScriptException e) {
+            e.printStackTrace();
+            throw new PythonScriptException(e.getMessage());
         } finally {
             awsClient.deleteFileFromS3Bucket(fileUrl);
         }
@@ -66,5 +90,4 @@ public class FileService {
         DocumentSummarizer summarizer = new PythonSummarizer();
         return summarizer.summarizeDocument(text);
     }
-
 }
