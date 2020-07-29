@@ -11,7 +11,7 @@ import java.util.*;
 
 public class PythonSummarizer extends DocumentSummarizer {
 
-    private static final boolean IS_PRODUCTION_BUILD = true;
+    private static final boolean IS_PRODUCTION_BUILD = false;
     private static final String PYTHON_CMD = IS_PRODUCTION_BUILD ? "python3.7" : "python";
     private static final String SCRIPT = "textSummarizer.py";
     private static final String SUMMARY_DELIMITER = ":::";
@@ -38,16 +38,21 @@ public class PythonSummarizer extends DocumentSummarizer {
     }
 
     private void handleResultIssues(String scriptOutput) {
-        final String pyCompilerErrorLine = "Traceback (most recent call last):";
-        final String genericErrorLine = "Something went wrong with executing the Python script.";
+        final String UTF8_VALIDATION_ERROR = "enchant_dict_check: assertion 'g_utf8_validate(word, len, NULL)";
+        final String PY_COMPILER_ERROR_LINE = "Traceback (most recent call last):";
+        final String GENERIC_ERROR_LINE = "Something went wrong with executing the Python script.";
         if (scriptOutput.isBlank()) {
-            throw new TextTooShortException("The text you tried to summarize is either too short or too repetitive to do so.");
+            throw new SummaryException("The text you tried to summarize is either too short or too repetitive to do so.");
         }
-        if (scriptOutput.equals(pyCompilerErrorLine)) {
-            throw new ProblematicTextException("The text you tried to summarize doesn't summarize well.");
+        if (scriptOutput.contains(UTF8_VALIDATION_ERROR)) {
+            throw new SummaryException("There was a problem with your text. Ensure all characters in your text are UTF-8. " +
+                    "If you uploaded a file, ensure it has the correct extension.");
         }
-        if (scriptOutput.equals(genericErrorLine)) {
-            throw new PythonScriptException("Something went wrong on our end.");
+        if (scriptOutput.equals(PY_COMPILER_ERROR_LINE)) {
+            throw new SummaryException("The text you tried to summarize doesn't summarize well.");
+        }
+        if (scriptOutput.equals(GENERIC_ERROR_LINE)) {
+            throw new SummaryException("Something went wrong on our end.");
         }
     }
 
