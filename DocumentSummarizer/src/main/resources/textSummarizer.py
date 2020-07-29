@@ -17,7 +17,7 @@ def get_text_from_stdin() -> str:
 def check_if_valid_word_exists(words) -> bool:
     dictionary = enchant.Dict("en_US")
     for word in words:
-        if dictionary.check(word) == True:
+        if dictionary.check(word) == True and len(word) != 1:
             return True
     raise NoValidWordsException(NO_VALID_WORDS_MSG)
 
