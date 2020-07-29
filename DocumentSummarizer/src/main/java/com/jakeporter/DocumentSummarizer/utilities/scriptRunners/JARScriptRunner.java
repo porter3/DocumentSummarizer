@@ -1,8 +1,6 @@
 package com.jakeporter.DocumentSummarizer.utilities.scriptRunners;
 
 import com.jakeporter.DocumentSummarizer.exceptions.PythonScriptException;
-import com.jakeporter.DocumentSummarizer.exceptions.ResultReadingException;
-import com.jakeporter.DocumentSummarizer.exceptions.WriterException;
 
 import java.io.*;
 
@@ -50,7 +48,7 @@ public class JARScriptRunner {
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
-            throw new WriterException("Something went wrong in getting the summary.");
+            throw new PythonScriptException("Something went wrong in getting the summary.");
         }
     }
 
@@ -72,10 +70,10 @@ public class JARScriptRunner {
                 reader.close();
             } catch (IOException f) {
                 f.printStackTrace();
-                throw new ResultReadingException(READING_EXCEPTION_MESSAGE);
+                throw new PythonScriptException(READING_EXCEPTION_MESSAGE);
             }
             e.printStackTrace();
-            throw new ResultReadingException(READING_EXCEPTION_MESSAGE);
+            throw new PythonScriptException(READING_EXCEPTION_MESSAGE);
         }
         return builder.toString();
     }
