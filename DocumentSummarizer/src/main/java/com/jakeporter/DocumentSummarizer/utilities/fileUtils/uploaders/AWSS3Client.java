@@ -6,7 +6,6 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
-import com.jakeporter.DocumentSummarizer.exceptions.AWSException;
 import com.jakeporter.DocumentSummarizer.exceptions.FileUploaderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,11 +78,11 @@ public class AWSS3Client {
                     s3Object.close();
                 } catch (IOException f) {
                     f.printStackTrace();
-                    throw new AWSException(AWS_EXCEPTION_MESSAGE);
+                    throw new FileUploaderException(AWS_EXCEPTION_MESSAGE);
                 }
             }
             e.printStackTrace();
-            throw new AWSException(AWS_EXCEPTION_MESSAGE);
+            throw new FileUploaderException(AWS_EXCEPTION_MESSAGE);
         }
         return s3Object.getObjectContent();
     }
