@@ -5,8 +5,8 @@ from enchant import Dict
 from sys import argv, stdin
 
 DELIMITER = argv[1]
-NO_VALID_WORDS_MSG = "No valid words were found."
-GENERIC_MSG = "Something went wrong with executing the Python script."
+NO_VALID_WORDS_MSG = "NO_VALID_WORDS_ERROR"
+GENERIC_MSG = "GENERIC_ERROR"
 
 def get_text_from_stdin() -> str:
     text = ''
