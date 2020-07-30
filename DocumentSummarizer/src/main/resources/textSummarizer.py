@@ -17,17 +17,18 @@ def get_text_from_stdin() -> str:
 def check_if_valid_word_exists(words) -> bool:
     dictionary = enchant.Dict("en_US")
     for word in words:
-        if dictionary.check(word) == True and len(word) != 1:
+        if dictionary.check(word) == True and len(word) > 1:
             return True
     raise NoValidWordsException(NO_VALID_WORDS_MSG)
 
 
 def create_frequency_table(text) -> dict:
-    # generally speaking, stop words are filler words (https://en.wikipedia.org/wiki/Stop_words)
-    stop_words = set(stopwords.words("english"))
     words = word_tokenize(text)
     # check if a single word is valid - if it does, can be reasonably certain it's not a non-text file with a .txt extension
     check_if_valid_word_exists(words)
+    # generally speaking, stop words are filler words (https://en.wikipedia.org/wiki/Stop_words)
+    stop_words = set(stopwords.words("english"))
+
     # create object to get word stems (e.g. laughing -> laugh)
     stemmer = PorterStemmer()
 
@@ -43,6 +44,16 @@ def create_frequency_table(text) -> dict:
             frequency_table[word] = 1
 
     return frequency_table
+
+
+def get_sentences(text) -> list:
+    unfiltered_sentences = sent_tokenize(text)
+    sentences = []
+    # Ensure each sentence is at least 4 characters ("I am" is shortest possible English sentence) - sent_tokenize() isn't smart enough on its own
+    for sentence in unfiltered_sentences:
+        if len(sentence) >= 4:
+            sentences.append(sentence)
+    return sentences
 
 
 def score_sentences(sentences, frequency_table) -> dict:
@@ -64,7 +75,6 @@ def score_sentences(sentences, frequency_table) -> dict:
         Multiplying it by 10 prior to ensures that the scores of strings with fewer sentences don't have a spread that's too small.
         """
         sentence_scores[abbrv_sentence] = sentence_scores[abbrv_sentence] * 10 // sentence_word_count
-
     return sentence_scores
 
 
@@ -80,22 +90,20 @@ def find_average_score(sentence_scores) -> int:
 
 def generate_summary(sentences, sentence_scores, threshold) -> str:
     summary = ''
-
     for sentence in sentences:
         abbrv_sentence = sentence[:10]
         if abbrv_sentence in sentence_scores and sentence_scores[abbrv_sentence] > threshold:
             summary += ' ' + sentence
-
     return summary
 
 
 def get_multipliers(sentences) -> list:
     multipliers = []
     multiplier = 0.8
-    step = 5
+    step = 4
     for i in range(0, len(sentences), step):
         multipliers.append(multiplier)
-        multiplier += 0.2
+        multiplier += 0.115
     return multipliers
 
 
@@ -107,7 +115,7 @@ def main():
         except NoValidWordsException as e:
             print(str(e))
             return
-        sentences = sent_tokenize(text)
+        sentences = get_sentences(text)
         sentence_scores = score_sentences(sentences, frequency_table)
         threshold = find_average_score(sentence_scores)
         threshold_multipliers = get_multipliers(sentences)
