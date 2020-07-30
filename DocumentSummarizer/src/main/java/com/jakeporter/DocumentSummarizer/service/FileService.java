@@ -28,9 +28,10 @@ public class FileService {
 
     // had to turn off Spring's spring.servlet.multipart.max-file-size/max-request-size boundaries in application.properties and handle file size limits here (nothing else worked properly)
     public void validateFileSize(MultipartFile file) {
-        // maxSize is exactly 3 MB
-        BigDecimal maxSize = new BigDecimal("3145728");
-        BigDecimal mbInBytes = new BigDecimal("1048576");
+        final String FIVE_MB_IN_BYTES = "5242880";
+        final String MB_IN_BYTES = "1048576";
+        BigDecimal maxSize = new BigDecimal(FIVE_MB_IN_BYTES);
+        BigDecimal mbInBytes = new BigDecimal(MB_IN_BYTES);
         BigDecimal fileSize = new BigDecimal(String.valueOf(file.getSize()));
         if (fileSize.compareTo(maxSize) == 1) {
             throw new FileTooLargeException("File size cannot exceed " + maxSize.divide(mbInBytes, RoundingMode.FLOOR) + " MB. Your file is " + fileSize.divide(mbInBytes).setScale(2, RoundingMode.FLOOR) + " MB.");
@@ -74,12 +75,14 @@ public class FileService {
         } catch (TextExtractorException e) {
             e.printStackTrace();
             throw new TextExtractorException(e.getMessage());
-        } catch (SummaryException e) { // Don't know what uncaught exceptions could throw this at the moment, but I want to ensure the deletion of any uploaded files
+        } catch (SummaryException e) {
             e.printStackTrace();
             throw new SummaryException(e.getMessage());
         } catch (PythonScriptException e) {
             e.printStackTrace();
             throw new PythonScriptException(e.getMessage());
+        } catch (Exception e) { // Don't know what uncaught exceptions could throw this at the moment, but I want to ensure the deletion of any uploaded files
+            e.printStackTrace();
         } finally {
             awsClient.deleteFileFromS3Bucket(fileUrl);
         }
