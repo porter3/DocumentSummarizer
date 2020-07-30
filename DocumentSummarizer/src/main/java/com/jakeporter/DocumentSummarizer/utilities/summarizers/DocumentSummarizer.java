@@ -41,7 +41,7 @@ public abstract class DocumentSummarizer {
         int textLength = text.length();
         logger.info("Text length: " + textLength);
         if (textLength > CHAR_MAX) {
-            throw new SummaryException("The current character count limit for texts to be summarized is " + CHAR_MAX + ". We're working on making it longer.\\n(Your character count: " + textLength);
+            throw new SummaryException("The current character count limit for texts to be summarized is " + CHAR_MAX + ".\\nYour character count: " + textLength);
         }
     }
 
