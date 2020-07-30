@@ -1,11 +1,12 @@
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.stem import PorterStemmer
+from enchant import Dict
 from sys import argv, stdin
-import enchant
 
 DELIMITER = argv[1]
 NO_VALID_WORDS_MSG = "No valid words were found."
+GENERIC_MSG = "Something went wrong with executing the Python script."
 
 def get_text_from_stdin() -> str:
     text = ''
@@ -15,11 +16,11 @@ def get_text_from_stdin() -> str:
 
 
 def check_if_valid_word_exists(words) -> bool:
-    dictionary = enchant.Dict("en_US")
+    dictionary = Dict("en_US")
     for word in words:
         if dictionary.check(word) == True and len(word) > 1:
             return True
-    raise NoValidWordsException(NO_VALID_WORDS_MSG)
+    raise NoValidWordsException()
 
 
 def create_frequency_table(text) -> dict:
@@ -49,9 +50,10 @@ def create_frequency_table(text) -> dict:
 def get_sentences(text) -> list:
     unfiltered_sentences = sent_tokenize(text)
     sentences = []
-    # Ensure each sentence is at least 4 characters ("I am" is shortest possible English sentence) - sent_tokenize() isn't smart enough on its own
+    # Only add sentence if it's at least 4 characters ("I am" is shortest possible English sentence) - sent_tokenize() isn't smart enough on its own
+    # Avoid repeat sentences
     for sentence in unfiltered_sentences:
-        if len(sentence) >= 4:
+        if len(sentence) >= 4 and sentence not in sentences:
             sentences.append(sentence)
     return sentences
 
@@ -113,7 +115,7 @@ def main():
         try:
             frequency_table = create_frequency_table(text)
         except NoValidWordsException as e:
-            print(str(e))
+            print(NO_VALID_WORDS_MSG)
             return
         sentences = get_sentences(text)
         sentence_scores = score_sentences(sentences, frequency_table)
@@ -122,7 +124,7 @@ def main():
         for multiplier in threshold_multipliers:
             print(generate_summary(sentences, sentence_scores, threshold * multiplier) + DELIMITER)
     except:
-        print("Something went wrong with executing the Python script.")
+        print(GENERIC_MSG)
 
 
 if __name__ == '__main__':
