@@ -1,6 +1,6 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Paper } from '@material-ui/core'
+import Paper from '@material-ui/core/Paper'
 import Loader from './Loader'
 
 
