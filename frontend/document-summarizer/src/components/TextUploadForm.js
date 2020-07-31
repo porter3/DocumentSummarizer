@@ -1,13 +1,13 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
-import { FormControl, FormControlLabel, RadioGroup, Radio, Typography, ThemeProvider } from '@material-ui/core'
+import { FormControl, FormControlLabel, RadioGroup, Radio, Typography, Button } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 import Alert from '@material-ui/lab/Alert'
 import AlertTitle from '@material-ui/lab/AlertTitle'
 
 
-export default function TextUploadForm({ theme, uploadChoice, text, fileExtension, isBadExtension, handleRadioChange, handleTextChange, handleFileChange }) {
-
+export default function TextUploadForm({ uploadChoice, text, fileExtension, isBadExtension, fileName, handleRadioChange, handleTextChange, handleFileChange }) {
 
     return (
         <div>
@@ -15,19 +15,17 @@ export default function TextUploadForm({ theme, uploadChoice, text, fileExtensio
                 <Col sm={12}>
                     <FormControl component="fieldset">
                         <RadioGroup aria-label="Upload Choices" name="uploadChoices" onChange={e => handleRadioChange(e)}>
-                            <ThemeProvider theme={theme}>
-                                <FormControlLabel value="fileUpload" control={<Radio />}
-                                label={
-                                    <>
-                                        <Typography>Upload File</Typography>
-                                        <Typography><small>(.docx, .doc, .pdf, .txt)</small></Typography>
-                                    </>
-                                }/>
-                                <FormControlLabel value="text" control={<Radio />}
-                                label={
-                                    <Typography>Enter Text</Typography>
-                                }/>
-                            </ThemeProvider>
+                            <FormControlLabel value="fileUpload" control={<Radio />}
+                            label={
+                                <>
+                                    <Typography>Upload File</Typography>
+                                    <Typography><small>(.docx, .doc, .pdf, .txt)</small></Typography>
+                                </>
+                            }/>
+                            <FormControlLabel value="text" control={<Radio />}
+                            label={
+                                <Typography>Enter Text</Typography>
+                            }/>
                         </RadioGroup>
                     </FormControl>
                 </Col>
@@ -35,17 +33,22 @@ export default function TextUploadForm({ theme, uploadChoice, text, fileExtensio
             <Row>
                 <Col sm={12}>
                     <div hidden={uploadChoice !== 'fileUpload'}>
-                        <label htmlFor ="file">Upload file:</label><br />
-                        <input type="file" name="file" id="file" onChange={handleFileChange} />
+                        <input type="file" name="file" id="file" style={{ display: 'none' }} onChange={handleFileChange} />
+                        <label htmlFor='file'>
+                            <Button variant='outlined' component='span' color='secondary'>Upload File</Button>
+                        </label>
+                        <span id='fileName'>
+                            {fileName &&
+                                fileName
+                            }
+                        </span>
                         {isBadExtension &&
                         <Row>
                             <Col sm={12}>
-                            <ThemeProvider theme={theme}>
                                 <Alert id='fileError' severity='warning'>
                                     <AlertTitle>Unsupported File Format</AlertTitle>
                                     This can't summarize .{fileExtension} files.
                                 </Alert>
-                            </ThemeProvider>
                             </Col>
                         </Row>
                         }
