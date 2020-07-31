@@ -1,10 +1,10 @@
 /*
-    Credit for this CSS goes to Camden Foucht @ cfoucht.com
+    Credit for most of this CSS goes to Camden Foucht @ cfoucht.com
 */
 
 .reverse-spinner {
     display: block;
-    margin-left: 100%;
+    margin: auto;
     position: relative;
     height: 100px;
     width: 100px;
@@ -18,10 +18,10 @@
 
 .reverse-spinner::before {
     position: absolute;
-    top: 15px;
-    left: 15px;
-    right: 15px;
-    bottom: 15px;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
     content: "";
     border: 4px solid transparent;
     border-top-color: #03a9f4;
@@ -29,6 +29,20 @@
     border-radius: 50%;
     -webkit-animation: spinBack 1s linear infinite;
     animation: spinBack 1s linear infinite;
+}
+
+@media only screen and (min-width: 768px) {
+    .reverse-spinner {
+        margin-top: 15%;
+        height: 200px;
+        width: 200px;
+    }
+    .reverse-spinner::before {
+        top: 30px;
+        left: 30px;
+        right: 30px;
+        bottom: 30px;
+    }
 }
 
 @-webkit-keyframes spin {
