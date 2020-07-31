@@ -9,7 +9,9 @@ import supportedFileFormats from './supportedFileFormats'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './css/app.css'
 import { Container, Row, Col } from 'react-bootstrap'
-import { createMuiTheme } from '@material-ui/core'
+import Paper from '@material-ui/core/Paper'
+import { ThemeProvider } from '@material-ui/core/styles'
+import theme from './muiTheme'
 
 
 function App() {
@@ -17,6 +19,7 @@ function App() {
   const [ isLoading, setIsLoading ] = useState(false)
   const [ uploadChoice, setUploadChoice ] = useState('')
   const [ fileExtension, setFileExtension ] = useState('')
+  const [ fileName, setFileName ] = useState('')
   const [ text, setText ] = useState('')
   const [ fileIsLoaded, setFileIsLoaded ] = useState(false)
   const [ summaries, setSummaries ] = useState([])
@@ -24,14 +27,6 @@ function App() {
   const [ summaryChoice, setSummaryChoice ] = useState(0)
 
   const isBadExtension = !supportedFileFormats.includes(fileExtension) && fileExtension !== ''
-
-  const theme = createMuiTheme({
-    typography: {
-      fontFamily: [
-        'Montserrat', 'Times New Roman'
-      ].join(',')
-    }
-  })
   
   const handleUploadChoice = e => {
     setUploadChoice(e.target.value)
@@ -39,8 +34,15 @@ function App() {
 
   const handleFileChange = e => {
     setFileIsLoaded(!fileIsLoaded)
+    console.log(e.target.files[0])
     const extension = getFileExtension(e.target.value)
     setFileExtension(extension)
+    if (e.target.files[0]) {
+      const fileName = e.target.files[0].name
+      setFileName(fileName)
+    } else {
+      setFileName('')
+    }
   }
 
   const getFileExtension = filePath => {
@@ -80,6 +82,7 @@ function App() {
 
   const getSummary = async () => {
     setSummaries([])
+    setSummaryChoice(0)
     setErrorMessage('')
     setIsLoading(true)
     let url, body
@@ -107,45 +110,50 @@ function App() {
   }
 
   return (
-    <Container fluid id='app'>
-      <Row>
-        <Col md={4} xs={10}>
-          <UploadHeader />
-          <TextUploadForm
-            theme={theme}
-            uploadChoice={uploadChoice}
-            text={text}
-            fileExtension={fileExtension}
-            isBadExtension={isBadExtension}
-            handleRadioChange={e => handleUploadChoice(e)}
-            handleTextChange={e => handleTextChange(e)}
-            handleFileChange={e => handleFileChange(e)}
-          />
-        </Col>
-        <Col xs={2}>
-          <GenerateButton
-            isLoading={isLoading}
-            fileExtension={fileExtension}
-            isBadExtension={isBadExtension}
-            handleClick={() => getSummary()}
-          />
-        </Col>
-        <Col md={6} xs={12}>
-          <SummarySection
-            summaries={summaries}
-            errorMessage={errorMessage}
-            isLoading={isLoading}
-            summaryChoice={summaryChoice}
-          />
-          {summaries.length > 1 &&
-            <SummaryLengthSlider
-              handleChange={handleSliderChange}
-              max={summaries.length - 1}
-            />
-          }
-        </Col>
-      </Row>
-    </Container>
+    <ThemeProvider theme={theme}>
+      <Paper style={{ height: '100vh' }}>
+        <Container fluid id='app'>
+          <Row>
+            <Col md={4} xs={10}>
+              <UploadHeader />
+              <TextUploadForm
+                theme={theme}
+                uploadChoice={uploadChoice}
+                text={text}
+                fileExtension={fileExtension}
+                isBadExtension={isBadExtension}
+                fileName={fileName}
+                handleRadioChange={e => handleUploadChoice(e)}
+                handleTextChange={e => handleTextChange(e)}
+                handleFileChange={e => handleFileChange(e)}
+              />
+            </Col>
+            <Col xs={2}>
+              <GenerateButton
+                isLoading={isLoading}
+                fileExtension={fileExtension}
+                isBadExtension={isBadExtension}
+                handleClick={() => getSummary()}
+              />
+            </Col>
+            <Col md={6} xs={12}>
+              <SummarySection
+                summaries={summaries}
+                errorMessage={errorMessage}
+                isLoading={isLoading}
+                summaryChoice={summaryChoice}
+              />
+              {summaries.length > 1 &&
+                <SummaryLengthSlider
+                  handleChange={handleSliderChange}
+                  max={summaries.length - 1}
+                />
+              }
+            </Col>
+          </Row>
+        </Container>
+      </Paper>
+    </ThemeProvider>
   )
 }
 
