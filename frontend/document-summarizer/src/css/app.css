@@ -9,7 +9,18 @@
     margin: 75px 0px 25px;
 }
 
+#fileName {
+    margin-left: 3%;
+}
+
+#generateButton {
+    margin-top: 130px;
+    margin-left: 10px;
+    margin-right: 20px
+}
+
 #summarySection {
+    position: relative;
     margin: 80px 0 15px;
     display: inline-block;
     /* No idea why this needs to be 101%, but it makes it always be the same width as the slider underneath it */
@@ -18,21 +29,11 @@
 
 #paper {
     height: 500px;
-    overflow: auto
+    overflow-y: auto
 }
 
 #paperText {
     padding: 20px;
-}
-
-#generateButton {
-    margin-top: 120px;
-    background-color: #B8DBD9;
-    color: black
-}
-
-#generateButton:hover {
-    background-color: #6AB4B0;
 }
 
 #fileError {
