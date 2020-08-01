@@ -11,8 +11,8 @@ import java.util.*;
 
 public class PythonSummarizer extends DocumentSummarizer {
 
-    private static final boolean IS_PRODUCTION_BUILD = false;
-    private static final String PYTHON_CMD = IS_PRODUCTION_BUILD ? "python3.7" : "python";
+    private static final boolean IS_PRODUCTION_BUILD = true;
+    private static final String PYTHON_CMD = IS_PRODUCTION_BUILD ? "python3" : "python";
     private static final String SCRIPT = "textSummarizer.py";
     private static final String SUMMARY_DELIMITER = ":::";
 
@@ -50,7 +50,7 @@ public class PythonSummarizer extends DocumentSummarizer {
             throw new SummaryException("There was a problem with your text. Ensure all characters in your text are UTF-8. " +
                     "If you uploaded a file, ensure it has the correct extension.");
         }
-        if (scriptOutput.equals(PY_COMPILER_ERROR)) {
+        if (scriptOutput.substring(0, 34).equals(PY_COMPILER_ERROR)) {
             throw new SummaryException("The text you tried to summarize doesn't summarize well.");
         }
         if (scriptOutput.equals(GENERIC_ERROR)) {
