@@ -4,14 +4,16 @@ from nltk.stem import PorterStemmer
 from enchant import Dict
 from sys import argv, stdin
 
-DELIMITER = argv[1]
+DELIMITER = ':::'
+# DELIMITER = argv[1]
 NO_VALID_WORDS_MSG = "NO_VALID_WORDS_ERROR"
 GENERIC_MSG = "GENERIC_ERROR"
 
 def get_text_from_stdin() -> str:
-    text = ''
-    for line in stdin:
-        text += line
+    text = input()
+    # text = ''
+    # for line in stdin:
+    #     text += line
     return text
 
 
@@ -96,7 +98,7 @@ def generate_summary(sentences, sentence_scores, threshold) -> str:
         abbrv_sentence = sentence[:10]
         if abbrv_sentence in sentence_scores and sentence_scores[abbrv_sentence] > threshold:
             summary += ' ' + sentence
-    return summary
+    return summary.replace('\n', ' - ')
 
 
 def get_multipliers(sentences) -> list:
@@ -122,7 +124,10 @@ def main():
         threshold = find_average_score(sentence_scores)
         threshold_multipliers = get_multipliers(sentences)
         for multiplier in threshold_multipliers:
-            print(generate_summary(sentences, sentence_scores, threshold * multiplier) + DELIMITER)
+            summary = generate_summary(sentences, sentence_scores, threshold * multiplier)
+            # due to the first threshold multiplier being 0.8, it's possible for a summary to the same as the text if the text is particularly short
+            if summary != text:
+                print(summary + DELIMITER)
     except:
         print(GENERIC_MSG)
 
