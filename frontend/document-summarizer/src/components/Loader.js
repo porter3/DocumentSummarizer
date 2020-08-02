@@ -1,8 +1,13 @@
 import React from 'react'
 import '../css/loader.css'
 
-export default function Loader() {
+export default function Loader({ loaderMessage }) {
     return (
-        <div className="reverse-spinner"></div>
+        <div>
+            <div className="reverse-spinner"></div>
+            {loaderMessage &&
+                <div id='loaderMessage'>{loaderMessage}</div>
+            }
+        </div>
     )
 }
