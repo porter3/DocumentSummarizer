@@ -11,22 +11,29 @@ import './css/app.css'
 import { Container, Row, Col } from 'react-bootstrap'
 import Paper from '@material-ui/core/Paper'
 import { ThemeProvider } from '@material-ui/core/styles'
+import getLoaderMessage from './getLoaderMessage'
 import theme from './muiTheme'
 
 
 function App() {
 
   const [ isLoading, setIsLoading ] = useState(false)
+  const [ loaderMessage, setLoaderMessage ] = useState('')
   const [ uploadChoice, setUploadChoice ] = useState('')
-  const [ fileExtension, setFileExtension ] = useState('')
-  const [ fileName, setFileName ] = useState('')
+  const [ fileInfo, setFileInfo ] = useState({
+    file: {
+      name: '',
+      extension: '',
+      sizeInBytes: 0
+    }
+  })
   const [ text, setText ] = useState('')
   const [ fileIsLoaded, setFileIsLoaded ] = useState(false)
   const [ summaries, setSummaries ] = useState([])
   const [ errorMessage, setErrorMessage ] = useState('')
   const [ summaryChoice, setSummaryChoice ] = useState(0)
 
-  const isBadExtension = !supportedFileFormats.includes(fileExtension) && fileExtension !== ''
+  const isBadExtension = !supportedFileFormats.includes(fileInfo.file.extension) && fileInfo.file.extension !== ''
   
   const handleUploadChoice = e => {
     setUploadChoice(e.target.value)
@@ -34,22 +41,29 @@ function App() {
 
   const handleFileChange = e => {
     setFileIsLoaded(!fileIsLoaded)
-    console.log(e.target.files[0])
     const extension = getFileExtension(e.target.value)
-    setFileExtension(extension)
     if (e.target.files[0]) {
       const fileName = e.target.files[0].name
-      setFileName(fileName)
+      const fileSize = e.target.files[0].size
+      setFileInfo(() => ({
+        file: {
+          name: fileName,
+          extension: extension,
+          sizeInBytes: fileSize
+        }
+      }))
     } else {
-      setFileName('')
+      setFileInfo(() => ({
+        file: {
+          name: '',
+          extension: '',
+          sizeInBytes: 0
+        }
+      }))
     }
   }
 
-  const getFileExtension = filePath => {
-    console.log(filePath)
-    const extension = filePath.slice((Math.max(0, filePath.lastIndexOf('.')) || Infinity) + 1).toLowerCase()
-    return extension
-  }
+  const getFileExtension = filePath => filePath.slice((Math.max(0, filePath.lastIndexOf('.')) || Infinity) + 1).toLowerCase()
 
   const handleTextChange = e => {
     setText(e.target.value)
@@ -57,6 +71,10 @@ function App() {
 
   const handleSliderChange = (e, value) => {
     setSummaryChoice(value)
+  }
+
+  const changeLoaderMessage = () => {
+    setTimeout(() => setLoaderMessage(getLoaderMessage(fileInfo.file.sizeInBytes)), 4000)
   }
 
   const fetchSummaries = (url, body) => {
@@ -85,6 +103,7 @@ function App() {
     setSummaryChoice(0)
     setErrorMessage('')
     setIsLoading(true)
+    changeLoaderMessage()
     let url, body
     if (uploadChoice === 'fileUpload') {
       url = serverUrl + '/file'
@@ -120,9 +139,9 @@ function App() {
                 theme={theme}
                 uploadChoice={uploadChoice}
                 text={text}
-                fileExtension={fileExtension}
+                fileExtension={fileInfo.file.extension}
                 isBadExtension={isBadExtension}
-                fileName={fileName}
+                fileName={fileInfo.file.name}
                 handleRadioChange={e => handleUploadChoice(e)}
                 handleTextChange={e => handleTextChange(e)}
                 handleFileChange={e => handleFileChange(e)}
@@ -131,7 +150,7 @@ function App() {
             <Col xs={2}>
               <GenerateButton
                 isLoading={isLoading}
-                fileExtension={fileExtension}
+                fileExtension={fileInfo.file.extension}
                 isBadExtension={isBadExtension}
                 handleClick={() => getSummary()}
               />
@@ -142,6 +161,7 @@ function App() {
                 errorMessage={errorMessage}
                 isLoading={isLoading}
                 summaryChoice={summaryChoice}
+                loaderMessage={loaderMessage}
               />
               {summaries.length > 1 &&
                 <SummaryLengthSlider
