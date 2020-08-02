@@ -2,7 +2,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { FormControl, FormControlLabel, RadioGroup, Radio, Typography, Button } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
 import Alert from '@material-ui/lab/Alert'
 import AlertTitle from '@material-ui/lab/AlertTitle'
 
@@ -37,11 +36,13 @@ export default function TextUploadForm({ uploadChoice, text, fileExtension, isBa
                         <label htmlFor='file'>
                             <Button variant='outlined' component='span' color='secondary'>Upload File</Button>
                         </label>
-                        <span id='fileName'>
-                            {fileName &&
-                                fileName
-                            }
-                        </span>
+                        <Row>
+                            <span id='fileName'>
+                                {fileName &&
+                                    fileName
+                                }
+                            </span>
+                        </Row>
                         {isBadExtension &&
                         <Row>
                             <Col sm={12}>
