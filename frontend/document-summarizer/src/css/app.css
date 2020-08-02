@@ -27,9 +27,15 @@
     width: 101%;
 }
 
+#loaderMessage {
+    text-align: center;
+    margin-top: 15px;
+}
+
 #paper {
     height: 500px;
-    overflow-y: auto
+    overflow-y: auto;
+    overflow-x: hidden
 }
 
 #paperText {
