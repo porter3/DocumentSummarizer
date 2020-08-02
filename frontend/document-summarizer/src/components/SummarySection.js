@@ -4,7 +4,7 @@ import Paper from '@material-ui/core/Paper'
 import Loader from './Loader'
 
 
-export default function SummarySection({ summaries, errorMessage, isLoading, summaryChoice }) {
+export default function SummarySection({ summaries, errorMessage, isLoading, summaryChoice, loaderMessage }) {
     // only display first element of summaries for now
     return (
         <div id='summarySection'>
@@ -23,7 +23,7 @@ export default function SummarySection({ summaries, errorMessage, isLoading, sum
                 </div>
             }
             {isLoading &&
-                <Loader />
+                <Loader loaderMessage={loaderMessage} />
             }
         </div>
     )
