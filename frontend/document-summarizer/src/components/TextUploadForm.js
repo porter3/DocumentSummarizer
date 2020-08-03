@@ -6,12 +6,12 @@ import Alert from '@material-ui/lab/Alert'
 import AlertTitle from '@material-ui/lab/AlertTitle'
 
 
-export default function TextUploadForm({ uploadChoice, text, fileExtension, isBadExtension, fileName, isTooLargeFile, handleRadioChange, handleTextChange, handleFileChange }) {
+export default function TextUploadForm({ uploadChoice, text, fileExtension, isBadExtension, fileName, isTooLargeFile, handleRadioChange, handleTextChange, handleFileChange, handleClick }) {
 
     return (
         <div>
             <Row>
-                <Col sm={12}>
+                <Col xs={12}>
                     <FormControl component="fieldset">
                         <RadioGroup aria-label="Upload Choices" name="uploadChoices" onChange={e => handleRadioChange(e)}>
                             <FormControlLabel value="fileUpload" control={<Radio />}
@@ -30,7 +30,7 @@ export default function TextUploadForm({ uploadChoice, text, fileExtension, isBa
                 </Col>
             </Row>
             <Row>
-                <Col sm={12}>
+                <Col xs={12}>
                     <div hidden={uploadChoice !== 'fileUpload'}>
                         <input type="file" name="file" id="file" style={{ display: 'none' }} onChange={handleFileChange} />
                         <label htmlFor='file'>
@@ -64,8 +64,21 @@ export default function TextUploadForm({ uploadChoice, text, fileExtension, isBa
                             </Row>
                         }
                     </div>
-                    <div hidden={uploadChoice !== 'text'}>
-                        <textarea rows="18" cols="50" id="textEntry" onChange={handleTextChange} value={text} />
+                    <div id='textDiv' hidden={uploadChoice !== 'text'}>
+                        <Row>
+                            <Col xs={12}>
+                                <Button
+                                    hidden={uploadChoice !== 'text'}
+                                    id='clearButton'
+                                    variant='outlined'
+                                    component='span'
+                                    color='secondary'
+                                    onClick={handleClick}>
+                                        Clear
+                                </Button>
+                                <textarea rows="20" id="textEntry" onChange={handleTextChange} value={text} />
+                            </Col>
+                        </Row>
                     </div>
                 </Col>
             </Row>
