@@ -6,7 +6,7 @@ import Alert from '@material-ui/lab/Alert'
 import AlertTitle from '@material-ui/lab/AlertTitle'
 
 
-export default function TextUploadForm({ uploadChoice, text, fileExtension, isBadExtension, fileName, handleRadioChange, handleTextChange, handleFileChange }) {
+export default function TextUploadForm({ uploadChoice, text, fileExtension, isBadExtension, fileName, isTooLargeFile, handleRadioChange, handleTextChange, handleFileChange }) {
 
     return (
         <div>
@@ -37,21 +37,31 @@ export default function TextUploadForm({ uploadChoice, text, fileExtension, isBa
                             <Button variant='outlined' component='span' color='secondary'>Upload File</Button>
                         </label>
                         <Row>
-                            <span id='fileName'>
+                            <Typography id='fileName'>
                                 {fileName &&
                                     fileName
                                 }
-                            </span>
+                            </Typography>
                         </Row>
                         {isBadExtension &&
-                        <Row>
-                            <Col sm={12}>
-                                <Alert id='fileError' severity='warning'>
-                                    <AlertTitle>Unsupported File Format</AlertTitle>
-                                    This can't summarize .{fileExtension} files.
-                                </Alert>
-                            </Col>
-                        </Row>
+                            <Row>
+                                <Col sm={12}>
+                                    <Alert className='fileError' severity='warning'>
+                                        <AlertTitle>Unsupported File Format</AlertTitle>
+                                        This can't summarize .{fileExtension} files.
+                                    </Alert>
+                                </Col>
+                            </Row>
+                        }
+                        {isTooLargeFile &&
+                            <Row>
+                                <Col sm={12}>
+                                    <Alert className='fileError' severity='warning'>
+                                        <AlertTitle>File Too Large</AlertTitle>
+                                        Files cannot be larger than 5MB.
+                                    </Alert>
+                                </Col>
+                            </Row>
                         }
                     </div>
                     <div hidden={uploadChoice !== 'text'}>
