@@ -1,4 +1,5 @@
 import { createMuiTheme } from '@material-ui/core/styles'
+import './css/fonts/fontFaces.css'
 
 export default createMuiTheme({
     palette: { 
@@ -12,6 +13,9 @@ export default createMuiTheme({
         }
     },
     typography: {
-        fontFamily: [ 'Montserrat', 'Times New Roman' ]
+        button: {
+            fontFamily: [ 'montserratmedium', 'Times New Roman' ]
+        },
+        fontFamily: [ 'montserratlight', 'Times New Roman' ]
     }
 })
