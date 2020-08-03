@@ -72,8 +72,35 @@ function App() {
     setSummaryChoice(value)
   }
 
-  const handleClick = () => {
+  const handleGenerateButtonClick = () => {
+    if (uploadChoice === 'text') {
+      if (!validateSentenceCount()) {
+        return
+      }
+    }
     getSummaries()
+  }
+
+  const validateSentenceCount = () => {
+    if (text === '') {
+      setSummaries([])
+      setErrorMessage("Please enter some text to summarize.")
+      return false
+    }
+    const sentenceCount = text.match(/[\w|)][.?!](\s|$)/g).length
+    const minSentenceCount = 4
+    if (sentenceCount < minSentenceCount) {
+      const sentenceWord = sentenceCount === 1 ? 'sentence' : 'sentences'
+      setSummaries([])
+      setErrorMessage("It's a little worrisome that you need a tool to summarize only " +
+        sentenceCount + " " + sentenceWord + ". Please enter at least " + minSentenceCount + " sentences.")
+      return false
+    }
+    return true
+  }
+
+  const handleClearButtonClick = () => {
+    setText('')
   }
 
   const changeLoaderMessage = () => {
@@ -150,6 +177,7 @@ function App() {
                 handleRadioChange={e => handleUploadChoice(e)}
                 handleTextChange={e => handleTextChange(e)}
                 handleFileChange={e => handleFileChange(e)}
+                handleClick={() => handleClearButtonClick()}
               />
             </Col>
             <Col xs={2}>
@@ -158,7 +186,7 @@ function App() {
                 fileExtension={fileInfo.file.extension}
                 isBadExtension={isBadExtension}
                 isTooLargeFile={isTooLargeFile}
-                handleClick={() => handleClick()}
+                handleClick={() => handleGenerateButtonClick()}
               />
             </Col>
             <Col md={6} xs={12}>
