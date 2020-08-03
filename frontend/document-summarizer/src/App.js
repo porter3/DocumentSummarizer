@@ -28,19 +28,18 @@ function App() {
     }
   })
   const [ text, setText ] = useState('')
-  const [ fileIsLoaded, setFileIsLoaded ] = useState(false)
   const [ summaries, setSummaries ] = useState([])
   const [ errorMessage, setErrorMessage ] = useState('')
   const [ summaryChoice, setSummaryChoice ] = useState(0)
 
   const isBadExtension = !supportedFileFormats.includes(fileInfo.file.extension) && fileInfo.file.extension !== ''
+  const isTooLargeFile = fileInfo.file.sizeInBytes > 5242880
   
   const handleUploadChoice = e => {
     setUploadChoice(e.target.value)
   }
 
   const handleFileChange = e => {
-    setFileIsLoaded(!fileIsLoaded)
     const extension = getFileExtension(e.target.value)
     if (e.target.files[0]) {
       const fileName = e.target.files[0].name
@@ -73,8 +72,12 @@ function App() {
     setSummaryChoice(value)
   }
 
+  const handleClick = () => {
+    getSummaries()
+  }
+
   const changeLoaderMessage = () => {
-    setTimeout(() => setLoaderMessage(getLoaderMessage(fileInfo.file.sizeInBytes)), 4000)
+    setTimeout(() => { setLoaderMessage(getLoaderMessage(fileInfo.file.sizeInBytes)) }, 4000)
   }
 
   const fetchSummaries = (url, body) => {
@@ -98,7 +101,7 @@ function App() {
       })
   }
 
-  const getSummary = async () => {
+  const getSummaries = async () => {
     setSummaries([])
     setSummaryChoice(0)
     setErrorMessage('')
@@ -115,6 +118,7 @@ function App() {
     }
     const fetchedSummaries = await fetchSummaries(url, body)
     console.log(fetchedSummaries)
+    setLoaderMessage('')
     setIsLoading(false)
     if (fetchedSummaries.summaries) {
       setErrorMessage('')
@@ -130,7 +134,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Paper style={{ height: '100vh' }}>
+      <Paper style={{ height: '110vh', boxShadow: 'none' }}>
         <Container fluid id='app'>
           <Row>
             <Col md={4} xs={10}>
@@ -142,6 +146,7 @@ function App() {
                 fileExtension={fileInfo.file.extension}
                 isBadExtension={isBadExtension}
                 fileName={fileInfo.file.name}
+                isTooLargeFile={isTooLargeFile}
                 handleRadioChange={e => handleUploadChoice(e)}
                 handleTextChange={e => handleTextChange(e)}
                 handleFileChange={e => handleFileChange(e)}
@@ -152,7 +157,8 @@ function App() {
                 isLoading={isLoading}
                 fileExtension={fileInfo.file.extension}
                 isBadExtension={isBadExtension}
-                handleClick={() => getSummary()}
+                isTooLargeFile={isTooLargeFile}
+                handleClick={() => handleClick()}
               />
             </Col>
             <Col md={6} xs={12}>
