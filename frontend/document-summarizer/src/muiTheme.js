@@ -13,9 +13,12 @@ export default createMuiTheme({
         }
     },
     typography: {
-        button: {
-            fontFamily: [ 'montserratmedium', 'Times New Roman' ]
+        h3: {
+            fontSize: '1.75rem'
         },
-        fontFamily: [ 'montserratlight', 'Times New Roman' ]
+        button: {
+            fontFamily: [ 'montserratmedium', 'Times New Roman' ].join(',')
+        },
+        fontFamily: [ 'montserratlight', 'Times New Roman' ].join(',')
     }
 })
