@@ -10,9 +10,19 @@
     margin-left: 3%;
 }
 
+#textDiv {
+    margin-top: -8%;
+}
+
 textarea {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
     border: none;
-    outline: 2px solid #639FAB;
+    outline: 2px solid #ADE3E0;
 }
 
 textarea:focus {
@@ -20,10 +30,16 @@ textarea:focus {
     outline: 3px solid #52CBC5;
 }
 
+#clearButton {
+    margin-bottom: 2%;
+    float: right;
+}
+
 #generateButton {
     margin-top: 130px;
     margin-left: 10px;
-    margin-right: 20px
+    margin-right: 20px;
+    float: left;
 }
 
 #summarySection {
@@ -32,6 +48,11 @@ textarea:focus {
     display: inline-block;
     /* No idea why this needs to be 101%, but it makes it always be the same width as the slider underneath it */
     width: 101%;
+}
+
+#errorMessage {
+    margin-top: 8.5%;
+    width: 90%;
 }
 
 #loaderMessage {
