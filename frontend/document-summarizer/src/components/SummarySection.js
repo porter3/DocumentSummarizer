@@ -1,6 +1,7 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Paper from '@material-ui/core/Paper'
+import Alert from '@material-ui/lab/Alert'
 import Loader from './Loader'
 
 
@@ -18,8 +19,10 @@ export default function SummarySection({ summaries, errorMessage, isLoading, sum
                 </Paper>
             }
             {errorMessage &&
-                <div>
-                    {errorMessage}
+                <div id='errorMessage'>
+                    <Alert severity='error'>
+                        {errorMessage}
+                    </Alert>
                 </div>
             }
             {isLoading &&
