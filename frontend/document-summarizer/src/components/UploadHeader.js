@@ -8,7 +8,7 @@ export default function UploadHeader() {
         <div id='uploadHeader'>
             <Row>
                 <Col>
-                    <Typography variant='h3'><h3>Upload a file or enter text to summarize</h3></Typography>
+                    <Typography variant='h3'>Upload a file or enter text to summarize</Typography>
                 </Col>
             </Row>
         </div>
