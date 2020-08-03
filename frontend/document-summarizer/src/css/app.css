@@ -1,8 +1,5 @@
-@import 'https://fonts.googleapis.com/css2?family=Montserrat:wght@300&family=Raleway:wght@300&display=swap';
-
 #app {
     padding: 50px 100px 80px;
-    font-family: 'Montserrat', 'Times New Roman', Times, serif;
 }
 
 #uploadHeader {
@@ -11,6 +8,16 @@
 
 #fileName {
     margin-left: 3%;
+}
+
+textarea {
+    border: none;
+    outline: 2px solid #639FAB;
+}
+
+textarea:focus {
+    border: none;
+    outline: 3px solid #52CBC5;
 }
 
 #generateButton {
@@ -42,6 +49,6 @@
     padding: 20px;
 }
 
-#fileError {
+.fileError {
     margin-top: 20px;
 }
