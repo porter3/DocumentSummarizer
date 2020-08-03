@@ -6,7 +6,7 @@ import Alert from '@material-ui/lab/Alert'
 import AlertTitle from '@material-ui/lab/AlertTitle'
 
 
-export default function TextUploadForm({ uploadChoice, text, fileExtension, isBadExtension, fileName, isTooLargeFile, handleRadioChange, handleTextChange, handleFileChange }) {
+export default function TextUploadForm({ uploadChoice, text, fileExtension, isBadExtension, fileName, handleRadioChange, handleTextChange, handleFileChange }) {
 
     return (
         <div>
@@ -37,31 +37,21 @@ export default function TextUploadForm({ uploadChoice, text, fileExtension, isBa
                             <Button variant='outlined' component='span' color='secondary'>Upload File</Button>
                         </label>
                         <Row>
-                            <Typography id='fileName'>
+                            <span id='fileName'>
                                 {fileName &&
                                     fileName
                                 }
-                            </Typography>
+                            </span>
                         </Row>
                         {isBadExtension &&
-                            <Row>
-                                <Col sm={12}>
-                                    <Alert className='fileError' severity='warning'>
-                                        <AlertTitle>Unsupported File Format</AlertTitle>
-                                        This can't summarize .{fileExtension} files.
-                                    </Alert>
-                                </Col>
-                            </Row>
-                        }
-                        {isTooLargeFile &&
-                            <Row>
-                                <Col sm={12}>
-                                    <Alert className='fileError' severity='warning'>
-                                        <AlertTitle>File Too Large</AlertTitle>
-                                        Files cannot be larger than 5MB.
-                                    </Alert>
-                                </Col>
-                            </Row>
+                        <Row>
+                            <Col sm={12}>
+                                <Alert id='fileError' severity='warning'>
+                                    <AlertTitle>Unsupported File Format</AlertTitle>
+                                    This can't summarize .{fileExtension} files.
+                                </Alert>
+                            </Col>
+                        </Row>
                         }
                     </div>
                     <div hidden={uploadChoice !== 'text'}>
