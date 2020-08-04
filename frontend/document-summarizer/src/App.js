@@ -1,22 +1,33 @@
 import React, { useState } from 'react'
+// my components
+import AboutAppPopover from './components/AboutAppPopover'
+import DarkModeSwitch from './components/DarkModeSwitch'
 import UploadHeader from './components/UploadHeader'
 import TextUploadForm from './components/TextUploadForm'
 import GenerateButton from './components/GenerateButton'
 import SummarySection from './components/SummarySection'
 import SummaryLengthSlider from './components/SummaryLengthSlider'
-import serverUrl from './serverUrl'
-import supportedFileFormats from './supportedFileFormats'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import './css/app.css'
-import { Container, Row, Col } from 'react-bootstrap'
+// other components
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 import Paper from '@material-ui/core/Paper'
 import { ThemeProvider } from '@material-ui/core/styles'
+// css/styling
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './css/app.css'
+import createTheme from './muiTheme'
+// functions
 import getLoaderMessage from './getLoaderMessage'
-import theme from './muiTheme'
+import validateSentenceCount from './validateSentenceCount'
+// objects
+import serverUrl from './serverUrl'
+import supportedFileFormats from './supportedFileFormats'
 
 
 function App() {
 
+  const [ isDarkModeEnabled, setIsDarkModeEnabled ] = useState(false)
   const [ isLoading, setIsLoading ] = useState(false)
   const [ loaderMessage, setLoaderMessage ] = useState('')
   const [ uploadChoice, setUploadChoice ] = useState('')
@@ -34,14 +45,19 @@ function App() {
 
   const isBadExtension = !supportedFileFormats.includes(fileInfo.file.extension) && fileInfo.file.extension !== ''
   const isTooLargeFile = fileInfo.file.sizeInBytes > 5242880
+  const theme = createTheme(isDarkModeEnabled)
   
+  const toggleDarkMode = e => {
+    setIsDarkModeEnabled(e.target.checked)
+  }
+
   const handleUploadChoice = e => {
     setUploadChoice(e.target.value)
   }
 
   const handleFileChange = e => {
-    const extension = getFileExtension(e.target.value)
     if (e.target.files[0]) {
+      const extension = getFileExtension(e.target.value)
       const fileName = e.target.files[0].name
       const fileSize = e.target.files[0].size
       setFileInfo(() => ({
@@ -74,29 +90,11 @@ function App() {
 
   const handleGenerateButtonClick = () => {
     if (uploadChoice === 'text') {
-      if (!validateSentenceCount()) {
+      if (!validateSentenceCount(text, setSummaries, setErrorMessage)) {
         return
       }
     }
     getSummaries()
-  }
-
-  const validateSentenceCount = () => {
-    if (text === '') {
-      setSummaries([])
-      setErrorMessage("Please enter some text to summarize.")
-      return false
-    }
-    const sentenceCount = text.match(/[\w|)][.?!](\s|$)/g).length
-    const minSentenceCount = 4
-    if (sentenceCount < minSentenceCount) {
-      const sentenceWord = sentenceCount === 1 ? 'sentence' : 'sentences'
-      setSummaries([])
-      setErrorMessage("It's a little worrisome that you need a tool to summarize only " +
-        sentenceCount + " " + sentenceWord + ". Please enter at least " + minSentenceCount + " sentences.")
-      return false
-    }
-    return true
   }
 
   const handleClearButtonClick = () => {
@@ -164,6 +162,14 @@ function App() {
       <Paper style={{ height: '110vh', boxShadow: 'none' }}>
         <Container fluid id='app'>
           <Row>
+            <Col xs={12}>
+              <AboutAppPopover />
+              <DarkModeSwitch
+                isDarkModeEnabled={isDarkModeEnabled}
+                handleChange={e => toggleDarkMode(e)} />
+            </Col>
+          </Row>
+          <Row>
             <Col md={4} xs={10}>
               <UploadHeader />
               <TextUploadForm
@@ -174,6 +180,7 @@ function App() {
                 isBadExtension={isBadExtension}
                 fileName={fileInfo.file.name}
                 isTooLargeFile={isTooLargeFile}
+                isDarkModeEnabled={isDarkModeEnabled}
                 handleRadioChange={e => handleUploadChoice(e)}
                 handleTextChange={e => handleTextChange(e)}
                 handleFileChange={e => handleFileChange(e)}
