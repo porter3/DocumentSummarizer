@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 // my components
 import AboutAppPopover from './components/AboutAppPopover'
 import DarkModeSwitch from './components/DarkModeSwitch'
@@ -27,7 +27,8 @@ import supportedFileFormats from './supportedFileFormats'
 
 function App() {
 
-  const [ isDarkModeEnabled, setIsDarkModeEnabled ] = useState(false)
+  // eval() can be risky, but there's no security implications for using it here- just a user screwing up the dark mode key in their browser
+  const [ isDarkModeEnabled, setIsDarkModeEnabled ] = useState(eval(localStorage.getItem('isDarkModeEnabled')) || '')
   const [ isLoading, setIsLoading ] = useState(false)
   const [ loaderMessage, setLoaderMessage ] = useState('')
   const [ uploadChoice, setUploadChoice ] = useState('')
@@ -46,6 +47,10 @@ function App() {
   const isBadExtension = !supportedFileFormats.includes(fileInfo.file.extension) && fileInfo.file.extension !== ''
   const isTooLargeFile = fileInfo.file.sizeInBytes > 5242880
   const theme = createTheme(isDarkModeEnabled)
+
+  useEffect(() => {
+    localStorage.setItem('isDarkModeEnabled', isDarkModeEnabled)
+  }, [isDarkModeEnabled])
   
   const toggleDarkMode = e => {
     setIsDarkModeEnabled(e.target.checked)
