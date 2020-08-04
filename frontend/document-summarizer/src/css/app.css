@@ -1,9 +1,17 @@
 #app {
-    padding: 50px 100px 80px;
+    padding: 25px 100px 80px;
+}
+
+#aboutButton {
+    margin-top: -.5%;
+}
+
+#darkModeSwitch {
+    margin-left: 2%;
 }
 
 #uploadHeader {
-    margin: 75px 0px 25px;
+    margin: 30px 0px 25px;
 }
 
 #fileName {
@@ -36,7 +44,7 @@ textarea:focus {
 }
 
 #generateButton {
-    margin-top: 130px;
+    margin-top: 80px;
     margin-left: 10px;
     margin-right: 20px;
     float: left;
@@ -44,14 +52,14 @@ textarea:focus {
 
 #summarySection {
     position: relative;
-    margin: 80px 0 15px;
+    margin: 30px 0 15px;
     display: inline-block;
     /* No idea why this needs to be 101%, but it makes it always be the same width as the slider underneath it */
     width: 101%;
 }
 
 #errorMessage {
-    margin-top: 8.5%;
+    margin-top: 50px;
     width: 90%;
 }
 
