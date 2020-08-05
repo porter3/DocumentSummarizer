@@ -27,8 +27,7 @@ import supportedFileFormats from './supportedFileFormats'
 
 function App() {
 
-  // eval() can be risky, but there's no security implications for using it here- just a user screwing up the dark mode key in their browser
-  const [ isDarkModeEnabled, setIsDarkModeEnabled ] = useState(eval(localStorage.getItem('isDarkModeEnabled')) || '')
+  const [ isDarkModeEnabled, setIsDarkModeEnabled ] = useState(localStorage.getItem('isDarkModeEnabled') === 'true' || false)
   const [ isLoading, setIsLoading ] = useState(false)
   const [ loaderMessage, setLoaderMessage ] = useState('')
   const [ uploadChoice, setUploadChoice ] = useState('')
