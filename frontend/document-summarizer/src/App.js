@@ -15,14 +15,14 @@ import Paper from '@material-ui/core/Paper'
 import { ThemeProvider } from '@material-ui/core/styles'
 // css/styling
 import 'bootstrap/dist/css/bootstrap.min.css'
-import './css/app.css'
-import createTheme from './muiTheme'
+import './styling/css/app.css'
+import createTheme from './styling/muiTheme'
 // functions
-import getLoaderMessage from './getLoaderMessage'
-import validateSentenceCount from './validateSentenceCount'
+import getLoaderMessage from './misc/getLoaderMessage'
+import validateSentenceCount from './validation/validateSentenceCount'
 // objects
-import serverUrl from './serverUrl'
-import supportedFileFormats from './supportedFileFormats'
+import serverUrl from './misc/serverUrl'
+import supportedFileFormats from './validation/supportedFileFormats'
 
 
 function App() {

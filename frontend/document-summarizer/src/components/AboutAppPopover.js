@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Button from '@material-ui/core/Button'
 import Popover from '@material-ui/core/Popover'
 import Typography from '@material-ui/core/Typography'
-import aboutAppMsg from '../aboutAppMsg'
+import aboutAppMsg from '../misc/aboutAppMsg'
 
 export default function AboutAppPopover() {
 

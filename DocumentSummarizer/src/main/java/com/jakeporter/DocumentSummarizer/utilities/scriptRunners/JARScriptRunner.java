@@ -18,10 +18,16 @@ public class JARScriptRunner {
     }
 
     public String runPythonScript(String text, String summaryDelimiter) {
-        Process pythonProcess = initiateScriptProcess(summaryDelimiter);
-        writeToStdIn(pythonProcess, text);
-        String result = getResultFromStdOut(pythonProcess);
-        deleteTempFile();
+        String result = null;
+        try {
+            Process pythonProcess = initiateScriptProcess(summaryDelimiter);
+            writeToStdIn(pythonProcess, text);
+            result = getResultFromStdOut(pythonProcess);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            deleteTempFile();
+        }
         return result;
     }
 

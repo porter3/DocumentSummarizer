@@ -1,5 +1,5 @@
 import { createMuiTheme } from '@material-ui/core/styles'
-import './css/fonts/fontFaces.css'
+import './css/fontFaces.css'
 
 export default function createTheme(isDarkModeEnabled) {
     return createMuiTheme({

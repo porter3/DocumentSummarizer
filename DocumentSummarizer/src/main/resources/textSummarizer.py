@@ -4,16 +4,16 @@ from nltk.stem import PorterStemmer
 from enchant import Dict
 from sys import argv, stdin
 
-DELIMITER = ':::'
-# DELIMITER = argv[1]
+# DELIMITER = ':::'
+DELIMITER = argv[1]
 NO_VALID_WORDS_MSG = "NO_VALID_WORDS_ERROR"
 GENERIC_MSG = "GENERIC_ERROR"
 
 def get_text_from_stdin() -> str:
-    text = input()
-    # text = ''
-    # for line in stdin:
-    #     text += line
+    # text = input()
+    text = ''
+    for line in stdin:
+        text += line
     return text
 
 
