@@ -197,6 +197,7 @@ function App() {
                 fileExtension={fileInfo.file.extension}
                 isBadExtension={isBadExtension}
                 isTooLargeFile={isTooLargeFile}
+                uploadChoice={uploadChoice}
                 handleClick={() => handleGenerateButtonClick()}
               />
             </Col>
