@@ -3,11 +3,37 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.stem import PorterStemmer
 from enchant import Dict
 from sys import argv, stdin
+from math import ceil
 
-# DELIMITER = ':::'
-DELIMITER = argv[1]
+ATTR_DELIMITER = '-::-'
+SENTENCE_DELIMITER = '-:::-'
+SENTENCE_COUNT_DELIMITER = '-::::-'
+# want no more than 20 summaries right now
+SUMMARY_MAX = 20
 NO_VALID_WORDS_MSG = "NO_VALID_WORDS_ERROR"
 GENERIC_MSG = "GENERIC_ERROR"
+
+file_path = r"C:\Users\jake\Downloads\TheCrucibleFullText.txt"
+
+class SummarySentence():
+    def set_adjusted_score(self, adjusted_score):
+        self.adjusted_score = adjusted_score
+    
+    def __init__(self, score, sentence, order_placement):
+        self.score = score
+        self.sentence = sentence
+        self.order_placement = order_placement
+        self.adjusted_score = None
+    
+    def __str__(self):
+        return str(self.order_placement) + ATTR_DELIMITER + str(self.adjusted_score) + ATTR_DELIMITER + self.sentence
+
+
+def get_text_from_txt_file():
+    text = ''
+    with open(file_path,"r", encoding='utf-8') as f:
+        text = f.read()
+    return text
 
 def get_text_from_stdin() -> str:
     # text = input()
@@ -51,7 +77,7 @@ def create_frequency_table(text) -> dict:
 
 def get_sentences(text) -> list:
     unfiltered_sentences = sent_tokenize(text)
-    sentences = []
+    sentences = list()
     # Only add sentence if it's at least 4 characters ("I am" is shortest possible English sentence) - sent_tokenize() isn't smart enough on its own
     # Avoid repeat sentences
     for sentence in unfiltered_sentences:
@@ -89,30 +115,59 @@ def find_average_score(sentence_scores) -> int:
         sum += sentence_scores[entry]
 
     average = int(sum / len(sentence_scores))
+    print(average)
     return average
 
 
-def generate_summary(sentences, sentence_scores, threshold) -> str:
-    summary = ''
+def get_sentence_objects_above_threshold(sentences, sentence_scores, threshold) -> list:
+    sentence_objects = list()
+    scores_above_threshold = list()
+    order_index = 0
     for sentence in sentences:
         abbrv_sentence = sentence[:10]
-        if abbrv_sentence in sentence_scores and sentence_scores[abbrv_sentence] > threshold:
-            summary += ' ' + sentence
-    return summary.replace('\n', ' - ')
+        if sentence_scores[abbrv_sentence] > threshold:
+            # construct with score, sentence, order_placement
+            sentence_objects.append(SummarySentence(sentence_scores[abbrv_sentence], sentence, order_index))
+            scores_above_threshold.append(sentence_scores[abbrv_sentence])
+            order_index += 1
+
+    # get adjusted scores
+    adjusted_scores, max_adjusted_score = get_adjusted_scores(scores_above_threshold)
+    # sort sentence objects by score
+    sentence_objects_by_score_asc = sorted(sentence_objects, key=lambda s: s.score)
+    # iterate over sentence objects and add adjusted score
+    adj_score_index = 0
+    for obj in sentence_objects_by_score_asc:
+        obj.set_adjusted_score(adjusted_scores[adj_score_index])
+        adj_score_index += 1
+    # return re-sorted sentence objects by order_placement
+    return sorted(sentence_objects_by_score_asc, key=lambda s: s.order_placement), max_adjusted_score
 
 
-def get_multipliers(sentences) -> list:
-    multipliers = []
-    multiplier = 0.8
-    step = 4
-    for i in range(0, len(sentences), step):
-        multipliers.append(multiplier)
-        multiplier += 0.115
-    return multipliers
+def get_adjusted_scores(scores_above_threshold):
+    scores_above_threshold_count = len(scores_above_threshold)
+    adjusted_scores = list()
+    # get step (value with which to increase the assigned score)
+    step = 1 if scores_above_threshold_count < SUMMARY_MAX else SUMMARY_MAX / scores_above_threshold_count
+    adjusted_score = 0
+    for scores in scores_above_threshold:
+        adjusted_scores.append(adjusted_score)
+        adjusted_score += step
+    # get the max score of the sentences rounded up - due to the scoring algorithm, the scoring may cause the most verbose summary to not be SUMMARY_MAX sentences 100% of the time, even if more than SUMMARY_MAX sentences are included
+    max_adjusted_score = max(adjusted_scores)
+    return adjusted_scores, max_adjusted_score
+
+
+def get_summary_count(sentence_objects, max_adjusted_score) -> int:
+    sentence_count = len(sentence_objects)
+    if sentence_count > SUMMARY_MAX:
+        return ceil(max_adjusted_score)
+    else:
+        return sentence_count
+
 
 
 def main():
-    try:
         text = get_text_from_stdin()
         try:
             frequency_table = create_frequency_table(text)
@@ -121,15 +176,14 @@ def main():
             return
         sentences = get_sentences(text)
         sentence_scores = score_sentences(sentences, frequency_table)
-        threshold = find_average_score(sentence_scores)
-        threshold_multipliers = get_multipliers(sentences)
-        for multiplier in threshold_multipliers:
-            summary = generate_summary(sentences, sentence_scores, threshold * multiplier)
-            # due to the first threshold multiplier being 0.8, it's possible for a summary to the same as the text if the text is particularly short
-            if summary != text:
-                print(summary + DELIMITER)
-    except:
-        print(GENERIC_MSG)
+        avg_score = find_average_score(sentence_scores)
+        # construct sentence objects with all objects above threshold
+        sentence_objects, max_adjusted_score = get_sentence_objects_above_threshold(sentences, sentence_scores, avg_score)
+        # get max adjusted score to know for sure how many summaries there will be
+        summary_count = get_summary_count(sentence_objects, max_adjusted_score)
+        print(str(summary_count) + SENTENCE_COUNT_DELIMITER)
+        for obj in sentence_objects:
+            print(str(obj) + SENTENCE_DELIMITER)
 
 
 if __name__ == '__main__':
