@@ -1,17 +1,18 @@
-export default function validateSentenceCount(text, setSummaries, setErrorMessage) {
-    if (text === '') {
-        setSummaries([])
-        setErrorMessage("Please enter some text to summarize.")
+export default function validateSentenceCount(text, setSentences, setErrorMessage) {
+    const sentenceRegex = text.match(/[\w|)][.?!](\s|$)/g)
+    const minSentenceCount = 4
+    if (sentenceRegex == null) {
+        setSentences([])
+        setErrorMessage("Please enter at least " + minSentenceCount + " sentences to summarize.")
         return false
     }
-    const sentenceCount = text.match(/[\w|)][.?!](\s|$)/g).length
-    const minSentenceCount = 4
+    const sentenceCount = sentenceRegex.length
     if (sentenceCount < minSentenceCount) {
         const sentenceWord = sentenceCount === 1 ? 'sentence' : 'sentences'
-        setSummaries([])
-        setErrorMessage("It's a little worrisome that you need a tool to summarize only " +
+        setSentences([])
+        setErrorMessage("Come on, you don't need a tool to summarize only " +
         sentenceCount + " " + sentenceWord + ". Please enter at least " + minSentenceCount + " sentences.")
-    return false
+        return false
     }
     return true
 }
