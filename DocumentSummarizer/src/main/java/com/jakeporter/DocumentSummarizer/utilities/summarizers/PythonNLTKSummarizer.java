@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 
-public class PythonSummarizer extends DocumentSummarizer {
+public class PythonNLTKSummarizer extends DocumentSummarizer {
 
     private static final boolean IS_PRODUCTION_BUILD = false;
     private static final String PYTHON_CMD = IS_PRODUCTION_BUILD ? "python3" : "python";
@@ -20,9 +20,9 @@ public class PythonSummarizer extends DocumentSummarizer {
     private static final String SENTENCE_DELIMITER = "-:::-";
     private static final String SUMMARY_COUNT_DELIMITER = "-::::-";
 
-    public PythonSummarizer(){ super(); }
+    public PythonNLTKSummarizer(){ super(); }
 
-    public PythonSummarizer(FileTextExtractor extractor) {
+    public PythonNLTKSummarizer(FileTextExtractor extractor) {
         super(extractor);
     }
 
