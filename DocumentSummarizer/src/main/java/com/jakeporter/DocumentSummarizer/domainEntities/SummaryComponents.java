@@ -14,9 +14,6 @@ public class SummaryComponents {
 
     @Override
     public String toString() {
-        return "SummaryComponents{" +
-                "sentences=" + sentences +
-                ", summaryCount=" + summaryCount +
-                '}';
+        return "{ " + "Sentence count: " + sentences.size() + "Summary count: " + summaryCount + " }";
     }
 }
