@@ -1,7 +1,11 @@
 package com.jakeporter.DocumentSummarizer.controllers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jakeporter.DocumentSummarizer.domainEntities.SummaryComponents;
+import com.jakeporter.DocumentSummarizer.exceptions.JsonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,38 +13,45 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.jakeporter.DocumentSummarizer.service.FileService;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/summarize")
 public class FileController {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    // JSON key for responses
-    private static final String RESPONSE_KEY = "summaries";
-
     @Autowired
     FileService fileService;
 
     @PostMapping("/file")
-    public ResponseEntity<Map<String, Set<String>>> summarizeFile(@RequestParam("file") MultipartFile file) {
-        Map<String, Set<String>> response = new HashMap();
+    public ResponseEntity<String> summarizeFile(@RequestParam("file") MultipartFile file) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        String jsonString;
         fileService.validateFileSize(file);
         String fileUrl = fileService.uploadFile(file);
-        Set<String> summaries = fileService.summarize(file, fileUrl);
-        response.put(RESPONSE_KEY, summaries);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        SummaryComponents components = fileService.summarize(file, fileUrl);
+        try {
+            jsonString = objectMapper.writeValueAsString(components);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            // need to use custom exception, JsonProcessingException is protected
+            throw new JsonException("Something went wrong.");
+        }
+        return new ResponseEntity<>(jsonString, HttpStatus.OK);
     }
 
     @PostMapping("/text")
-    public ResponseEntity<Map<String, Set<String>>> summarizeText(@RequestBody String text) {
-        Map<String, Set<String>> response = new HashMap();
-        Set<String> summaries = fileService.summarize(text);
-        response.put(RESPONSE_KEY, summaries);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<String> summarizeText(@RequestBody String text) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        String jsonString;
+        SummaryComponents components = fileService.summarize(text);
+        try {
+            jsonString = objectMapper.writeValueAsString(components);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new JsonException("Something went wrong.");
+        }
+        return new ResponseEntity<>(jsonString, HttpStatus.OK);
     }
 
 }
