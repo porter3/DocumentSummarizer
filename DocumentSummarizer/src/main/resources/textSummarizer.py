@@ -7,7 +7,7 @@ from math import ceil
 
 ATTR_DELIMITER = '-::-'
 SENTENCE_DELIMITER = '-:::-'
-SENTENCE_COUNT_DELIMITER = '-::::-'
+SUMMARY_COUNT_DELIMITER = '-::::-'
 # want no more than 20 summaries right now
 SUMMARY_MAX = 20
 NO_VALID_WORDS_MSG = "NO_VALID_WORDS_ERROR"
@@ -181,7 +181,7 @@ def main():
         sentence_objects, max_adjusted_score = get_sentence_objects_above_threshold(sentences, sentence_scores, avg_score)
         # get max adjusted score to know for sure how many summaries there will be
         summary_count = get_summary_count(sentence_objects, max_adjusted_score)
-        print(str(summary_count) + SENTENCE_COUNT_DELIMITER)
+        print(str(summary_count) + SUMMARY_COUNT_DELIMITER)
         for obj in sentence_objects:
             print(str(obj) + SENTENCE_DELIMITER)
 
