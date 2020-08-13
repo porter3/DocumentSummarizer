@@ -1,12 +1,12 @@
 package com.jakeporter.DocumentSummarizer.utilities.summarizers;
 
-import com.jakeporter.DocumentSummarizer.exceptions.*;
+import com.jakeporter.DocumentSummarizer.domainEntities.SummaryComponents;
+import com.jakeporter.DocumentSummarizer.exceptions.SummaryException;
 import com.jakeporter.DocumentSummarizer.utilities.textExtractors.FileTextExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.util.Set;
 
 
 public abstract class DocumentSummarizer {
@@ -23,19 +23,19 @@ public abstract class DocumentSummarizer {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     // template method for files
-    public Set<String> summarize(InputStream stream) {
+    public SummaryComponents summarize(InputStream stream) {
         String text = extractor.extractTextFromStream(stream);
         checkTextLength(text);
         return computeSummaries(text);
     }
 
     // template method for pure text
-    public Set<String> summarizeDocument(String text) {
+    public SummaryComponents summarizeDocument(String text) {
         checkTextLength(text);
         return computeSummaries(text);
     }
 
-    protected abstract Set<String> computeSummaries(String text);
+    protected abstract SummaryComponents computeSummaries(String text);
 
     private void checkTextLength(String text) {
         int textLength = text.length();
