@@ -71,7 +71,7 @@ public class FileService {
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
             DocumentSummarizer summarizer = new PythonSummarizer(extractor);
             components = summarizer.summarize(s3ObjectStream);
-            logger.info("Components: " + components.toString());
+            logger.info("Summary components: " + components.toString());
         } catch (TextExtractorException e) {
             e.printStackTrace();
             throw new TextExtractorException(e.getMessage());
