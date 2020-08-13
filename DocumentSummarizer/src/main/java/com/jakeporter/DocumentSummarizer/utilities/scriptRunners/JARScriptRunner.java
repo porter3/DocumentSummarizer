@@ -17,10 +17,10 @@ public class JARScriptRunner {
         this.script = script;
     }
 
-    public String runPythonScript(String text, String summaryDelimiter) {
+    public String runPythonScript(String text, String attributeDelimiter, String sentenceDelimiter, String summaryCountDelimiter) {
         String result = null;
         try {
-            Process pythonProcess = initiateScriptProcess(summaryDelimiter);
+            Process pythonProcess = initiateScriptProcess(attributeDelimiter, sentenceDelimiter, summaryCountDelimiter);
             writeToStdIn(pythonProcess, text);
             result = getResultFromStdOut(pythonProcess);
         } catch (Exception e) {
@@ -31,9 +31,9 @@ public class JARScriptRunner {
         return result;
     }
 
-    private Process initiateScriptProcess(String summaryDelimiter) {
+    private Process initiateScriptProcess(String attributeDelimiter, String sentenceDelimiter, String summaryCountDelimiter) {
         this.scriptFile = writeScriptToTempFile();
-        ProcessBuilder processBuilder = new ProcessBuilder(pythonCmd, scriptFile.getAbsolutePath(), summaryDelimiter);
+        ProcessBuilder processBuilder = new ProcessBuilder(pythonCmd, scriptFile.getAbsolutePath(), attributeDelimiter, sentenceDelimiter, summaryCountDelimiter);
         processBuilder.redirectErrorStream(true);
         Process pythonProcess;
         try {
