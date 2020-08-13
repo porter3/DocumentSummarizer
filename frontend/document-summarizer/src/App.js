@@ -18,7 +18,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './styling/css/app.css'
 import createTheme from './styling/muiTheme'
 // functions
-import getLoaderMessage from './misc/getLoaderMessage'
+import changeLoaderMessage from './misc/changeLoaderMessage'
 import validateSentenceCount from './validation/validateSentenceCount'
 // objects
 import serverUrl from './misc/serverUrl'
@@ -39,9 +39,10 @@ function App() {
     }
   })
   const [ text, setText ] = useState('')
-  const [ summaries, setSummaries ] = useState([])
+  const [ sentences, setSentences ] = useState([])
   const [ errorMessage, setErrorMessage ] = useState('')
-  const [ summaryChoice, setSummaryChoice ] = useState(0)
+  const [ sentenceThreshold, setSentenceThreshold ] = useState(0)
+  const [ summaryCount, setSummaryCount ] = useState(0)
 
   const isBadExtension = !supportedFileFormats.includes(fileInfo.file.extension) && fileInfo.file.extension !== ''
   const isTooLargeFile = fileInfo.file.sizeInBytes > 5242880
@@ -89,27 +90,23 @@ function App() {
   }
 
   const handleSliderChange = (e, value) => {
-    setSummaryChoice(value)
+    setSentenceThreshold(value)
   }
 
   const handleGenerateButtonClick = () => {
     if (uploadChoice === 'text') {
-      if (!validateSentenceCount(text, setSummaries, setErrorMessage)) {
+      if (!validateSentenceCount(text, setSentences, setErrorMessage)) {
         return
       }
     }
-    getSummaries()
+    getSummaryData()
   }
 
   const handleClearButtonClick = () => {
     setText('')
   }
 
-  const changeLoaderMessage = () => {
-    setTimeout(() => { setLoaderMessage(getLoaderMessage(fileInfo.file.sizeInBytes)) }, 4000)
-  }
-
-  const fetchSummaries = (url, body) => {
+  const fetchSummaryData = (url, body) => {
     return fetch(url, {
       method: 'POST',
       body: body
@@ -130,12 +127,12 @@ function App() {
       })
   }
 
-  const getSummaries = async () => {
-    setSummaries([])
-    setSummaryChoice(0)
+  const getSummaryData = async () => {
+    setSentences([])
+    setSentenceThreshold(0)
     setErrorMessage('')
     setIsLoading(true)
-    changeLoaderMessage()
+    changeLoaderMessage(setLoaderMessage, fileInfo.file.sizeInBytes)
     let url, body
     if (uploadChoice === 'fileUpload') {
       url = serverUrl + '/file'
@@ -145,18 +142,19 @@ function App() {
       url = serverUrl + '/text'
       body = text
     }
-    const fetchedSummaries = await fetchSummaries(url, body)
-    console.log(fetchedSummaries)
+    const summaryData = await fetchSummaryData(url, body)
+    console.log(summaryData)
     setLoaderMessage('')
     setIsLoading(false)
-    if (fetchedSummaries.summaries) {
+    if (summaryData.sentences) {
       setErrorMessage('')
-      setSummaries(fetchedSummaries.summaries)
-    } else if (fetchedSummaries.message) {
-      setSummaries([])
-      setErrorMessage(fetchedSummaries.message)
+      setSummaryCount(summaryData.summaryCount)
+      setSentences(summaryData.sentences)
+    } else if (summaryData.message) {
+      setSentences([])
+      setErrorMessage(summaryData.message)
     } else {
-      setSummaries([])
+      setSentences([])
       setErrorMessage('Something went wrong.')
     }
   }
@@ -203,16 +201,16 @@ function App() {
             </Col>
             <Col md={6} xs={12}>
               <SummarySection
-                summaries={summaries}
+                sentences={sentences}
                 errorMessage={errorMessage}
                 isLoading={isLoading}
-                summaryChoice={summaryChoice}
+                sentenceThreshold={sentenceThreshold}
                 loaderMessage={loaderMessage}
               />
-              {summaries.length > 1 &&
+              {sentences.length > 1 &&
                 <SummaryLengthSlider
                   handleChange={handleSliderChange}
-                  max={summaries.length - 1}
+                  max={summaryCount - 1}
                 />
               }
             </Col>
