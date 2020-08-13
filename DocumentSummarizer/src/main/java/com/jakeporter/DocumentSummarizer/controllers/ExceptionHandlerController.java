@@ -55,4 +55,8 @@ public class ExceptionHandlerController {
         return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(JsonException.class)
+    public ResponseEntity<Error> handleJsonIssue(JsonException e) {
+        return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
