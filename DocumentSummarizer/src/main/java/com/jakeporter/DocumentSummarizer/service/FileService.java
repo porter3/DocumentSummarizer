@@ -1,5 +1,6 @@
 package com.jakeporter.DocumentSummarizer.service;
 
+import com.jakeporter.DocumentSummarizer.domainEntities.SummaryComponents;
 import com.jakeporter.DocumentSummarizer.exceptions.*;
 import com.jakeporter.DocumentSummarizer.utilities.fileUtils.FileInfoGetter;
 import com.jakeporter.DocumentSummarizer.utilities.fileUtils.uploaders.AWSS3Client;
@@ -16,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Set;
 
 @Service
 public class FileService {
@@ -58,7 +58,7 @@ public class FileService {
 
     /* There's an ugly chain of exception throws in here- they're specific because I want to send different status codes to the client for each specific problem
        and I have to re-throw them in here for the ExceptionHandlerController to intercept them */
-    public Set<String> summarize(MultipartFile mpFile, String fileUrl) {
+    public SummaryComponents summarize(MultipartFile mpFile, String fileUrl) {
         FileType fileType = new FileInfoGetter().getFileType(FilenameUtils.getExtension(mpFile.getOriginalFilename()));
         InputStream s3ObjectStream;
         try {
@@ -66,12 +66,12 @@ public class FileService {
         } catch (FileUploaderException e) {
             throw new FileUploaderException(e.getMessage());
         }
-        Set<String> summaries = null;
+        SummaryComponents components = null;
         try {
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
             DocumentSummarizer summarizer = new PythonSummarizer(extractor);
-            summaries = summarizer.summarize(s3ObjectStream);
-            logger.info("Summary: " + summaries);
+            components = summarizer.summarize(s3ObjectStream);
+            logger.info("Components: " + components.toString());
         } catch (TextExtractorException e) {
             e.printStackTrace();
             throw new TextExtractorException(e.getMessage());
@@ -86,10 +86,10 @@ public class FileService {
         } finally {
             awsClient.deleteFileFromS3Bucket(fileUrl);
         }
-        return summaries;
+        return components;
     }
 
-    public Set<String> summarize(String text) {
+    public SummaryComponents summarize(String text) {
         DocumentSummarizer summarizer = new PythonSummarizer();
         return summarizer.summarizeDocument(text);
     }
