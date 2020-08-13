@@ -13,8 +13,6 @@ SUMMARY_MAX = 20
 NO_VALID_WORDS_MSG = "NO_VALID_WORDS_ERROR"
 GENERIC_MSG = "GENERIC_ERROR"
 
-file_path = r"C:\Users\jake\Downloads\TheCrucibleFullText.txt"
-
 class SummarySentence():
     def set_adjusted_score(self, adjusted_score):
         self.adjusted_score = adjusted_score
@@ -29,14 +27,7 @@ class SummarySentence():
         return str(self.order_placement) + ATTR_DELIMITER + str(self.adjusted_score) + ATTR_DELIMITER + self.sentence
 
 
-def get_text_from_txt_file():
-    text = ''
-    with open(file_path,"r", encoding='utf-8') as f:
-        text = f.read()
-    return text
-
 def get_text_from_stdin() -> str:
-    # text = input()
     text = ''
     for line in stdin:
         text += line
@@ -115,7 +106,6 @@ def find_average_score(sentence_scores) -> int:
         sum += sentence_scores[entry]
 
     average = int(sum / len(sentence_scores))
-    print(average)
     return average
 
 
@@ -168,6 +158,7 @@ def get_summary_count(sentence_objects, max_adjusted_score) -> int:
 
 
 def main():
+    try:
         text = get_text_from_stdin()
         try:
             frequency_table = create_frequency_table(text)
@@ -184,6 +175,8 @@ def main():
         print(str(summary_count) + SUMMARY_COUNT_DELIMITER)
         for obj in sentence_objects:
             print(str(obj) + SENTENCE_DELIMITER)
+    except:
+        print(GENERIC_MSG)
 
 
 if __name__ == '__main__':
