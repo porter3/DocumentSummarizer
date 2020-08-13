@@ -4,15 +4,16 @@ import Alert from '@material-ui/lab/Alert'
 import Loader from './Loader'
 
 
-export default function SummarySection({ summaries, errorMessage, isLoading, summaryChoice, loaderMessage }) {
+export default function SummarySection({ sentences, errorMessage, isLoading, sentenceThreshold, loaderMessage }) {
+
     return (
         <div id='summarySection'>
-            {summaries.length !== 0 &&
+            {sentences.length !== 0 &&
                 <Paper
                     id='paper'
                     elevation={3}>
                     <div id='paperText'>
-                        {summaries[summaryChoice]}
+                        {sentences.map(sentence => sentence.score >= sentenceThreshold ? <span key={sentence.orderPlacement}>{sentence.sentence + ' '}</span> : false)}
                     </div>
                 </Paper>
             }
