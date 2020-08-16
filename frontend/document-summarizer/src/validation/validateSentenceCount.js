@@ -10,7 +10,7 @@ export default function validateSentenceCount(text, setSentences, setErrorMessag
     if (sentenceCount < minSentenceCount) {
         const sentenceWord = sentenceCount === 1 ? 'sentence' : 'sentences'
         setSentences([])
-        setErrorMessage("Come on, you don't need a tool to summarize only " +
+        setErrorMessage("You don't need a tool to summarize only " +
         sentenceCount + " " + sentenceWord + ". Please enter at least " + minSentenceCount + " sentences.")
         return false
     }
