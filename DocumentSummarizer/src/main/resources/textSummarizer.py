@@ -5,11 +5,11 @@ from enchant import Dict
 from sys import argv, stdin
 from math import ceil
 
-ATTR_DELIMITER = '-::-'
-SENTENCE_DELIMITER = '-:::-'
-SUMMARY_COUNT_DELIMITER = '-::::-'
+ATTR_DELIMITER = argv[1]
+SENTENCE_DELIMITER = argv[2]
+SUMMARY_COUNT_DELIMITER = argv[3]
 # want no more than 20 summaries right now
-SUMMARY_MAX = 20
+SUMMARY_MAX = 30
 NO_VALID_WORDS_MSG = "NO_VALID_WORDS_ERROR"
 GENERIC_MSG = "GENERIC_ERROR"
 
