@@ -1,1 +1,1 @@
-web: java -jar DocumentSummarizer.jar
+web: java -jar DocumentSummarizer-1.0-SNAPSHOT.jar
