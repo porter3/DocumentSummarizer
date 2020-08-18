@@ -106,6 +106,16 @@ function App() {
     setText('')
   }
 
+  const handleNetworkErrors = response => {
+    let errorMessage
+    if (response.message === 'Failed to fetch') {
+      errorMessage = 'A network error occurred.'
+    } else {
+      errorMessage = 'A TypeError occurred. Please tell Jake so he can fix it.' 
+    }
+    return errorMessage
+  }
+
   const fetchSummaryData = (url, body) => {
     return fetch(url, {
       method: 'POST',
@@ -118,9 +128,9 @@ function App() {
           error = errorResponse.json()
         } catch (e) {
           if (e instanceof TypeError) {
-            error.message = 'There was a TypeError. Please tell Jake so he can fix it.'
+            error.message = handleNetworkErrors(errorResponse)
           } else {
-            error.message = 'There was an error. Please tell Jake so he can fix it.'
+            error.message = 'An error occurred. Please tell Jake so he can fix it.'
           }
         }
         return error
@@ -143,7 +153,6 @@ function App() {
       body = text
     }
     const summaryData = await fetchSummaryData(url, body)
-    console.log(summaryData)
     setLoaderMessage('')
     setIsLoading(false)
     if (summaryData.sentences) {
