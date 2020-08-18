@@ -11,3 +11,4 @@ target/
 # Misc.
 application.properties
 *.ppk
+appBundles/
