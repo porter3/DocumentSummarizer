@@ -12,3 +12,4 @@ target/
 application.properties
 *.ppk
 appBundles/
+testDocs/
