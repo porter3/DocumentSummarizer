@@ -106,6 +106,12 @@ function App() {
     setText('')
   }
 
+  const clearLoaderMessageQueue = timeouts => {
+    timeouts.forEach(timeout => {
+      window.clearTimeout(timeout)
+    })
+  }
+
   const handleNetworkErrors = response => {
     let errorMessage
     if (response.message === 'Failed to fetch') {
@@ -142,7 +148,7 @@ function App() {
     setSentenceThreshold(0)
     setErrorMessage('')
     setIsLoading(true)
-    changeLoaderMessage(setLoaderMessage, fileInfo.file.sizeInBytes)
+    const timeouts = changeLoaderMessage(setLoaderMessage, fileInfo.file.sizeInBytes)
     let url, body
     if (uploadChoice === 'fileUpload') {
       url = serverUrl + '/file'
@@ -153,6 +159,7 @@ function App() {
       body = text
     }
     const summaryData = await fetchSummaryData(url, body)
+    clearLoaderMessageQueue(timeouts)
     setLoaderMessage('')
     setIsLoading(false)
     if (summaryData.sentences) {
