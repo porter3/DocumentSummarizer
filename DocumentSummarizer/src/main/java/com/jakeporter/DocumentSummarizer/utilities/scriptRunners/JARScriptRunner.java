@@ -8,8 +8,7 @@ import java.io.*;
 public class JARScriptRunner {
 
     private final String pythonCmd;
-    private final String script; // name of file in src/main/resources/
-
+    private final String script; // name of file in 'src/main/resources/', not the full path
     private File scriptFile;
 
     public JARScriptRunner(String pythonCmd, String script) {
