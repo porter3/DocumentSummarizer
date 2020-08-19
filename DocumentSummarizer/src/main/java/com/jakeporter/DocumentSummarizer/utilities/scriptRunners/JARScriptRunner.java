@@ -1,8 +1,6 @@
 package com.jakeporter.DocumentSummarizer.utilities.scriptRunners;
 
 import com.jakeporter.DocumentSummarizer.exceptions.PythonScriptException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
@@ -19,8 +17,6 @@ public class JARScriptRunner {
         this.script = script;
     }
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public String runPythonScript(String text, String... processArgs) {
         String result = null;
         try {
@@ -29,25 +25,19 @@ public class JARScriptRunner {
             result = getResultFromStdOut(pythonProcess);
         } catch (Exception e) {
             e.printStackTrace();
+            throw new PythonScriptException("Something went wrong getting the summary.");
         } finally {
             deleteTempFile();
         }
         return result;
     }
 
-    private Process initiateScriptProcess(String... processArgs) {
+    private Process initiateScriptProcess(String... processArgs) throws IOException {
         this.scriptFile = writeScriptToTempFile();
         String[] allProcessArgs = consolidateProcessArgs(pythonCmd, scriptFile.getAbsolutePath(), processArgs);
         ProcessBuilder processBuilder = new ProcessBuilder(allProcessArgs);
         processBuilder.redirectErrorStream(true);
-        Process pythonProcess;
-        try {
-            pythonProcess = processBuilder.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new PythonScriptException("Something went wrong running the Python script.");
-        }
-        return pythonProcess;
+        return processBuilder.start();
     }
 
     private String[] consolidateProcessArgs(String pythonCmd, String scriptPath, String[] otherArgs) {
@@ -60,41 +50,23 @@ public class JARScriptRunner {
         return processArgs;
     }
 
-    private void writeToStdIn(Process process, String text) {
+    private void writeToStdIn(Process process, String text) throws IOException {
         OutputStream pythonStdIn = process.getOutputStream();
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(pythonStdIn));
-        try {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(pythonStdIn))) {
             writer.write(text);
             writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new PythonScriptException("Something went wrong in getting the summary.");
         }
     }
 
-    private String getResultFromStdOut(Process process) {
-        final String READING_EXCEPTION_MESSAGE = "Something went wrong in getting the summary.";
+    private String getResultFromStdOut(Process process) throws IOException {
         StringBuilder builder = new StringBuilder();
         InputStream stdOut = process.getInputStream();
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(stdOut));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stdOut))){
             String line = reader.readLine();
             while (line != null) {
                 builder.append(line);
                 line = reader.readLine();
             }
-            reader.close();
-        } catch (IOException e) {
-            try {
-                reader.close();
-            } catch (IOException f) {
-                f.printStackTrace();
-                throw new PythonScriptException(READING_EXCEPTION_MESSAGE);
-            }
-            e.printStackTrace();
-            throw new PythonScriptException(READING_EXCEPTION_MESSAGE);
         }
         return builder.toString();
     }
@@ -103,21 +75,17 @@ public class JARScriptRunner {
         this.scriptFile.delete();
     }
 
-    private File writeScriptToTempFile() {
-        InputStream scriptStream = JARScriptRunner.class.getClassLoader().getResourceAsStream(script);
+    private File writeScriptToTempFile() throws IOException {
         String[] filenameComponents = script.split("\\.");
-        File scriptFile;
-        try {
-            scriptFile = File.createTempFile(filenameComponents[0], filenameComponents[1]);
+        try (InputStream scriptStream = JARScriptRunner.class.getClassLoader().getResourceAsStream(script)) {
+            File scriptFile;
             byte[] buffer = new byte[scriptStream.available()];
+            scriptFile = File.createTempFile(filenameComponents[0], filenameComponents[1]);
             scriptStream.read(buffer);
-            scriptStream.close();
-            OutputStream fileStream = new FileOutputStream(scriptFile);
-            fileStream.write(buffer);
-            fileStream.flush();
-            fileStream.close();
-        } catch (IOException e) {
-            throw new PythonScriptException("Something went wrong.");
+            try (OutputStream fileStream = new FileOutputStream(scriptFile)) {
+                fileStream.write(buffer);
+                fileStream.flush();
+            }
         }
         return scriptFile;
     }
