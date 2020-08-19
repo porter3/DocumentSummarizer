@@ -10,9 +10,9 @@ import java.io.*;
 public class JARScriptRunner {
 
     private final String pythonCmd;
-    private final String script; // name of file in src/main/resources/
-
+    private final String script; // name of file in 'src/main/resources/', not the full path
     private File scriptFile;
+    private static final String EXCEPTION_MSG = "Something went wrong in getting the summary.";
 
     public JARScriptRunner(String pythonCmd, String script) {
         this.pythonCmd = pythonCmd;
@@ -29,6 +29,7 @@ public class JARScriptRunner {
             result = getResultFromStdOut(pythonProcess);
         } catch (Exception e) {
             e.printStackTrace();
+            throw new PythonScriptException(EXCEPTION_MSG);
         } finally {
             deleteTempFile();
         }
@@ -45,7 +46,7 @@ public class JARScriptRunner {
             pythonProcess = processBuilder.start();
         } catch (IOException e) {
             e.printStackTrace();
-            throw new PythonScriptException("Something went wrong running the Python script.");
+            throw new PythonScriptException(EXCEPTION_MSG);
         }
         return pythonProcess;
     }
@@ -68,13 +69,18 @@ public class JARScriptRunner {
             writer.flush();
             writer.close();
         } catch (IOException e) {
+            try {
+                writer.close();
+            } catch (IOException f) {
+                f.printStackTrace();
+                throw new PythonScriptException(EXCEPTION_MSG);
+            }
             e.printStackTrace();
-            throw new PythonScriptException("Something went wrong in getting the summary.");
+            throw new PythonScriptException(EXCEPTION_MSG);
         }
     }
 
     private String getResultFromStdOut(Process process) {
-        final String READING_EXCEPTION_MESSAGE = "Something went wrong in getting the summary.";
         StringBuilder builder = new StringBuilder();
         InputStream stdOut = process.getInputStream();
         BufferedReader reader = null;
@@ -91,10 +97,10 @@ public class JARScriptRunner {
                 reader.close();
             } catch (IOException f) {
                 f.printStackTrace();
-                throw new PythonScriptException(READING_EXCEPTION_MESSAGE);
+                throw new PythonScriptException(EXCEPTION_MSG);
             }
             e.printStackTrace();
-            throw new PythonScriptException(READING_EXCEPTION_MESSAGE);
+            throw new PythonScriptException(EXCEPTION_MSG);
         }
         return builder.toString();
     }
@@ -107,17 +113,25 @@ public class JARScriptRunner {
         InputStream scriptStream = JARScriptRunner.class.getClassLoader().getResourceAsStream(script);
         String[] filenameComponents = script.split("\\.");
         File scriptFile;
+        OutputStream fileStream = null;
         try {
             scriptFile = File.createTempFile(filenameComponents[0], filenameComponents[1]);
             byte[] buffer = new byte[scriptStream.available()];
             scriptStream.read(buffer);
             scriptStream.close();
-            OutputStream fileStream = new FileOutputStream(scriptFile);
+            fileStream = new FileOutputStream(scriptFile);
             fileStream.write(buffer);
             fileStream.flush();
             fileStream.close();
         } catch (IOException e) {
-            throw new PythonScriptException("Something went wrong.");
+            try {
+                fileStream.close();
+            } catch (IOException f) {
+                f.printStackTrace();
+                throw new PythonScriptException(EXCEPTION_MSG);
+            }
+            e.printStackTrace();
+            throw new PythonScriptException(EXCEPTION_MSG);
         }
         return scriptFile;
     }
