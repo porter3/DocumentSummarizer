@@ -9,27 +9,16 @@ import java.io.InputStream;
 
 public class DOCXTextExtractor implements FileTextExtractor {
 
-    static final String DOCX_EXCEPTION_MESSAGE = "Something went wrong processing the word document.";
+    private static final String DOCX_EXCEPTION_MESSAGE = "Something went wrong processing the word document.";
 
     @Override
     public String extractTextFromStream(InputStream stream) {
-        XWPFDocument xwpfDocument;
-        XWPFWordExtractor extractor;
         String extractedText;
-        try {
-            xwpfDocument = new XWPFDocument(stream);
-            extractor = new XWPFWordExtractor(xwpfDocument);
+        try (stream) {
+            XWPFDocument xwpfDocument = new XWPFDocument(stream);
+            XWPFWordExtractor extractor = new XWPFWordExtractor(xwpfDocument);
             extractedText = extractor.getText();
-            stream.close();
         } catch (Exception e) { // is generic since the two constructors above can throw a variety of exceptions
-            e.printStackTrace();
-            try {
-                if (stream != null) {
-                    stream.close();
-                }
-            } catch (IOException f) {
-                throw new TextExtractorException(DOCX_EXCEPTION_MESSAGE);
-            }
             throw new TextExtractorException(DOCX_EXCEPTION_MESSAGE);
         }
         return extractedText;

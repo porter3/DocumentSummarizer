@@ -12,39 +12,22 @@ import java.io.InputStream;
 
 public class PDFTextExtractor implements FileTextExtractor {
 
-    static final String PDF_EXCEPTION_MESSAGE = "Something went wrong processing the PDF file.";
+    private static final String PDF_EXCEPTION_MESSAGE = "Something went wrong processing the PDF file.";
 
     @Override
     public String extractTextFromStream(InputStream stream) {
-        // this class name isn't long enough
-        RandomAccessBufferedFileInputStream randomAccessBufferedFileInputStream = null;
-        PDFParser parser;
-        COSDocument cosDocument;
-        PDDocument pdDocument = null;
         String extractedText;
-        try {
-            randomAccessBufferedFileInputStream = new RandomAccessBufferedFileInputStream(stream);
-            parser = new PDFParser(randomAccessBufferedFileInputStream);
+        // closing this closes the underlying InputStream
+        try (RandomAccessBufferedFileInputStream randomAccessBufferedFileInputStream = new RandomAccessBufferedFileInputStream(stream)) {
+            PDFParser parser = new PDFParser(randomAccessBufferedFileInputStream);
             // parse the stream and populate a nested COSDocument ref, close stream when done
             parser.parse();
-            cosDocument = parser.getDocument();
-            pdDocument = new PDDocument(cosDocument);
-            extractedText = new PDFTextStripper().getText(pdDocument);
-            // close the nested COSDocument
-            pdDocument.close();
-            // close the nested InputStream
-            randomAccessBufferedFileInputStream.close();
-        } catch (IOException e) {
-            try {
-                if (pdDocument != null) {
-                    pdDocument.close();
-                }
-                if (randomAccessBufferedFileInputStream != null) {
-                    randomAccessBufferedFileInputStream.close();
-                }
-            } catch (IOException f) {
-                throw new TextExtractorException(PDF_EXCEPTION_MESSAGE);
+            COSDocument cosDocument = parser.getDocument();
+            // closing this closes the nested COSDocument
+            try (PDDocument pdDocument = new PDDocument(cosDocument)) {
+                extractedText = new PDFTextStripper().getText(pdDocument);
             }
+        } catch (IOException e) {
             throw new TextExtractorException(PDF_EXCEPTION_MESSAGE);
         }
         return extractedText;
