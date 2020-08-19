@@ -5,8 +5,6 @@ import com.jakeporter.DocumentSummarizer.domainEntities.SummarySentence;
 import com.jakeporter.DocumentSummarizer.exceptions.*;
 import com.jakeporter.DocumentSummarizer.utilities.scriptRunners.JARScriptRunner;
 import com.jakeporter.DocumentSummarizer.utilities.textExtractors.FileTextExtractor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -25,8 +23,6 @@ public class PythonSummarizer extends DocumentSummarizer {
     public PythonSummarizer(FileTextExtractor extractor) {
         super(extractor);
     }
-
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     protected SummaryComponents computeSummaries(String text) {
