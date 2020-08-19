@@ -40,8 +40,8 @@ public class FileService {
 
     public String uploadFile(MultipartFile file) {
         String fileUrl;
+        // this is just here to throw an exception early on if the file format is unsupported
         try {
-            // this is just here to throw an exception early on if the file format is unsupported
             new FileInfoGetter().getFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
         } catch (UnsupportedFileFormatException e) {
             e.printStackTrace();
@@ -49,7 +49,7 @@ public class FileService {
         }
         try {
             fileUrl = awsClient.uploadFile(file);
-        } catch (FileUploaderException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new FileUploaderException(e.getMessage());
         }

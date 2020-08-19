@@ -36,7 +36,7 @@ public class AWSS3Client {
     @Value("${amazonProperties.secretKey}")
     private String secretKey;
 
-    private static final String FILE_UPLOADER_EXCEPTION_MSG = "Something went wrong in uploading the file.";
+    private static final String EXCEPTION_MSG = "Something went wrong in uploading the file.";
 
     @PostConstruct
     private void initializeAWSCredentials() {
@@ -48,17 +48,15 @@ public class AWSS3Client {
                 .build();
     }
 
-    public String uploadFile(MultipartFile mpFile) {
+    public String uploadFile(MultipartFile mpFile) throws IOException {
         String fileUrl = null;
         File file = null;
+        // caller throws custom exception
         try {
             file = convertMultipartFileToFile(mpFile);
             String fileName = generateFileName(mpFile);
             fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
             uploadFileToS3Bucket(fileName, file);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new FileUploaderException(FILE_UPLOADER_EXCEPTION_MSG);
         } finally {
             file.delete();
         }
@@ -66,23 +64,12 @@ public class AWSS3Client {
     }
 
     public InputStream getS3ObjectInputStream(String fileUrl) {
-        final String AWS_EXCEPTION_MESSAGE = "Something went wrong in retrieving the file.";
-        S3Object s3Object = null;
-        logger.info("fileUrl: " + fileUrl);
-        try {
-            String fileKey = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-            s3Object = s3Client.getObject(new GetObjectRequest(bucketName, fileKey));
+        String fileKey = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+        S3Object s3Object = s3Client.getObject(new GetObjectRequest(bucketName, fileKey));
+        try (s3Object) {
         } catch (Exception e) {
-            if (s3Object != null) {
-                try {
-                    s3Object.close();
-                } catch (IOException f) {
-                    f.printStackTrace();
-                    throw new FileUploaderException(AWS_EXCEPTION_MESSAGE);
-                }
-            }
             e.printStackTrace();
-            throw new FileUploaderException(AWS_EXCEPTION_MESSAGE);
+            throw new FileUploaderException(EXCEPTION_MSG);
         }
         return s3Object.getObjectContent();
     }
@@ -92,15 +79,10 @@ public class AWSS3Client {
         s3Client.deleteObject(new DeleteObjectRequest(bucketName, fileKey));
     }
 
-    private File convertMultipartFileToFile(MultipartFile mpFile) {
+    private File convertMultipartFileToFile(MultipartFile mpFile) throws IOException {
         File convertedFile = new File(mpFile.getOriginalFilename());
-        try {
-            FileOutputStream fos = new FileOutputStream(convertedFile);
+        try (FileOutputStream fos = new FileOutputStream(convertedFile)){
             fos.write(mpFile.getBytes());
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new FileUploaderException(FILE_UPLOADER_EXCEPTION_MSG);
         }
         return convertedFile;
     }
