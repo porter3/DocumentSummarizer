@@ -1,5 +1,6 @@
 package com.jakeporter.DocumentSummarizer.service;
 
+import com.amazonaws.services.rekognition.model.Summary;
 import com.jakeporter.DocumentSummarizer.domainEntities.SummaryComponents;
 import com.jakeporter.DocumentSummarizer.exceptions.*;
 import com.jakeporter.DocumentSummarizer.utilities.fileUtils.FileInfoGetter;
@@ -69,8 +70,7 @@ public class FileService {
         SummaryComponents components = null;
         try {
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
-            DocumentSummarizer summarizer = new PythonSummarizer(extractor);
-            components = summarizer.summarize(s3ObjectStream);
+            components = new PythonSummarizer(extractor).summarize(s3ObjectStream);
             logger.info("Summary components: " + components.toString());
         } catch (TextExtractorException e) {
             e.printStackTrace();
@@ -90,7 +90,16 @@ public class FileService {
     }
 
     public SummaryComponents summarize(String text) {
-        DocumentSummarizer summarizer = new PythonSummarizer();
-        return summarizer.summarize(text);
+        SummaryComponents components;
+        try {
+            components = new PythonSummarizer().summarize(text);
+        } catch (SummaryException e) {
+            e.printStackTrace();
+            throw new SummaryException(e.getMessage());
+        } catch (PythonScriptException e) {
+            e.printStackTrace();
+            throw new PythonScriptException(e.getMessage());
+        }
+        return components;
     }
 }
