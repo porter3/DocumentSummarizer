@@ -91,6 +91,6 @@ public class FileService {
 
     public SummaryComponents summarize(String text) {
         DocumentSummarizer summarizer = new PythonSummarizer();
-        return summarizer.summarizeDocument(text);
+        return summarizer.summarize(text);
     }
 }

@@ -30,7 +30,7 @@ public abstract class DocumentSummarizer {
     }
 
     // template method for pure text
-    public SummaryComponents summarizeDocument(String text) {
+    public SummaryComponents summarize(String text) {
         checkTextLength(text);
         return computeSummaries(text);
     }
