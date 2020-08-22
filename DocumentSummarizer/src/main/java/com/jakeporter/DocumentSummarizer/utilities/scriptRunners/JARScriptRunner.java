@@ -3,7 +3,6 @@ package com.jakeporter.DocumentSummarizer.utilities.scriptRunners;
 import com.jakeporter.DocumentSummarizer.exceptions.PythonScriptException;
 
 import java.io.*;
-import java.util.Arrays;
 
 
 public class JARScriptRunner {
