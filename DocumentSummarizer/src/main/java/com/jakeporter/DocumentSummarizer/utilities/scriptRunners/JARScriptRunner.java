@@ -76,8 +76,8 @@ public class JARScriptRunner {
 
     private File writeScriptToTempFile() throws IOException {
         String[] filenameComponents = script.split("\\.");
+        File scriptFile;
         try (InputStream scriptStream = JARScriptRunner.class.getClassLoader().getResourceAsStream(script)) {
-            File scriptFile;
             byte[] buffer = new byte[scriptStream.available()];
             scriptFile = File.createTempFile(filenameComponents[0], filenameComponents[1]);
             scriptStream.read(buffer);
