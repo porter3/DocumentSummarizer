@@ -59,7 +59,7 @@ public class FileService {
 
     /* There's an ugly chain of exception throws in here- they're specific because I want to send different status codes to the client for each specific problem
        and I have to re-throw them in here for the ExceptionHandlerController to intercept them */
-    public SummaryComponents summarize(MultipartFile mpFile, String fileUrl) {
+    public SummaryComponents summarize(MultipartFile mpFile, String fileUrl, String language) {
         FileType fileType = new FileInfoGetter().getFileType(FilenameUtils.getExtension(mpFile.getOriginalFilename()));
         InputStream s3ObjectStream;
         try {
@@ -70,7 +70,7 @@ public class FileService {
         SummaryComponents components = null;
         try {
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
-            components = new PythonSummarizer(extractor).summarize(s3ObjectStream);
+            components = new PythonSummarizer(extractor).summarize(s3ObjectStream, language);
             logger.info("Summary components: " + components.toString());
         } catch (TextExtractorException e) {
             e.printStackTrace();
@@ -89,10 +89,10 @@ public class FileService {
         return components;
     }
 
-    public SummaryComponents summarize(String text) {
+    public SummaryComponents summarize(String text, String language) {
         SummaryComponents components;
         try {
-            components = new PythonSummarizer().summarize(text);
+            components = new PythonSummarizer().summarize(text, language);
         } catch (SummaryException e) {
             e.printStackTrace();
             throw new SummaryException(e.getMessage());
