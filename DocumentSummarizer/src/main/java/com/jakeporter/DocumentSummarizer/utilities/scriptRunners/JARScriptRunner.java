@@ -79,7 +79,7 @@ public class JARScriptRunner {
         File scriptFile;
         try (InputStream scriptStream = JARScriptRunner.class.getClassLoader().getResourceAsStream(script)) {
             byte[] buffer = new byte[scriptStream.available()];
-            scriptFile = File.createTempFile(filenameComponents[0], filenameComponents[1]);
+            scriptFile = File.createTempFile(filenameComponents[0], "." + filenameComponents[1]);
             scriptStream.read(buffer);
             try (OutputStream fileStream = new FileOutputStream(scriptFile)) {
                 fileStream.write(buffer);

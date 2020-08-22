@@ -22,13 +22,13 @@ public class FileController {
     FileService fileService;
 
     @PostMapping("/file")
-    public ResponseEntity<String> summarizeFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> summarizeFile(@RequestParam("file") MultipartFile file, @RequestParam String language) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         String jsonString;
         fileService.validateFileSize(file);
         String fileUrl = fileService.uploadFile(file);
-        SummaryComponents components = fileService.summarize(file, fileUrl);
+        SummaryComponents components = fileService.summarize(file, fileUrl, language);
         try {
             jsonString = objectMapper.writeValueAsString(components);
         } catch (JsonProcessingException e) {
@@ -40,11 +40,11 @@ public class FileController {
     }
 
     @PostMapping("/text")
-    public ResponseEntity<String> summarizeText(@RequestBody String text) {
+    public ResponseEntity<String> summarizeText(@RequestBody String text, @RequestParam String language) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         String jsonString;
-        SummaryComponents components = fileService.summarize(text);
+        SummaryComponents components = fileService.summarize(text, language);
         try {
             jsonString = objectMapper.writeValueAsString(components);
         } catch (JsonProcessingException e) {
