@@ -11,7 +11,7 @@ public class TXTTextExtractor implements FileTextExtractor {
     @Override
     public String extractTextFromStream(InputStream stream) {
         StringBuilder builder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream));){
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))){
             String line = reader.readLine();
             while (line != null) {
                 builder.append(line);
