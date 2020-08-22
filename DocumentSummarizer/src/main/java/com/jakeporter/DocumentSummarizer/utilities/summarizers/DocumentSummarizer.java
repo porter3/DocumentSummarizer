@@ -23,19 +23,19 @@ public abstract class DocumentSummarizer {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     // template method for files
-    public SummaryComponents summarize(InputStream stream) {
+    public SummaryComponents summarize(InputStream stream, String language) {
         String text = extractor.extractTextFromStream(stream);
         checkTextLength(text);
-        return computeSummaries(text);
+        return computeSummaries(text, language);
     }
 
     // template method for pure text
-    public SummaryComponents summarize(String text) {
+    public SummaryComponents summarize(String text, String language) {
         checkTextLength(text);
-        return computeSummaries(text);
+        return computeSummaries(text, language);
     }
 
-    protected abstract SummaryComponents computeSummaries(String text);
+    protected abstract SummaryComponents computeSummaries(String text, String language);
 
     private void checkTextLength(String text) {
         int textLength = text.length();

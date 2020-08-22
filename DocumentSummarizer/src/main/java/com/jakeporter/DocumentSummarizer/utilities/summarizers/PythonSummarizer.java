@@ -25,8 +25,8 @@ public class PythonSummarizer extends DocumentSummarizer {
     }
 
     @Override
-    protected SummaryComponents computeSummaries(String text) {
-        String summaryString = runPythonScript(text);
+    protected SummaryComponents computeSummaries(String text, String language) {
+        String summaryString = runPythonScript(text, language);
         handleResultIssues(summaryString);
         // first element of script output is the number of summaries there will be
         List<String> splitSummaryString = Arrays.asList(summaryString.split(SUMMARY_COUNT_DELIMITER));
@@ -35,9 +35,9 @@ public class PythonSummarizer extends DocumentSummarizer {
         return new SummaryComponents(sentences, summaryCount);
     }
 
-    private String runPythonScript(String text)  {
+    private String runPythonScript(String text, String language)  {
         JARScriptRunner scriptRunner = new JARScriptRunner(PYTHON_CMD, SCRIPT);
-        String result = scriptRunner.runPythonScript(text, ATTR_DELIMITER, SENTENCE_DELIMITER, SUMMARY_COUNT_DELIMITER);
+        String result = scriptRunner.runPythonScript(text, language, ATTR_DELIMITER, SENTENCE_DELIMITER, SUMMARY_COUNT_DELIMITER);
         return result;
     }
 
