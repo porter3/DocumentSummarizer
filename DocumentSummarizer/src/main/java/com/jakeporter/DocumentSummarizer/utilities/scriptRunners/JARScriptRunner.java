@@ -3,6 +3,7 @@ package com.jakeporter.DocumentSummarizer.utilities.scriptRunners;
 import com.jakeporter.DocumentSummarizer.exceptions.PythonScriptException;
 
 import java.io.*;
+import java.util.Arrays;
 
 
 public class JARScriptRunner {
@@ -76,10 +77,10 @@ public class JARScriptRunner {
 
     private File writeScriptToTempFile() throws IOException {
         String[] filenameComponents = script.split("\\.");
+        File scriptFile;
         try (InputStream scriptStream = JARScriptRunner.class.getClassLoader().getResourceAsStream(script)) {
-            File scriptFile;
             byte[] buffer = new byte[scriptStream.available()];
-            scriptFile = File.createTempFile(filenameComponents[0], filenameComponents[1]);
+            scriptFile = File.createTempFile(filenameComponents[0], "." + filenameComponents[1]);
             scriptStream.read(buffer);
             try (OutputStream fileStream = new FileOutputStream(scriptFile)) {
                 fileStream.write(buffer);
