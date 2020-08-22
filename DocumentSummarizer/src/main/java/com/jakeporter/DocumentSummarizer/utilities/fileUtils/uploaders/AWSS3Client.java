@@ -66,11 +66,6 @@ public class AWSS3Client {
     public InputStream getS3ObjectInputStream(String fileUrl) {
         String fileKey = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         S3Object s3Object = s3Client.getObject(new GetObjectRequest(bucketName, fileKey));
-        try (s3Object) {
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new FileUploaderException(EXCEPTION_MSG);
-        }
         return s3Object.getObjectContent();
     }
 
