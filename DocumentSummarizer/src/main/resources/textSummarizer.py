@@ -1,17 +1,24 @@
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk.stem import PorterStemmer
-from enchant import Dict
+from nltk.stem.snowball import SnowballStemmer
 from sys import argv, stdin
 from math import ceil
 
-ATTR_DELIMITER = argv[1]
-SENTENCE_DELIMITER = argv[2]
-SUMMARY_COUNT_DELIMITER = argv[3]
+# used to get stop words from NLTK
+LANGUAGE = argv[1]
+ATTR_DELIMITER = argv[2]
+SENTENCE_DELIMITER = argv[3]
+SUMMARY_COUNT_DELIMITER = argv[4]
 # want no more than 20 summaries right now
 SUMMARY_MAX = 30
 NO_VALID_WORDS_MSG = "NO_VALID_WORDS_ERROR"
 GENERIC_MSG = "GENERIC_ERROR"
+# values are used to get stop words from NLTK
+DICTIONARY_ARGS = {
+    "en": "english",
+    "es": "spanish"
+}
+
 
 class SummarySentence():
     def set_adjusted_score(self, adjusted_score):
@@ -34,23 +41,14 @@ def get_text_from_stdin() -> str:
     return text
 
 
-def check_if_valid_word_exists(words) -> bool:
-    dictionary = Dict("en_US")
-    for word in words:
-        if dictionary.check(word) == True and len(word) > 1:
-            return True
-    raise NoValidWordsException()
-
-
-def create_frequency_table(text) -> dict:
+def create_frequency_table(text, language) -> dict:
     words = word_tokenize(text)
     # check if a single word is valid - if it does, can be reasonably certain it's not a non-text file with a .txt extension
-    check_if_valid_word_exists(words)
     # generally speaking, stop words are filler words (https://en.wikipedia.org/wiki/Stop_words)
-    stop_words = set(stopwords.words("english"))
+    stop_words = set(stopwords.words(DICTIONARY_ARGS.get(language)))
 
     # create object to get word stems (e.g. laughing -> laugh)
-    stemmer = PorterStemmer()
+    stemmer = SnowballStemmer(DICTIONARY_ARGS.get(LANGUAGE), ignore_stopwords=True)
 
     # create table containing the frequencies of word stems for non-stop words
     frequency_table = dict()
@@ -160,11 +158,7 @@ def get_summary_count(sentence_objects, max_adjusted_score) -> int:
 def main():
     try:
         text = get_text_from_stdin()
-        try:
-            frequency_table = create_frequency_table(text)
-        except NoValidWordsException as e:
-            print(NO_VALID_WORDS_MSG)
-            return
+        frequency_table = create_frequency_table(text, LANGUAGE)
         sentences = get_sentences(text)
         sentence_scores = score_sentences(sentences, frequency_table)
         avg_score = find_average_score(sentence_scores)
