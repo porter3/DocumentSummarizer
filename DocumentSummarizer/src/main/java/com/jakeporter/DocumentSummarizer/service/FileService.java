@@ -8,6 +8,7 @@ import com.jakeporter.DocumentSummarizer.utilities.fileUtils.uploaders.AWSS3Clie
 import com.jakeporter.DocumentSummarizer.utilities.summarizers.DocumentSummarizer;
 import com.jakeporter.DocumentSummarizer.utilities.summarizers.PythonSummarizer;
 import com.jakeporter.DocumentSummarizer.utilities.textExtractors.*;
+import com.jakeporter.DocumentSummarizer.utilities.validators.PythonValidator;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,7 @@ public class FileService {
         SummaryComponents components = null;
         try {
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
-            components = new PythonSummarizer(extractor).summarize(s3ObjectStream, language);
+            components = new PythonSummarizer(extractor, new PythonValidator()).summarize(s3ObjectStream, language);
             logger.info("Summary components: " + components.toString());
         } catch (TextExtractorException e) {
             e.printStackTrace();
@@ -92,7 +93,7 @@ public class FileService {
     public SummaryComponents summarize(String text, String language) {
         SummaryComponents components;
         try {
-            components = new PythonSummarizer().summarize(text, language);
+            components = new PythonSummarizer(new PythonValidator()).summarize(text, language);
         } catch (SummaryException e) {
             e.printStackTrace();
             throw new SummaryException(e.getMessage());
