@@ -5,6 +5,7 @@ import com.jakeporter.DocumentSummarizer.domainEntities.SummarySentence;
 import com.jakeporter.DocumentSummarizer.exceptions.*;
 import com.jakeporter.DocumentSummarizer.utilities.scriptRunners.JARScriptRunner;
 import com.jakeporter.DocumentSummarizer.utilities.textExtractors.FileTextExtractor;
+import com.jakeporter.DocumentSummarizer.utilities.validators.TextValidator;
 
 import java.util.*;
 
@@ -18,10 +19,10 @@ public class PythonSummarizer extends DocumentSummarizer {
     private static final String SENTENCE_DELIMITER = "-:::-";
     private static final String SUMMARY_COUNT_DELIMITER = "-::::-";
 
-    public PythonSummarizer(){ super(); }
+    public PythonSummarizer(TextValidator validator){ super(validator); }
 
-    public PythonSummarizer(FileTextExtractor extractor) {
-        super(extractor);
+    public PythonSummarizer(FileTextExtractor extractor, TextValidator validator) {
+        super(extractor, validator);
     }
 
     @Override
