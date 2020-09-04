@@ -4,6 +4,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select'
 import { makeStyles } from '@material-ui/core/styles'
+import supportedLanguages from '../misc/supportedLanguages'
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -15,7 +16,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function LanguageSelector({ language, handleChange }) {
+
     const classes = useStyles();
+    const languageItems = supportedLanguages.map(lang => <MenuItem value={lang.symbol}>{lang.word}</MenuItem>)
 
     return (
         <FormControl className={classes.formControl} variant="standard">
@@ -27,8 +30,7 @@ export default function LanguageSelector({ language, handleChange }) {
                 onChange={handleChange}
                 className={classes.select}
             >
-                <MenuItem value={"en"} selected>English (US)</MenuItem>
-                <MenuItem value={'es'}>Spanish</MenuItem>
+                {languageItems}
             </Select>
         </FormControl>
     )
