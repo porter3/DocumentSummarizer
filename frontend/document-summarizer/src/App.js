@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import AboutAppPopover from './components/AboutAppPopover'
 import DarkModeSwitch from './components/DarkModeSwitch'
 import UploadHeader from './components/UploadHeader'
+import LanguageSelector from './components/LanguageSelector'
 import TextUploadForm from './components/TextUploadForm'
 import GenerateButton from './components/GenerateButton'
 import SummarySection from './components/SummarySection'
@@ -30,6 +31,7 @@ function App() {
   const [ isDarkModeEnabled, setIsDarkModeEnabled ] = useState(localStorage.getItem('isDarkModeEnabled') === 'true' || false)
   const [ isLoading, setIsLoading ] = useState(false)
   const [ loaderMessage, setLoaderMessage ] = useState('')
+  const [ language, setLanguage ] = useState('en')
   const [ uploadChoice, setUploadChoice ] = useState('')
   const [ fileInfo, setFileInfo ] = useState({
     file: {
@@ -54,6 +56,10 @@ function App() {
   
   const toggleDarkMode = e => {
     setIsDarkModeEnabled(e.target.checked)
+  }
+
+  const handleLanguageChange = e => {
+    setLanguage(e.target.value)
   }
 
   const handleUploadChoice = e => {
@@ -151,11 +157,11 @@ function App() {
     const timeouts = changeLoaderMessage(setLoaderMessage, fileInfo.file.sizeInBytes)
     let url, body
     if (uploadChoice === 'fileUpload') {
-      url = serverUrl + '/file'
+      url = `${serverUrl}/file?language=${language}`
       body = new FormData()
       body.append('file', document.getElementById('file').files[0])
     } else {
-      url = serverUrl + '/text'
+      url = `${serverUrl}/text?language=${language}`
       body = text
     }
     const summaryData = await fetchSummaryData(url, body)
@@ -177,7 +183,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Paper style={{ height: '110vh', boxShadow: 'none' }}>
+      <Paper style={{ height: '100vh', boxShadow: 'none' }}>
         <Container fluid id='app'>
           <Row>
             <Col xs={12}>
@@ -190,6 +196,10 @@ function App() {
           <Row>
             <Col md={4} xs={10}>
               <UploadHeader />
+              <LanguageSelector 
+                language={language}
+                handleChange={e => handleLanguageChange(e)}
+              />
               <TextUploadForm
                 theme={theme}
                 uploadChoice={uploadChoice}
