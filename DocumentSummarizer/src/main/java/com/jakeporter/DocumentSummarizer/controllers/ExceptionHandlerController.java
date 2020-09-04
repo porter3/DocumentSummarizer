@@ -59,4 +59,10 @@ public class ExceptionHandlerController {
     public ResponseEntity<Error> handleJsonIssue(JsonException e) {
         return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    // if this is thrown in production, it's likely due to auto-scaling getting rid of the python dependencies
+    @ExceptionHandler(IndexOutOfBoundsException.class)
+    public ResponseEntity<Error> handleIndexOutOfBounds(IndexOutOfBoundsException e) {
+        return new ResponseEntity<>(new Error("Uh oh, something went wrong on the server."), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
