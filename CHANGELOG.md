@@ -9,3 +9,9 @@ ___
 ### Changed
 - Bug fix: loader messages are properly reset
 - General code refactoring and simplified exception handling
+
+
+## 09/04/2020 - v2.1.0
+
+### Added
+-Support for multilingual summarization (Spanish only at the moment)
