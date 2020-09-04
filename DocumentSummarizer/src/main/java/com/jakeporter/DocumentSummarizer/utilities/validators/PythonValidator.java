@@ -3,18 +3,25 @@ package com.jakeporter.DocumentSummarizer.utilities.validators;
 import com.jakeporter.DocumentSummarizer.exceptions.SummaryException;
 import com.jakeporter.DocumentSummarizer.utilities.scriptRunners.JARScriptRunner;
 
+import java.io.File;
+
 public class PythonValidator implements TextValidator {
 
     private static final boolean IS_PRODUCTION_BUILD = false;
     private static final String PYTHON_CMD = IS_PRODUCTION_BUILD ? "python3" : "python";
     private static final String SCRIPT = "textValidator.py";
     private static final String MIN_SENTENCE_COUNT = "4"; // needs to be a String
-    private static final String LANGDETECT_PROFILE = "C:\\Users\\jake\\AppData\\Local\\Programs\\Python\\Python38\\Lib\\site-packages\\langdetect\\profiles";
+    private static final String sep = File.separator;
+    private static final String LANGDETECT_PROFILE = IS_PRODUCTION_BUILD ?
+            sep + "usr" + sep + "local" + sep + "lib" + sep + "python3.7" + sep + "site-packages" + sep + "langdetect" + sep +  "profiles" :
+            "C:" + sep + "Users" + sep + "jake" + sep +  "AppData" + sep + "Local" + sep + "Programs" + sep + "Python" + sep + "Python38" + sep +
+                    "Lib" + sep + "site-packages" + sep + "langdetect" + sep + "profiles";
     private static final String OUTPUT_DELIMITER = "-:::-";
 
     public void validateText(String text, String language) {
         JARScriptRunner scriptRunner = new JARScriptRunner(PYTHON_CMD, SCRIPT);
         String result = scriptRunner.runPythonScript(text, language, MIN_SENTENCE_COUNT, LANGDETECT_PROFILE, OUTPUT_DELIMITER);
+        System.out.println(result);
         checkErrorMessages(result);
     }
 
