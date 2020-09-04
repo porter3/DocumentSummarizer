@@ -55,7 +55,7 @@ public class PythonSummarizer extends DocumentSummarizer {
             throw new SummaryException("There was a problem with your text. Ensure all characters in your text are UTF-8. " +
                     "If you uploaded a file, ensure it has the correct extension.");
         }
-        if (scriptOutput.substring(0, 34).equals(PY_COMPILER_ERROR)) {
+        if (scriptOutput.startsWith(PY_COMPILER_ERROR)) {
             throw new SummaryException("The text you tried to summarize doesn't summarize well.");
         }
         if (scriptOutput.equals(GENERIC_ERROR)) {
