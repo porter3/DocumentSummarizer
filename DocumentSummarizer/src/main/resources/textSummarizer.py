@@ -9,11 +9,10 @@ LANGUAGE = argv[1]
 ATTR_DELIMITER = argv[2]
 SENTENCE_DELIMITER = argv[3]
 SUMMARY_COUNT_DELIMITER = argv[4]
-# want no more than 20 summaries right now
 SUMMARY_MAX = 30
 NO_VALID_WORDS_MSG = "NO_VALID_WORDS_ERROR"
 GENERIC_MSG = "GENERIC_ERROR"
-# values are used to get stop words from NLTK
+# values are used to get stop words from NLTK - options at https://www.nltk.org/_modules/nltk/stem/snowball.html
 DICTIONARY_ARGS = {
     "en": "english",
     "es": "spanish"
@@ -152,7 +151,6 @@ def get_summary_count(sentence_objects, max_adjusted_score) -> int:
         return ceil(max_adjusted_score)
     else:
         return sentence_count
-
 
 
 def main():
