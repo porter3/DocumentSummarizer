@@ -11,14 +11,14 @@ UNKNOWN_LANGUAGE_MSG = 'UNKNOWN_LANGUAGE_ERROR'
 MISMATCHED_LANGUAGE_MSG = 'MISMATCHED_LANGUAGE_ERROR'
 UNSUPPORTED_LANGUAGE_MSG = 'UNSUPPORTED_LANGUAGE_ERROR'
 SENTENCE_COUNT_MSG = 'SENTENCE_COUNT_ERROR'
-LANGUAGE_WORDS = {
-    "af": "Afrikaans",
-    "en": "English",
-    "es": "Spanish"
-}
+LANGUAGE_WORDS = {"af": "Afrikaans", "ar": "Arabic","bg": "Bulgarian", "bn": "Bengali", "ca": "Catalan", "cs": "Czech", "cy": "Welsh", "da": "Danish", "de": "German", "el": "Greek", "en": "English", "es": "Spanish", "et": "Estonian", "fa": "Persian", "fi": "Finnish", "fr": "French", "gu": "Gujarati", "he": "Hebrew"}
 SUPPORTED_LANGUAGES = [
+    "Arabic",
+    "Danish",
+    "German",
     "English",
-    "Spanish"
+    "Spanish",
+    "Finnish"
 ]
 
 class UnknownLanguageException(Exception):
