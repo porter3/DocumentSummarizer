@@ -14,8 +14,12 @@ NO_VALID_WORDS_MSG = "NO_VALID_WORDS_ERROR"
 GENERIC_MSG = "GENERIC_ERROR"
 # values are used to get stop words from NLTK - options at https://www.nltk.org/_modules/nltk/stem/snowball.html
 DICTIONARY_ARGS = {
+    "ar": "arabic",
+    "da": "danish",
+    "de": "german",
     "en": "english",
-    "es": "spanish"
+    "es": "spanish",
+    "fi": "finnish"
 }
 
 
