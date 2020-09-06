@@ -27,8 +27,7 @@ public class FileController {
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         String jsonString;
         fileService.validateFileSize(file);
-        String fileUrl = fileService.uploadFile(file);
-        SummaryComponents components = fileService.summarize(file, fileUrl, language);
+        SummaryComponents components = fileService.summarize(file, language);
         try {
             jsonString = objectMapper.writeValueAsString(components);
         } catch (JsonProcessingException e) {
