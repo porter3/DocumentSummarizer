@@ -50,8 +50,8 @@ public class ExceptionHandlerController {
         return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(FileUploaderException.class)
-    public ResponseEntity<Error> handleFileUploadIssue(FileUploaderException e) {
+    @ExceptionHandler(FileException.class)
+    public ResponseEntity<Error> handleFileIssue(FileException e) {
         return new ResponseEntity<>(new Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
