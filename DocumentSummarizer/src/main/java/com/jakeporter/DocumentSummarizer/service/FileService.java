@@ -3,14 +3,12 @@ package com.jakeporter.DocumentSummarizer.service;
 import com.jakeporter.DocumentSummarizer.domainEntities.SummaryComponents;
 import com.jakeporter.DocumentSummarizer.exceptions.*;
 import com.jakeporter.DocumentSummarizer.utilities.fileUtils.FileInfoGetter;
-import com.jakeporter.DocumentSummarizer.utilities.fileUtils.uploaders.AWSS3Client;
 import com.jakeporter.DocumentSummarizer.utilities.summarizers.PythonSummarizer;
 import com.jakeporter.DocumentSummarizer.utilities.textExtractors.*;
 import com.jakeporter.DocumentSummarizer.utilities.validators.PythonValidator;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +30,7 @@ public class FileService {
         BigDecimal mbInBytes = new BigDecimal(MB_IN_BYTES);
         BigDecimal fileSize = new BigDecimal(String.valueOf(file.getSize()));
         if (fileSize.compareTo(maxSize) > 0) {
-            throw new FileTooLargeException("File size cannot exceed " + maxSize.divide(mbInBytes, RoundingMode.FLOOR) + " MB. Your file is " + fileSize.divide(mbInBytes).setScale(2, RoundingMode.FLOOR) + " MB.");
+            throw new FileTooLargeException("File size cannot exceed " + maxSize.divide(mbInBytes, RoundingMode.FLOOR) + " MB. Your file is " + fileSize.divide(mbInBytes, RoundingMode.FLOOR).setScale(2, RoundingMode.FLOOR) + " MB.");
         }
     }
 
@@ -43,6 +41,7 @@ public class FileService {
         FileType fileType;
         InputStream inputStream;
         try {
+            // IDE says .getExtension() could return null, but it won't, as it throws an exception if it is
             fileType = new FileInfoGetter().getFileType(FilenameUtils.getExtension(mpFile.getOriginalFilename()));
         } catch (FileException e) {
             throw new FileException(e.getMessage());
@@ -63,14 +62,15 @@ public class FileService {
         } catch (TextExtractorException e) {
             e.printStackTrace();
             throw new TextExtractorException(e.getMessage());
-        } catch (SummaryException e) {
+        } catch (SummaryException  | InterruptedException e) {
             e.printStackTrace();
             throw new SummaryException(e.getMessage());
         } catch (PythonScriptException e) {
             e.printStackTrace();
             throw new PythonScriptException(e.getMessage());
-        } catch (Exception e) { // Don't know what uncaught exceptions could throw this at the moment, but I want to ensure the deletion of any uploaded files
+        } catch (Exception e) { // Don't know what uncaught exceptions could throw this at the moment, just want to ensure stack trace isn't shown to user
             e.printStackTrace();
+            throw new SummaryException("Something unexpected went wrong, please tell Jake.");
         }
         return components;
     }
@@ -79,12 +79,15 @@ public class FileService {
         SummaryComponents components;
         try {
             components = new PythonSummarizer(new PythonValidator()).summarize(text, language);
-        } catch (SummaryException e) {
+        } catch (SummaryException | InterruptedException e) {
             e.printStackTrace();
             throw new SummaryException(e.getMessage());
         } catch (PythonScriptException e) {
             e.printStackTrace();
             throw new PythonScriptException(e.getMessage());
+        } catch (Exception e) { // Don't know what uncaught exceptions could throw this at the moment, just want to ensure stack trace isn't shown to user
+            e.printStackTrace();
+            throw new SummaryException("Something unexpected went wrong, please tell Jake.");
         }
         return components;
     }
