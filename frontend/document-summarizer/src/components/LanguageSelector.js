@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 export default function LanguageSelector({ language, handleChange }) {
 
     const classes = useStyles();
-    const languageItems = supportedLanguages.map(lang => <MenuItem value={lang.symbol}>{lang.word}</MenuItem>)
+    const languageItems = supportedLanguages.map(lang => <MenuItem key={lang.symbol} value={lang.symbol}>{lang.word}</MenuItem>)
 
     return (
         <FormControl className={classes.formControl} variant="standard">
