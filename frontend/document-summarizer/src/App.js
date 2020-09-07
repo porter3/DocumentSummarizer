@@ -168,16 +168,16 @@ function App() {
     clearLoaderMessageQueue(timeouts)
     setLoaderMessage('')
     setIsLoading(false)
-    if (summaryData.sentences) {
+    if (!summaryData.sentences && !summaryData.message) {
+      setSentences([])
+      setErrorMessage('Something went wrong.')
+    } else if (summaryData.sentences) {
       setErrorMessage('')
       setSummaryCount(summaryData.summaryCount)
       setSentences(summaryData.sentences)
     } else if (summaryData.message) {
       setSentences([])
       setErrorMessage(summaryData.message)
-    } else {
-      setSentences([])
-      setErrorMessage('Something went wrong.')
     }
   }
 
