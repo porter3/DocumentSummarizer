@@ -12,14 +12,24 @@ SUMMARY_COUNT_DELIMITER = argv[4]
 SUMMARY_MAX = 30
 NO_VALID_WORDS_MSG = "NO_VALID_WORDS_ERROR"
 GENERIC_MSG = "GENERIC_ERROR"
-# values are used to get stop words from NLTK - options at https://www.nltk.org/_modules/nltk/stem/snowball.html
+# values are used to get stop words and appropriate SnowballStemmer from NLTK
+# options at https://www.nltk.org/_modules/nltk/stem/snowball.html
 DICTIONARY_ARGS = {
     "ar": "arabic",
     "da": "danish",
     "de": "german",
     "en": "english",
     "es": "spanish",
-    "fi": "finnish"
+    "fi": "finnish",
+    "fr": "french",
+    "hu": "hungarian",
+    "it": "italian",
+    "nl": "dutch",
+    "no": "norweigan",
+    "pt": "portuguese",
+    "ro": "romanian",
+    "ru": "russian",
+    "sv": "swedish"
 }
 
 
@@ -51,7 +61,7 @@ def create_frequency_table(text, language) -> dict:
     stop_words = set(stopwords.words(DICTIONARY_ARGS.get(language)))
 
     # create object to get word stems (e.g. laughing -> laugh)
-    stemmer = SnowballStemmer(DICTIONARY_ARGS.get(LANGUAGE), ignore_stopwords=True)
+    stemmer = SnowballStemmer(DICTIONARY_ARGS.get(language), ignore_stopwords=True)
 
     # create table containing the frequencies of word stems for non-stop words
     frequency_table = dict()
