@@ -7,18 +7,28 @@ LANGUAGE = argv[1]
 MIN_SENTENCE_COUNT = int(argv[2])
 WINDOWS_PROFILE_PATH = argv[3]
 OUTPUT_DELIMITER = argv[4]
+
 UNKNOWN_LANGUAGE_MSG = 'UNKNOWN_LANGUAGE_ERROR'
 MISMATCHED_LANGUAGE_MSG = 'MISMATCHED_LANGUAGE_ERROR'
 UNSUPPORTED_LANGUAGE_MSG = 'UNSUPPORTED_LANGUAGE_ERROR'
 SENTENCE_COUNT_MSG = 'SENTENCE_COUNT_ERROR'
-LANGUAGE_WORDS = {"af": "Afrikaans", "ar": "Arabic","bg": "Bulgarian", "bn": "Bengali", "ca": "Catalan", "cs": "Czech", "cy": "Welsh", "da": "Danish", "de": "German", "el": "Greek", "en": "English", "es": "Spanish", "et": "Estonian", "fa": "Persian", "fi": "Finnish", "fr": "French", "gu": "Gujarati", "he": "Hebrew"}
+LANGUAGE_WORDS = {"af": "Afrikaans", "ar": "Arabic","bg": "Bulgarian", "bn": "Bengali", "ca": "Catalan", "cs": "Czech", "cy": "Welsh", "da": "Danish", "de": "German", "el": "Greek", "en": "English", "es": "Spanish", "et": "Estonian", "fa": "Persian", "fi": "Finnish", "fr": "French", "gu": "Gujarati", "he": "Hebrew", "hi": "Hindi", "hr": "Croatian", "hu": "Hungarian", "id": "Indonesian", "it": "Italian", "ja": "Japanese", "ka": "Georgian", "no": "Norweigan", "pa": "Punjabi", "pl": "Polish", "pt": "Portuguese", "ro": "Romanian", "ru": "Russian", "sk": "Slovak", "sl": "Slovenian", "so": "Somali", "sq": "Albanian", "sv": "Swedish", "sw": "Swahili", "ta": "Tamil", "te": "Telugu", "th": "Thai", "tl": "Tagalog", "tr": "Turkish", "uk": "Ukranian", "ur": "Urdu", "vi": "Vietnamese", "zh-cn": "Chinese (Simplified)", "zh-tw": "Chinese (Traditional)"}
 SUPPORTED_LANGUAGES = [
     "Arabic",
     "Danish",
-    "German",
+    "Dutch",
     "English",
+    "Finnish",
+    "French",
+    "German",
+    "Hungarian",
+    "Italian",
+    "Norwegian",
+    "Portuguese",
+    "Romanian",
+    "Russian",
     "Spanish",
-    "Finnish"
+    "Swedish"
 ]
 
 class UnknownLanguageException(Exception):
