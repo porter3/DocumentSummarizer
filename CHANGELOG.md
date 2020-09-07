@@ -14,20 +14,20 @@ ___
 ## 09/04/2020 - v2.1.0
 
 ### Added
--Support for multilingual summarization (Spanish only at the moment)
+- Support for multilingual summarization (Spanish only at the moment)
 
 
 ## 09/06/2020 - v2.2.0
 
 ### Changed
--Text validation now executed asynchronously
+- Text validation now executed asynchronously
 
 ### Removed
--Design change: Files are no longer uploaded to AWS S3
+- Design change: Files are no longer uploaded to AWS S3
 
 
 ## 09/07/2020 - v.2.3.0
 
 ### Added
--Support for summarization in the following languages: Arabic, Danish, Dutch, Finnish, French, German, Hungarian, Italian, Norweigan, Portuguese, Romanian, Russian, Swedish
--Recognization of 53 more languages (but not necessarily support for all of them)
+- Support for summarization in the following languages: Arabic, Danish, Dutch, Finnish, French, German, Hungarian, Italian, Norweigan, Portuguese, Romanian, Russian, Swedish
+- Recognization of 53 more languages (but not necessarily support for all of them)
