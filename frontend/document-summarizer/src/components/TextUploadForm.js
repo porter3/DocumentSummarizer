@@ -1,6 +1,4 @@
 import React from 'react';
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
 import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import RadioGroup from '@material-ui/core/RadioGroup'
@@ -11,6 +9,7 @@ import CloudUploadOutlinedIcon from '@material-ui/icons/CloudUploadOutlined'
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined'
 import Alert from '@material-ui/lab/Alert'
 import AlertTitle from '@material-ui/lab/AlertTitle'
+import TextareaAutosize from '@material-ui/core/TextareaAutosize'
 
 export default function TextUploadForm({ theme, uploadChoice, text, fileExtension, isBadExtension, fileName, isTooLargeFile, isDarkModeEnabled, handleRadioChange, handleTextChange, handleFileChange, handleClick }) {
 
@@ -18,8 +17,8 @@ export default function TextUploadForm({ theme, uploadChoice, text, fileExtensio
 
     return (
         <div>
-            <Row>
-                <Col xs={12}>
+            <div className='row'>
+                <div className='col'>
                     <FormControl component="fieldset">
                         <RadioGroup aria-label="Upload Choices" name="uploadChoices" onChange={e => handleRadioChange(e)}>
                             <FormControlLabel
@@ -37,10 +36,10 @@ export default function TextUploadForm({ theme, uploadChoice, text, fileExtensio
                             }/>
                         </RadioGroup>
                     </FormControl>
-                </Col>
-            </Row>
-            <Row>
-                <Col xs={12}>
+                </div>
+            </div>
+            <div className='row'>
+                <div className='col'>
                     <div hidden={uploadChoice !== 'fileUpload'}>
                         <input type="file" name="file" id="file" style={{ display: 'none' }} onChange={handleFileChange} />
                         <label htmlFor='file'>
@@ -52,37 +51,37 @@ export default function TextUploadForm({ theme, uploadChoice, text, fileExtensio
                                     Upload File
                             </Button>
                         </label>
-                        <Row>
+                        <div className='row'>
                             <Typography id='fileName'>
                                 {fileName &&
                                     fileName
                                 }
                             </Typography>
-                        </Row>
+                        </div>
                         {isBadExtension &&
-                            <Row>
-                                <Col sm={12}>
+                            <div className='row '>
+                                <div className='col'>
                                     <Alert className='fileError' severity='warning'>
                                         <AlertTitle>Unsupported File Format</AlertTitle>
                                         This can't summarize .{fileExtension} files.
                                     </Alert>
-                                </Col>
-                            </Row>
+                                </div>
+                            </div>
                         }
                         {isTooLargeFile &&
-                            <Row>
-                                <Col sm={12}>
+                            <div className='row'>
+                                <div className='col'>
                                     <Alert className='fileError' severity='warning'>
                                         <AlertTitle>File Too Large</AlertTitle>
                                         Files cannot be larger than 5MB.
                                     </Alert>
-                                </Col>
-                            </Row>
+                                </div>
+                            </div>
                         }
                     </div>
                     <div id='textDiv' hidden={uploadChoice !== 'text'}>
-                        <Row>
-                            <Col xs={12}>
+                        <div className='row'>
+                            <div className='col'>
                                 <Button
                                     hidden={uploadChoice !== 'text'}
                                     id='clearButton'
@@ -93,19 +92,23 @@ export default function TextUploadForm({ theme, uploadChoice, text, fileExtensio
                                     onClick={handleClick}>
                                     Clear
                                 </Button>
-                                    <textarea
+                                    {/* <textarea
                                         style={ textareaStyle }
                                         rows='20'
                                         id="textEntry"
                                         onChange={handleTextChange}
                                         value={text}
                                         aria-label='text entry'
+                                    /> */}
+                                    <TextareaAutosize
+                                        rowsMin={20}
+                                        value={text}
                                     />
-                            </Col>
-                        </Row>
+                            </div>
+                        </div>
                     </div>
-                </Col>
-            </Row>
+                </div>
+            </div>
         </div>
     )
 }
