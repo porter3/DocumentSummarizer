@@ -9,14 +9,11 @@ import GenerateButton from './components/GenerateButton'
 import SummarySection from './components/SummarySection'
 import SummaryLengthSlider from './components/SummaryLengthSlider'
 // other components
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
 import Paper from '@material-ui/core/Paper'
 import { ThemeProvider } from '@material-ui/core/styles'
 // css/styling
-import 'bootstrap/dist/css/bootstrap.min.css'
 import './styling/css/app.css'
+import './styling/css/flexLayout.css'
 import createTheme from './styling/muiTheme'
 // functions
 import changeLoaderMessage from './misc/changeLoaderMessage'
@@ -184,64 +181,56 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Paper style={{ height: '100vh', boxShadow: 'none' }}>
-        <Container fluid id='app'>
-          <Row>
-            <Col xs={12}>
-              <AboutAppPopover />
-              <DarkModeSwitch
-                isDarkModeEnabled={isDarkModeEnabled}
-                handleChange={e => toggleDarkMode(e)} />
-            </Col>
-          </Row>
-          <Row>
-            <Col md={4} xs={10}>
-              <UploadHeader />
-              <LanguageSelector 
-                language={language}
-                handleChange={e => handleLanguageChange(e)}
+        <div className='flexContainer'>
+          <div className='outerCol'>
+            <AboutAppPopover />
+            <DarkModeSwitch
+              isDarkModeEnabled={isDarkModeEnabled}
+              handleChange={e => toggleDarkMode(e)} />
+            <UploadHeader />
+            <LanguageSelector 
+              language={language}
+              handleChange={e => handleLanguageChange(e)}
+            />
+            <TextUploadForm
+              theme={theme}
+              uploadChoice={uploadChoice}
+              text={text}
+              fileExtension={fileInfo.file.extension}
+              isBadExtension={isBadExtension}
+              fileName={fileInfo.file.name}
+              isTooLargeFile={isTooLargeFile}
+              isDarkModeEnabled={isDarkModeEnabled}
+              handleRadioChange={e => handleUploadChoice(e)}
+              handleTextChange={e => handleTextChange(e)}
+              handleFileChange={e => handleFileChange(e)}
+              handleClick={() => handleClearButtonClick()}
+            />
+            <GenerateButton
+              isLoading={isLoading}
+              fileExtension={fileInfo.file.extension}
+              isBadExtension={isBadExtension}
+              isTooLargeFile={isTooLargeFile}
+              uploadChoice={uploadChoice}
+              handleClick={() => handleGenerateButtonClick()}
+            />
+          </div>
+          <div className='outerCol'>
+            <SummarySection
+              sentences={sentences}
+              errorMessage={errorMessage}
+              isLoading={isLoading}
+              sentenceThreshold={sentenceThreshold}
+              loaderMessage={loaderMessage}
+            />
+            {sentences.length > 1 &&
+              <SummaryLengthSlider
+                handleChange={handleSliderChange}
+                max={summaryCount - 1}
               />
-              <TextUploadForm
-                theme={theme}
-                uploadChoice={uploadChoice}
-                text={text}
-                fileExtension={fileInfo.file.extension}
-                isBadExtension={isBadExtension}
-                fileName={fileInfo.file.name}
-                isTooLargeFile={isTooLargeFile}
-                isDarkModeEnabled={isDarkModeEnabled}
-                handleRadioChange={e => handleUploadChoice(e)}
-                handleTextChange={e => handleTextChange(e)}
-                handleFileChange={e => handleFileChange(e)}
-                handleClick={() => handleClearButtonClick()}
-              />
-            </Col>
-            <Col xs={2}>
-              <GenerateButton
-                isLoading={isLoading}
-                fileExtension={fileInfo.file.extension}
-                isBadExtension={isBadExtension}
-                isTooLargeFile={isTooLargeFile}
-                uploadChoice={uploadChoice}
-                handleClick={() => handleGenerateButtonClick()}
-              />
-            </Col>
-            <Col md={6} xs={12}>
-              <SummarySection
-                sentences={sentences}
-                errorMessage={errorMessage}
-                isLoading={isLoading}
-                sentenceThreshold={sentenceThreshold}
-                loaderMessage={loaderMessage}
-              />
-              {sentences.length > 1 &&
-                <SummaryLengthSlider
-                  handleChange={handleSliderChange}
-                  max={summaryCount - 1}
-                />
-              }
-            </Col>
-          </Row>
-        </Container>
+            }
+          </div>
+        </div>
       </Paper>
     </ThemeProvider>
   )
