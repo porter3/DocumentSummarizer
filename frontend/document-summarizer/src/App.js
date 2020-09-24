@@ -182,53 +182,65 @@ function App() {
     <ThemeProvider theme={theme}>
       <Paper style={{ height: '100vh', boxShadow: 'none' }}>
         <div className='flexContainer'>
-          <div className='outerCol'>
-            <AboutAppPopover />
-            <DarkModeSwitch
-              isDarkModeEnabled={isDarkModeEnabled}
-              handleChange={e => toggleDarkMode(e)} />
-            <UploadHeader />
-            <LanguageSelector 
-              language={language}
-              handleChange={e => handleLanguageChange(e)}
-            />
-            <TextUploadForm
-              theme={theme}
-              uploadChoice={uploadChoice}
-              text={text}
-              fileExtension={fileInfo.file.extension}
-              isBadExtension={isBadExtension}
-              fileName={fileInfo.file.name}
-              isTooLargeFile={isTooLargeFile}
-              isDarkModeEnabled={isDarkModeEnabled}
-              handleRadioChange={e => handleUploadChoice(e)}
-              handleTextChange={e => handleTextChange(e)}
-              handleFileChange={e => handleFileChange(e)}
-              handleClick={() => handleClearButtonClick()}
-            />
-            <GenerateButton
-              isLoading={isLoading}
-              fileExtension={fileInfo.file.extension}
-              isBadExtension={isBadExtension}
-              isTooLargeFile={isTooLargeFile}
-              uploadChoice={uploadChoice}
-              handleClick={() => handleGenerateButtonClick()}
-            />
+          <div className='leftCol'>
+            <div className='headerRow'>
+              <div className='aboutPopover'>
+                <AboutAppPopover />
+              </div>
+              <div className='darkSwitch'>
+                <DarkModeSwitch
+                  isDarkModeEnabled={isDarkModeEnabled}
+                  handleChange={e => toggleDarkMode(e)} />
+                </div>
+            </div>
+            <div className='headingRow'>
+              <UploadHeader />
+            </div>
+            <div className='langGenerateButtonRow'>
+              <div>
+                <LanguageSelector 
+                  language={language}
+                  handleChange={e => handleLanguageChange(e)}
+                />
+              </div>
+              <div className='generateButtonCol'>
+                <GenerateButton
+                  isLoading={isLoading}
+                  fileExtension={fileInfo.file.extension}
+                  isBadExtension={isBadExtension}
+                  isTooLargeFile={isTooLargeFile}
+                  uploadChoice={uploadChoice}
+                  handleClick={() => handleGenerateButtonClick()}
+                />
+              </div>
+            </div>
+            <div className='formRow'>
+              <TextUploadForm
+                theme={theme}
+                uploadChoice={uploadChoice}
+                text={text}
+                fileExtension={fileInfo.file.extension}
+                isBadExtension={isBadExtension}
+                fileName={fileInfo.file.name}
+                isTooLargeFile={isTooLargeFile}
+                isDarkModeEnabled={isDarkModeEnabled}
+                handleRadioChange={e => handleUploadChoice(e)}
+                handleTextChange={e => handleTextChange(e)}
+                handleFileChange={e => handleFileChange(e)}
+                handleClick={() => handleClearButtonClick()}
+              />
+            </div>
           </div>
-          <div className='outerCol'>
+          <div className='rightCol'>
             <SummarySection
               sentences={sentences}
               errorMessage={errorMessage}
               isLoading={isLoading}
               sentenceThreshold={sentenceThreshold}
               loaderMessage={loaderMessage}
+              handleSliderChange={handleSliderChange}
+              maxSummaries={summaryCount - 1}
             />
-            {sentences.length > 1 &&
-              <SummaryLengthSlider
-                handleChange={handleSliderChange}
-                max={summaryCount - 1}
-              />
-            }
           </div>
         </div>
       </Paper>

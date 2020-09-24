@@ -2,31 +2,44 @@ import React from 'react'
 import Paper from '@material-ui/core/Paper'
 import Alert from '@material-ui/lab/Alert'
 import Loader from './Loader'
+import SummaryLengthSlider from './SummaryLengthSlider'
+import '../styling/css/flexLayout.css'
 
-
-export default function SummarySection({ sentences, errorMessage, isLoading, sentenceThreshold, loaderMessage }) {
+export default function SummarySection({ sentences, errorMessage, isLoading, sentenceThreshold, loaderMessage, handleSliderChange, maxSummaries }) {
 
     return (
-        <div id='summarySection'>
+        <>
             {sentences.length !== 0 &&
-                <Paper
-                    id='paper'
-                    elevation={3}>
-                    <div id='paperText'>
-                        {sentences.map(sentence => sentence.score >= sentenceThreshold ? <span key={sentence.orderPlacement}>{sentence.sentence + ' '}</span> : false)}
-                    </div>
-                </Paper>
+                <div className='summarySection'>
+                    <Paper elevation={3} className='summaryPaper'>
+                            <div id='paperText'>
+                                {
+                                    sentences.map(sentence => sentence.score >= sentenceThreshold
+                                        ? <span key={sentence.orderPlacement}>{sentence.sentence + ' '}</span>
+                                        : false
+                                    )}
+                            </div>
+                    </Paper>
+                    {sentences.length > 1 &&
+                        <SummaryLengthSlider
+                            handleChange={handleSliderChange}
+                            max={maxSummaries}
+                        />
+                    }
+                </div>
             }
             {errorMessage &&
-                <div id='errorMessage'>
+                <div className='errorSection'>
                     <Alert severity='error'>
                         {errorMessage}
                     </Alert>
                 </div>
             }
             {isLoading &&
-                <Loader loaderMessage={loaderMessage} />
+                <div className='loaderSection'>   
+                    <Loader loaderMessage={loaderMessage} />
+                </div>
             }
-        </div>
+        </>
     )
 }
