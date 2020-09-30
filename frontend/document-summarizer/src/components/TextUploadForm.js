@@ -9,106 +9,93 @@ import CloudUploadOutlinedIcon from '@material-ui/icons/CloudUploadOutlined'
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined'
 import Alert from '@material-ui/lab/Alert'
 import AlertTitle from '@material-ui/lab/AlertTitle'
-import TextareaAutosize from '@material-ui/core/TextareaAutosize'
 
-export default function TextUploadForm({ theme, uploadChoice, text, fileExtension, isBadExtension, fileName, isTooLargeFile, isDarkModeEnabled, handleRadioChange, handleTextChange, handleFileChange, handleClick }) {
+export default function TextUploadForm({ uploadChoice, text, fileExtension, isBadExtension, fileName, isTooLargeFile, isDarkModeEnabled, handleRadioChange, handleTextChange, handleFileChange, handleClick }) {
 
     const textareaStyle = isDarkModeEnabled ? { backgroundColor: '#6B6B6B', color: '#ffffff' } : null
 
     return (
-        <div>
-            <div className='row'>
-                <div className='col'>
-                    <FormControl component="fieldset">
-                        <RadioGroup aria-label="Upload Choices" name="uploadChoices" onChange={e => handleRadioChange(e)}>
-                            <FormControlLabel
-                                value="fileUpload"
-                                control={<Radio />}
-                                label={
-                                    <>
-                                        <Typography>Upload File</Typography>
-                                        <Typography><small>(.docx, .doc, .pdf, .txt)</small></Typography>
-                                    </>
-                                }/>
-                            <FormControlLabel value="text" control={<Radio />}
-                            label={
-                                <Typography>Enter Text</Typography>
-                            }/>
-                        </RadioGroup>
-                    </FormControl>
+        <>
+            <FormControl component="fieldset">
+                <RadioGroup aria-label="Upload Choices" name="uploadChoices" onChange={e => handleRadioChange(e)}>
+                    <FormControlLabel
+                        value="fileUpload"
+                        control={<Radio />}
+                        label={
+                            <>
+                                <Typography>Upload File</Typography>
+                                <Typography><small>(.docx, .doc, .pdf, .txt)</small></Typography>
+                            </>
+                        }/>
+                    <FormControlLabel value="text" control={<Radio />}
+                    label={
+                        <Typography>Enter Text</Typography>
+                    }/>
+                </RadioGroup>
+            </FormControl>
+            <div hidden={uploadChoice !== 'fileUpload'}>
+                <div className='uploadButtonRow'>
+                    <input type="file" name="file" id="file" style={{ display: 'none' }} onChange={handleFileChange} />
+                    <label htmlFor='file'>
+                        <Button
+                            variant='outlined'
+                            component='span'
+                            color='secondary'
+                            startIcon={<CloudUploadOutlinedIcon />}>
+                                Upload File
+                        </Button>
+                    </label>
                 </div>
-            </div>
-            <div className='row'>
-                <div className='col'>
-                    <div hidden={uploadChoice !== 'fileUpload'}>
-                        <input type="file" name="file" id="file" style={{ display: 'none' }} onChange={handleFileChange} />
-                        <label htmlFor='file'>
-                            <Button
-                                variant='outlined'
-                                component='span'
-                                color='secondary'
-                                startIcon={<CloudUploadOutlinedIcon />}>
-                                    Upload File
-                            </Button>
-                        </label>
-                        <div className='row'>
-                            <Typography id='fileName'>
-                                {fileName &&
-                                    fileName
-                                }
-                            </Typography>
-                        </div>
-                        {isBadExtension &&
-                            <div className='row '>
-                                <div className='col'>
-                                    <Alert className='fileError' severity='warning'>
-                                        <AlertTitle>Unsupported File Format</AlertTitle>
-                                        This can't summarize .{fileExtension} files.
-                                    </Alert>
-                                </div>
-                            </div>
+                <div className='filenameRow'>
+                    <Typography>
+                        {fileName &&
+                            fileName
                         }
-                        {isTooLargeFile &&
-                            <div className='row'>
-                                <div className='col'>
-                                    <Alert className='fileError' severity='warning'>
-                                        <AlertTitle>File Too Large</AlertTitle>
-                                        Files cannot be larger than 5MB.
-                                    </Alert>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                    <div id='textDiv' hidden={uploadChoice !== 'text'}>
-                        <div className='row'>
-                            <div className='col'>
-                                <Button
-                                    hidden={uploadChoice !== 'text'}
-                                    id='clearButton'
-                                    variant='outlined'
-                                    component='span'
-                                    color='secondary'
-                                    startIcon={<ClearOutlinedIcon />}
-                                    onClick={handleClick}>
-                                    Clear
-                                </Button>
-                                    {/* <textarea
-                                        style={ textareaStyle }
-                                        rows='20'
-                                        id="textEntry"
-                                        onChange={handleTextChange}
-                                        value={text}
-                                        aria-label='text entry'
-                                    /> */}
-                                    <TextareaAutosize
-                                        rowsMin={20}
-                                        value={text}
-                                    />
-                            </div>
+                    </Typography>
+                </div>
+                {isBadExtension &&
+                    <div className='badExtensionRow'>
+                        <div className='col'>
+                            <Alert className='fileError' severity='warning'>
+                                <AlertTitle>Unsupported File Format</AlertTitle>
+                                This can't summarize .{fileExtension} files.
+                            </Alert>
                         </div>
                     </div>
+                }
+                {isTooLargeFile &&
+                    <div className='tooLargeFileRow'>
+                        <div className='col'>
+                            <Alert className='fileError' severity='warning'>
+                                <AlertTitle>File Too Large</AlertTitle>
+                                Files cannot be larger than 5MB.
+                            </Alert>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div hidden={uploadChoice !== 'text'}>
+                <div className='clearBtnRow'>
+                    <Button
+                        hidden={uploadChoice !== 'text'}
+                        variant='outlined'
+                        component='span'
+                        color='secondary'
+                        startIcon={<ClearOutlinedIcon />}
+                        onClick={handleClick}>
+                        Clear
+                    </Button>
+                </div>
+                <div className='textInput'>
+                    <textarea
+                        style={ textareaStyle }
+                        id="textEntry"
+                        onChange={handleTextChange}
+                        value={text}
+                        aria-label='text entry'
+                    />
                 </div>
             </div>
-        </div>
+        </>
     )
 }
