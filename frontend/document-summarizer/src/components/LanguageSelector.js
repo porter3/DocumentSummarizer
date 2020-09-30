@@ -9,10 +9,7 @@ import supportedLanguages from '../misc/supportedLanguages'
 const useStyles = makeStyles((theme) => ({
     formControl: {
         minWidth: 150
-    },
-    select: {
-        marginBottom: theme.spacing(3)
-    },
+    }
 }));
 
 export default function LanguageSelector({ language, handleChange }) {
