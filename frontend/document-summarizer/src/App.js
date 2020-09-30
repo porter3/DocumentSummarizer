@@ -7,7 +7,6 @@ import LanguageSelector from './components/LanguageSelector'
 import TextUploadForm from './components/TextUploadForm'
 import GenerateButton from './components/GenerateButton'
 import SummarySection from './components/SummarySection'
-import SummaryLengthSlider from './components/SummaryLengthSlider'
 // other components
 import Paper from '@material-ui/core/Paper'
 import { ThemeProvider } from '@material-ui/core/styles'
@@ -180,7 +179,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Paper style={{ height: '100vh', boxShadow: 'none' }}>
+      <Paper className='backgroundPaper' square={true}>
         <div className='flexContainer'>
           <div className='leftCol'>
             <div className='headerRow'>
@@ -197,7 +196,7 @@ function App() {
               <UploadHeader />
             </div>
             <div className='langGenerateButtonRow'>
-              <div>
+              <div className='langSelectorCol'>
                 <LanguageSelector 
                   language={language}
                   handleChange={e => handleLanguageChange(e)}
@@ -214,7 +213,7 @@ function App() {
                 />
               </div>
             </div>
-            <div className='formRow'>
+            <div className='formCol'>
               <TextUploadForm
                 theme={theme}
                 uploadChoice={uploadChoice}
