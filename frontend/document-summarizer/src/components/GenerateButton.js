@@ -11,7 +11,7 @@ export default function GenerateButton({ isLoading, isBadExtension, isTooLargeFi
                 disabled={(uploadChoice === 'fileUpload' && (isBadExtension || isTooLargeFile)) || isLoading}
                 size='large'
                 onClick={handleClick}>
-                {isLoading ? 'Generating summary...' : 'Generate Summary'}
+                {isLoading ? 'Summarizing...' : 'Summarize'}
             </Button>
     )
 }
