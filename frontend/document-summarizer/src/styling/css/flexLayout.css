@@ -1,13 +1,247 @@
+body {
+    /* Needed to override some mysterious 8px margin that's applied to the body element */
+    margin: 0;
+}
+
+.backgroundPaper {
+    min-height: 110vh;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
 .flexContainer {
-    height: 100%;
+    min-height: 100vh;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-between;
 }
 
-.outerCol {
-    width: 45%;
+.leftCol, .rightCol {
+    height: 100%;
     display: flex;
     flex-direction: column;
+    min-height: 420px;
+}
+
+.leftCol {
+    width: 40%;
+    margin-top: 5%;
+}
+
+.rightCol {
+    width: 55%;
+    margin-top: 5%;
+}
+
+.headerRow {
+    width: 310px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.headingRow {
+    display: flex;
+    flex-direction: row;
+    margin-top: 5%;
+}
+
+.langGenerateButtonRow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 5%;
+}
+
+.langSelectorCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.generateButtonCol {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    min-width: 138px;
+}
+
+.formCol {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5%;
+}
+
+.uploadButtonRow {
+    margin-top: 2%;
+    display: flex;
+}
+
+.filenameRow {
+    margin-top: 2%;
+    display: flex;
+}
+
+.clearBtnRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+/* div surrounding textarea */
+.textInput {
+    margin-top: 1.5%;
+}
+
+textarea {
+    height: 24em;
+}
+
+.badExtensionRow, .tooLargeFileRow {
+    margin-top: 2%;
+}
+
+.resultsSection {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    min-height: 420px;
+}
+
+.summarySectionCol {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.copyMsgCol {
+    display: flex;
+    flex-direction: column;
+    margin-right: 12px;
+}
+
+.fadeOut {
+    opacity: 1;
+    animation: message-fade-out 1s 2s;
+}
+
+@keyframes message-fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.copyButtonRow {
+    display: flex;
+    align-self: flex-end;
+    align-items: center;
+}
+
+.summaryPaper {
+    overflow-x: hidden;
+    height: 500px;
+    width: 100%;
+    margin-top: 1%;
+}
+
+.paperText {
+    margin: 1% 2%;
+}
+
+.slider {
+    margin-top: 5%;
+    /* Slider component extends just slightly to the right of its container */
+    width: 99.75%;
+    margin-right: 0.25%;
+}
+
+.errorSection {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.loaderSection {
+    height: 100%;
+    display: flex;
+    align-self: center;
+}
+
+/* Smaller than medium-sized laptop */
+@media (max-width: 991px) {
+
+    .rightCol {
+        width: 50%;
+        min-height: 570px;
+    }
+
+}
+
+/* Small enough width to cause wrapping of language selector/summarize button column */
+@media (max-width: 800px) {
+    .generateButtonCol {
+        margin-top: 6%;
+    }
+}
+
+/* Smaller than iPad in portrait mode */
+@media (max-width: 767px) {
+
+    .flexContainer {
+        justify-content: center;
+    }
+
+    .summaryPaper {
+        height: 200px;
+    }
+
+    .slider {
+        width: 84%;
+    }
+
+    .leftCol, .rightCol {
+        min-height: 0;
+        height: 45%;
+        width: 90%;
+    }
+
+    .rightCol {
+        margin-top: 0;
+        min-height: 275px;
+    }
+
+    .paperText {
+        margin: 2% 4%;
+    }
+
+    .loaderSection {
+        align-self: flex-start;
+        margin-top: 20%;
+    }
+}
+
+/* Screen is particularly skinny (iPhone X) */
+@media (max-width: 413px) {
+
+    textarea {
+        height: 6em;
+    }
+}
+
+/* Phone screen wider than an iPhone X */
+@media (max-width: 767px) and (min-width: 414px) {
+
+    textarea {
+        height: 5em;
+    }
 }
