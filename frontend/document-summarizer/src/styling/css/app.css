@@ -1,12 +1,17 @@
+@import 'fontFaces.css';
+
 textarea {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     width: 100%;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
     border: none;
     outline: 2px solid #ADE3E0;
+    padding: 1.5%;
+    font-size: 1em;
+    font-family: 'montserratlight', 'Times New Roman';
 }
 
 textarea:focus {
