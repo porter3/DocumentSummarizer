@@ -10,6 +10,8 @@ import SummaryLengthSlider from './SummaryLengthSlider'
 import '../styling/css/flexLayout.css'
 import '../styling/css/copyMessageAnimation.css'
 
+
+// CSSTransition in here is not working at the moment but doesn't break anything
 export default function SummarySection({ sentences, errorMessage, isLoading, sentenceThreshold, loaderMessage, handleSliderChange, maxSummaries }) {
     
     const sentenceCount = sentences.length
