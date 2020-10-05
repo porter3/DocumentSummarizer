@@ -4,19 +4,24 @@ import com.jakeporter.DocumentSummarizer.exceptions.SummaryException;
 import com.jakeporter.DocumentSummarizer.utilities.scriptRunners.JARScriptRunner;
 
 import java.io.File;
+import java.util.Properties;
 
 public class PythonValidator implements TextValidator {
 
-    private static final boolean IS_PRODUCTION_BUILD = false;
-    private static final String PYTHON_CMD = IS_PRODUCTION_BUILD ? "python3" : "python";
+    private boolean IS_PRODUCTION_BUILD = false;
+    private final String PYTHON_CMD = IS_PRODUCTION_BUILD ? "python3" : "python";
     private static final String SCRIPT = "textValidator.py";
     private static final String MIN_SENTENCE_COUNT = "4"; // needs to be a String
     private static final String sep = File.separator;
-    private static final String LANGDETECT_PROFILE = IS_PRODUCTION_BUILD ?
+    private final String LANGDETECT_PROFILE = IS_PRODUCTION_BUILD ?
             sep + "usr" + sep + "local" + sep + "lib" + sep + "python3.7" + sep + "site-packages" + sep + "langdetect" + sep +  "profiles" :
             "C:" + sep + "Users" + sep + "jake" + sep +  "AppData" + sep + "Local" + sep + "Programs" + sep + "Python" + sep + "Python38" + sep +
                     "Lib" + sep + "site-packages" + sep + "langdetect" + sep + "profiles";
     private static final String OUTPUT_DELIMITER = "-:::-";
+
+    public PythonValidator() {
+        this.IS_PRODUCTION_BUILD = Boolean.parseBoolean(new Properties().getProperty("is.production.build"));
+    }
 
     public void validateText(String text, String language) {
         JARScriptRunner scriptRunner = new JARScriptRunner(PYTHON_CMD, SCRIPT);

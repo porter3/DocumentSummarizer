@@ -9,20 +9,23 @@ import com.jakeporter.DocumentSummarizer.utilities.validators.TextValidator;
 
 import java.util.*;
 
-
 public class PythonSummarizer extends DocumentSummarizer {
 
-    private static final boolean IS_PRODUCTION_BUILD = false;
-    private static final String PYTHON_CMD = IS_PRODUCTION_BUILD ? "python3" : "python";
+    private boolean IS_PRODUCTION_BUILD = false; // default just to shut the warnings up
+    private final String PYTHON_CMD = IS_PRODUCTION_BUILD ? "python3" : "python";
     private static final String SCRIPT = "textSummarizer.py";
     private static final String ATTR_DELIMITER = "-::-";
     private static final String SENTENCE_DELIMITER = "-:::-";
     private static final String SUMMARY_COUNT_DELIMITER = "-::::-";
 
-    public PythonSummarizer(TextValidator validator){ super(validator); }
+    public PythonSummarizer(TextValidator validator){
+        super(validator);
+        this.IS_PRODUCTION_BUILD = Boolean.parseBoolean(new Properties().getProperty("is.production.build"));
+    }
 
     public PythonSummarizer(FileTextExtractor extractor, TextValidator validator) {
         super(extractor, validator);
+        this.IS_PRODUCTION_BUILD = Boolean.parseBoolean(new Properties().getProperty("is.production.build"));
     }
 
     @Override
