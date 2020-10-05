@@ -21,6 +21,9 @@ export default function createTheme(isDarkModeEnabled) {
             h3: {
                 fontSize: '1.75rem'
             },
+            h5: {
+                fontSize: '1.2rem'
+            },
             button: {
                 fontFamily: [ 'montserratmedium', 'Times New Roman' ].join(',')
             }
