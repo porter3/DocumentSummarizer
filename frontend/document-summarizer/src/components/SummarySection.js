@@ -103,7 +103,7 @@ export default function SummarySection({ sentences, errorMessage, isLoading, sen
                 </div>
             }
             {isLoading &&
-                <div className='loaderSection'>   
+                <div className='loaderCol'>   
                     <Loader loaderMessage={loaderMessage} />
                 </div>
             }
