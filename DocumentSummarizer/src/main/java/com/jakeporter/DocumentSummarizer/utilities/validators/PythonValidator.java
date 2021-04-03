@@ -13,10 +13,11 @@ public class PythonValidator implements TextValidator {
     private static final String SCRIPT = "textValidator.py";
     private static final String MIN_SENTENCE_COUNT = "4"; // needs to be a String
     private static final String sep = File.separator;
-    private final String LANGDETECT_PROFILE = IS_PRODUCTION_BUILD ?
-            sep + "usr" + sep + "local" + sep + "lib" + sep + "python3.7" + sep + "site-packages" + sep + "langdetect" + sep +  "profiles" :
-            "C:" + sep + "Users" + sep + "jake" + sep +  "AppData" + sep + "Local" + sep + "Programs" + sep + "Python" + sep + "Python38" + sep +
-                    "Lib" + sep + "site-packages" + sep + "langdetect" + sep + "profiles";
+    private static final String ldProfileProdPath = sep + "usr" + sep + "local" + sep + "lib" + sep + "python3.7" + sep + "site-packages" + sep + "langdetect" + sep +  "profiles" +
+            sep + "usr" + sep + "local" + sep + "lib" + sep + "python3.7" + sep + "site-packages" + sep + "langdetect" + sep +  "profiles";
+    private static final String ldProfileLocalPath = "C:" + sep + "Users" + sep + "jake" + sep +  "AppData" + sep + "Local" + sep + "Programs" + sep + "Python" + sep + "Python38" + sep +
+            "Lib" + sep + "site-packages" + sep + "langdetect" + sep + "profiles";
+    private final String LANGDETECT_PROFILE = IS_PRODUCTION_BUILD ? ldProfileProdPath : ldProfileLocalPath;
     private static final String OUTPUT_DELIMITER = "-:::-";
 
     public PythonValidator() {
