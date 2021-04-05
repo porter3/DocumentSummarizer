@@ -27,7 +27,6 @@ public class JARScriptRunner {
         try {
             Process pythonProcess = initiateScriptProcess(processArgs);
             logger.info("JarScriptRunner LINE 31: Initiated script process, writing to StdIn.");
-            logger.info("Process is alive: " + String.valueOf(pythonProcess.isAlive()));
             writeToStdIn(pythonProcess, text);
             logger.info("JarScriptRunner LINE 33: Wrote to StdIn.");
             result = getResultFromStdOut(pythonProcess);
@@ -62,7 +61,6 @@ public class JARScriptRunner {
 
     private void writeToStdIn(Process process, String text) throws IOException {
         OutputStream pythonStdIn = process.getOutputStream();
-
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(pythonStdIn))) {
             writer.write(text);
             writer.flush();

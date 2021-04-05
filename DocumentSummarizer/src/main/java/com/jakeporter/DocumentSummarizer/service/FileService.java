@@ -55,6 +55,7 @@ public class FileService {
         try {
             FileTextExtractor extractor = FileTextExtractorFactory.getExtractor(fileType);
             long start = System.currentTimeMillis();
+            logger.info("FileService LINE 59: Text will now be extracted and summarized.");
             components = new PythonSummarizer(extractor, new PythonValidator()).summarize(inputStream, language);
             double executionTime = (System.currentTimeMillis() - start) / 1000D;
             logger.info("-- Execution time (sec): " + executionTime);
